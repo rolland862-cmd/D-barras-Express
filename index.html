@@ -455,4 +455,620 @@
     }
 
     function closeModal() {
-      document.getElementBy
+      document.getElementById('infoModal').classList.add('hidden');
+    }
+
+    function getCellAppearance(rawCode) {
+      const code = (rawCode || '').toUpperCase();
+
+      switch (code) {
+        case 'WORK':
+          return {
+            classes: 'bg-emerald-100 hover:bg-emerald-200 text-emerald-950 border-emerald-300'
+          };
+        case 'HOLIDAY':
+        case 'F':
+        case 'FERIE':
+          return {
+            classes: 'bg-rose-100 hover:bg-rose-200 text-rose-900 border-rose-300 font-semibold'
+          };
+        case 'R':
+          return {
+            classes: 'bg-slate-200 hover:bg-slate-300 text-slate-800 border-slate-300 font-bold'
+          };
+        case 'CP':
+          return {
+            classes: 'bg-amber-100 hover:bg-amber-200 text-amber-900 border-amber-300 font-bold'
+          };
+        case '':
+          return {
+            classes: 'bg-white text-slate-400 border-slate-200'
+          };
+        default:
+          return {
+            classes: 'bg-emerald-50 text-slate-900 border-emerald-400 font-semibold'
+          };
+      }
+    }
+
+    /**
+     * Ajuste la hauteur de la case automatiquement pour que le texte écrit
+     * ne soit jamais coupé, quelle que soit sa longueur.
+     */
+    function autoFitCell(inp) {
+      inp.style.height = 'auto';
+      const targetHeight = Math.max(44, inp.scrollHeight);
+      inp.style.height = `${targetHeight}px`;
+    }
+
+    /**
+     * Calcule les jours et heures d'un salarié sur une semaine donnée.
+     */
+    function computeWeekEmployeeStats(employee, weekDays, weekIndex) {
+      let workedDays = 0;
+      let autoHours = 0;
+
+      for (const dayInfo of weekDays) {
+        if (!dayInfo.inCurrentMonth) continue;
+        const rawCode = getCellCode(employee, dayInfo.dayOfMonth, dayInfo.dateObj);
+        const code = String(rawCode).trim().toUpperCase();
+
+        if (code === 'R' || code === 'CP' || code === 'HOLIDAY' || code === 'F' || code === 'FERIE' || code === '') {
+          continue;
+        }
+
+        const dayHours = code === 'WORK'
+          ? appState.baseHours
+          : parseHoursFromText(rawCode, appState.baseHours);
+
+        if (dayHours > 0) {
+          workedDays += 1;
+          autoHours += dayHours;
+        }
+      }
+
+      const manualWeekHours = appState.weekHourOverrides?.[employee]?.[weekIndex];
+      const hasManualOverride = typeof manualWeekHours === 'number' && !isNaN(manualWeekHours);
+
+      return {
+        workedDays,
+        hours: hasManualOverride ? manualWeekHours : autoHours,
+        isManual: hasManualOverride
+      };
+    }
+
+    /**
+     * Calcule les statistiques mensuelles complètes d'un salarié.
+     */
+    function computeEmployeeStats(employee) {
+      let workedDays = 0;
+      let restDays = 0;
+      let ptoDays = 0;
+      let holidayDays = 0;
+
+      for (let day = 1; day <= DAYS_IN_MONTH; day++) {
+        const dateObj = new Date(YEAR, MONTH, day);
+        const rawCode = getCellCode(employee, day, dateObj);
+        const code = String(rawCode).trim().toUpperCase();
+
+        if (code === 'R') {
+          restDays += 1;
+        } else if (code === 'CP') {
+          ptoDays += 1;
+        } else if (code === 'HOLIDAY' || code === 'F' || code === 'FERIE') {
+          holidayDays += 1;
+        } else {
+          const h = code === 'WORK' ? appState.baseHours : parseHoursFromText(rawCode, appState.baseHours);
+          if (h > 0) workedDays += 1;
+        }
+      }
+
+      // Somme des heures de chaque semaine (prenant en compte les modifications manuelles éventuelles par semaine)
+      let sumWeeksHours = 0;
+      WEEKS_CONFIG.forEach((weekCfg, wIdx) => {
+        const wDays = buildWeekDays(weekCfg);
+        sumWeeksHours += computeWeekEmployeeStats(employee, wDays, wIdx).hours;
+      });
+
+      const manualMonthHours = appState.monthHourOverrides?.[employee];
+      const hasManualMonth = typeof manualMonthHours === 'number' && !isNaN(manualMonthHours);
+
+      return {
+        workedDays,
+        restDays,
+        ptoDays,
+        holidayDays,
+        totalHours: hasManualMonth ? manualMonthHours : sumWeeksHours,
+        isManual: hasManualMonth
+      };
+    }
+
+    function buildWeekDays(weekCfg) {
+      const days = [];
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(weekCfg.startDate.getFullYear(), weekCfg.startDate.getMonth(), weekCfg.startDate.getDate() + i);
+        const inCurrentMonth = d.getMonth() === MONTH && d.getFullYear() === YEAR;
+        const dayOfMonth = d.getDate();
+        days.push({
+          dateObj: d,
+          inCurrentMonth,
+          dayOfMonth,
+          dayLabel: DAY_LABELS[i],
+          isHoliday: inCurrentMonth && isHolidayDate(d)
+        });
+      }
+      return days;
+    }
+
+    function updateFilterButtons() {
+      document.querySelectorAll('.filter-btn').forEach((btn) => {
+        const val = btn.getAttribute('data-filter');
+        const active = val === appState.filter;
+        btn.className = active
+          ? 'filter-btn px-3.5 py-2 rounded-xl text-sm font-semibold bg-slate-900 text-white transition'
+          : 'filter-btn px-3.5 py-2 rounded-xl text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition';
+      });
+    }
+
+    function renderAll() {
+      const baseInput = document.getElementById('baseHoursInput');
+      if (baseInput) baseInput.value = appState.baseHours;
+
+      const sub = document.getElementById('headerSubtitle');
+      if (sub) sub.textContent = `Pierre · Damien · David — Base ${formatHours(appState.baseHours)} / jour travaillé`;
+
+      updateFilterButtons();
+      renderWeeks();
+      renderSummaryTable();
+    }
+
+    function renderWeeks() {
+      const container = document.getElementById('weeksContainer');
+      container.innerHTML = '';
+
+      const visibleEmployees = appState.filter === 'ALL'
+        ? EMPLOYEES
+        : EMPLOYEES.filter((name) => name === appState.filter);
+
+      WEEKS_CONFIG.forEach((weekCfg, index) => {
+        const weekDays = buildWeekDays(weekCfg);
+        const hasCurrentMonthDay = weekDays.some((d) => d.inCurrentMonth);
+        if (!hasCurrentMonthDay) return;
+
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-2xl p-3.5 sm:p-4 shadow-sm border border-slate-200 print-break-avoid';
+
+        const monthDaysInWeek = weekDays.filter((d) => d.inCurrentMonth);
+        const firstDate = monthDaysInWeek[0]?.dateObj;
+        const lastDate = monthDaysInWeek[monthDaysInWeek.length - 1]?.dateObj;
+        const fmt = (d) => d ? `${d.getDate()} ${MONTH_SHORT[d.getMonth()]}` : '';
+
+        const headerDiv = document.createElement('div');
+        headerDiv.className = 'flex items-center justify-between gap-2 mb-3';
+        headerDiv.innerHTML = `
+          <div class="flex items-center gap-2">
+            <span class="px-3 py-1 rounded-lg bg-slate-900 text-white text-xs sm:text-sm font-bold">
+              Semaine ${weekCfg.weekNumber}
+            </span>
+            <span class="text-xs sm:text-sm font-medium text-slate-600">
+              ${fmt(firstDate)} – ${fmt(lastDate)}
+            </span>
+          </div>
+          <span class="text-xs text-slate-500 hidden sm:inline">Base ${formatHours(appState.baseHours)} / jour</span>
+        `;
+        card.appendChild(headerDiv);
+
+        const tableWrapper = document.createElement('div');
+        tableWrapper.className = 'overflow-x-auto rounded-xl border border-slate-200';
+
+        const table = document.createElement('table');
+        table.className = 'w-full border-collapse text-center';
+
+        const thead = document.createElement('thead');
+        const headRow = document.createElement('tr');
+        headRow.className = 'bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-600';
+
+        const thName = document.createElement('th');
+        thName.className = 'py-2.5 px-3 text-left sticky left-0 bg-slate-50 z-10 border-r border-slate-200 min-w-[84px] sm:min-w-[100px] text-sm';
+        thName.textContent = 'Salarié';
+        headRow.appendChild(thName);
+
+        weekDays.forEach((d) => {
+          const th = document.createElement('th');
+          th.className = 'py-2 px-1 border-r border-slate-200 min-w-[56px] sm:min-w-[64px]';
+          if (!d.inCurrentMonth) {
+            th.classList.add('bg-slate-100/70', 'text-slate-300');
+            th.innerHTML = `<div class="text-xs">${d.dayLabel}</div><div class="text-xs">${d.dayOfMonth}</div>`;
+          } else if (d.isHoliday) {
+            th.classList.add('bg-rose-100', 'text-rose-800');
+            th.innerHTML = `<div class="text-xs font-bold">${d.dayLabel}</div><div class="text-sm font-extrabold">${d.dayOfMonth}</div>`;
+          } else {
+            th.innerHTML = `<div class="text-xs">${d.dayLabel}</div><div class="text-sm font-bold text-slate-800">${d.dayOfMonth}</div>`;
+          }
+          headRow.appendChild(th);
+        });
+
+        const thDays = document.createElement('th');
+        thDays.className = 'py-2.5 px-2 border-r border-slate-200 text-xs text-slate-700 min-w-[50px]';
+        thDays.textContent = 'Jours';
+        headRow.appendChild(thDays);
+
+        const thHours = document.createElement('th');
+        thHours.className = 'py-2.5 px-2 text-xs text-slate-700 min-w-[68px]';
+        thHours.textContent = 'Heures';
+        headRow.appendChild(thHours);
+
+        thead.appendChild(headRow);
+        table.appendChild(thead);
+
+        const tbody = document.createElement('tbody');
+        tbody.className = 'divide-y divide-slate-200';
+
+        visibleEmployees.forEach((employee) => {
+          const tr = document.createElement('tr');
+          tr.className = 'bg-white';
+
+          const tdName = document.createElement('td');
+          tdName.className = 'py-2.5 px-3 text-left text-sm sm:text-base font-bold text-slate-900 sticky left-0 bg-white z-10 border-r border-slate-200';
+          tdName.textContent = employee;
+          tr.appendChild(tdName);
+
+          weekDays.forEach((d) => {
+            const td = document.createElement('td');
+            td.className = 'p-1 border-r border-slate-200 align-middle';
+
+            if (!d.inCurrentMonth) {
+              td.innerHTML = `<div class="w-full min-h-[44px] rounded-lg bg-slate-100/80 border border-slate-200/70"></div>`;
+            } else {
+              const code = getCellCode(employee, d.dayOfMonth, d.dateObj);
+              const visual = getCellAppearance(code);
+              const defaultCode = getDefaultCellCode(d.dayOfMonth, d.dateObj);
+
+              const inp = document.createElement('textarea');
+              inp.rows = 1;
+              inp.className = `planning-cell rounded-lg border transition outline-none focus:ring-2 focus:ring-slate-500 ${visual.classes}`;
+              const isOverridden = typeof appState.overrides?.[employee]?.[d.dayOfMonth] === 'string'
+                && appState.overrides[employee][d.dayOfMonth].trim() !== '';
+              inp.value = isOverridden ? getCellCode(employee, d.dayOfMonth, d.dateObj) : (defaultCode === 'R' ? 'R' : '');
+              inp.placeholder = '·';
+              inp.spellcheck = false;
+              inp.setAttribute(
+                'aria-label',
+                `${employee}, ${d.dayLabel} ${d.dayOfMonth} ${MONTH_LABEL.toLowerCase()} ${YEAR}`
+              );
+              inp.dataset.employee = employee;
+              inp.dataset.day = d.dayOfMonth;
+              inp.dataset.weekIndex = index;
+
+              td.appendChild(inp);
+              requestAnimationFrame(() => autoFitCell(inp));
+            }
+
+            tr.appendChild(td);
+          });
+
+          const weekStats = computeWeekEmployeeStats(employee, weekDays, index);
+
+          const tdDays = document.createElement('td');
+          tdDays.className = 'py-2 px-2 border-r border-slate-200 text-sm font-bold text-slate-800 whitespace-nowrap';
+          tdDays.textContent = `${weekStats.workedDays} j`;
+          tr.appendChild(tdDays);
+
+          // Total d'heures de la semaine directement éditable
+          const tdHours = document.createElement('td');
+          tdHours.className = 'py-1.5 px-1.5 text-sm font-bold text-emerald-700 whitespace-nowrap';
+          const weekHourInput = document.createElement('input');
+          weekHourInput.type = 'text';
+          weekHourInput.inputMode = 'decimal';
+          weekHourInput.className = `hours-edit-input text-sm ${weekStats.isManual ? 'text-blue-700 underline decoration-dotted' : 'text-emerald-700'}`;
+          weekHourInput.value = formatHours(weekStats.hours);
+          weekHourInput.title = 'Cliquez pour modifier manuellement le total d’heures de la semaine';
+          weekHourInput.dataset.employee = employee;
+          weekHourInput.dataset.weekIndex = index;
+          tdHours.appendChild(weekHourInput);
+          tr.appendChild(tdHours);
+
+          tbody.appendChild(tr);
+        });
+
+        table.appendChild(tbody);
+        tableWrapper.appendChild(table);
+        card.appendChild(tableWrapper);
+        container.appendChild(card);
+      });
+    }
+
+    function renderSummaryTable() {
+      const tbody = document.getElementById('summaryTableBody');
+      tbody.innerHTML = '';
+
+      let sumWorked = 0;
+      let sumRest = 0;
+      let sumPto = 0;
+      let sumHours = 0;
+
+      EMPLOYEES.forEach((employee) => {
+        const stats = computeEmployeeStats(employee);
+        sumWorked += stats.workedDays;
+        sumRest += stats.restDays;
+        sumPto += stats.ptoDays;
+        sumHours += stats.totalHours;
+
+        const isHighlighted = appState.filter === employee;
+        const tr = document.createElement('tr');
+        tr.className = isHighlighted ? 'bg-emerald-50/70 font-medium' : 'bg-white';
+
+        tr.innerHTML = `
+          <td class="py-3 px-3 font-bold text-slate-900 text-sm sm:text-base">${employee}</td>
+          <td class="py-3 px-2 text-center font-semibold text-emerald-700 text-sm">${stats.workedDays} j</td>
+          <td class="py-3 px-2 text-center text-slate-700 text-sm">${stats.restDays}</td>
+          <td class="py-3 px-2 text-center text-amber-800 text-sm">${stats.ptoDays}</td>
+          <td class="py-2 px-2 text-right">
+            <input
+              type="text"
+              inputmode="decimal"
+              data-month-employee="${employee}"
+              value="${formatHours(stats.totalHours)}"
+              title="Cliquez pour modifier manuellement le total mensuel"
+              class="month-hours-input text-right font-extrabold text-sm sm:text-base w-24 px-2 py-1 rounded-lg bg-transparent focus:bg-white focus:ring-2 focus:ring-emerald-500 outline-none ${stats.isManual ? 'text-blue-700 underline decoration-dotted' : 'text-slate-900'}"
+            />
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const totalRow = document.createElement('tr');
+      totalRow.className = 'bg-slate-900 text-white font-bold text-sm sm:text-base';
+      totalRow.innerHTML = `
+        <td class="py-3 px-3">Total équipe</td>
+        <td class="py-3 px-2 text-center text-emerald-300">${sumWorked} j</td>
+        <td class="py-3 px-2 text-center text-slate-200">${sumRest}</td>
+        <td class="py-3 px-2 text-center text-amber-300">${sumPto}</td>
+        <td id="teamTotalHoursCell" class="py-3 px-3 text-right text-emerald-300">${formatHours(sumHours)}</td>
+      `;
+      tbody.appendChild(totalRow);
+    }
+
+    function applyMonthLabels() {
+      document.title = `Planning ${MONTH_LABEL} ${YEAR} — Pierre, Damien & David`;
+
+      const h1 = document.querySelector('header h1');
+      if (h1) h1.textContent = `Planning ${MONTH_LABEL} ${YEAR}`;
+
+      const badge = document.querySelector('section[aria-label="Bilan mensuel par salarié"] span.rounded-full');
+      if (badge) badge.textContent = `${DAYS_IN_MONTH} jours`;
+
+      const bilanTitle = document.querySelector('section[aria-label="Bilan mensuel par salarié"] h2');
+      if (bilanTitle) bilanTitle.textContent = `Bilan Mensuel — ${MONTH_LABEL} ${YEAR}`;
+
+      const metaTitle = document.querySelector('meta[name="apple-mobile-web-app-title"]');
+      if (metaTitle) metaTitle.setAttribute('content', `Planning ${MONTH_LABEL} ${YEAR}`);
+    }
+
+    window.addEventListener('beforeinstallprompt', (event) => {
+      event.preventDefault();
+      deferredInstallPrompt = event;
+      showToast('Application prête à être installée sur votre écran d\'accueil.');
+    });
+
+    async function handleInstallClick() {
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        const choice = await deferredInstallPrompt.userChoice;
+        deferredInstallPrompt = null;
+        if (choice.outcome === 'accepted') {
+          showToast('Application installée sur l\'écran d\'accueil.');
+        } else {
+          showToast('Installation annulée.');
+        }
+        return;
+      }
+
+      openModal(
+        'Ajouter à l\'écran d\'accueil',
+        `
+          <p><strong>Sur Android (Chrome) :</strong> ouvrez le menu <strong>⋮</strong> en haut à droite puis sélectionnez <strong>« Ajouter à l'écran d'accueil »</strong> ou <strong>« Installer l'application »</strong>.</p>
+          <p><strong>Sur iPhone / iPad (Safari) :</strong> touchez l'icône <strong>Partager</strong> puis <strong>« Sur l'écran d'accueil »</strong>.</p>
+        `
+      );
+    }
+
+    function bindEvents() {
+      const weeksContainer = document.getElementById('weeksContainer');
+
+      // 1. Saisie libre dans les cases journalières
+      weeksContainer.addEventListener('input', (e) => {
+        const inp = e.target;
+        if (!inp.classList || !inp.classList.contains('planning-cell')) return;
+
+        const employee = inp.dataset.employee;
+        const day = parseInt(inp.dataset.day, 10);
+        const weekIndex = parseInt(inp.dataset.weekIndex, 10);
+        if (!employee || isNaN(day)) return;
+
+        if (!appState.overrides[employee]) {
+          appState.overrides[employee] = {};
+        }
+        const val = inp.value.trim();
+        if (val === '') {
+          delete appState.overrides[employee][day];
+        } else {
+          appState.overrides[employee][day] = val;
+        }
+
+        // Si l'utilisateur modifie une case, on réinitialise l'éventuel forçage manuel de la semaine pour recalculer en direct
+        if (appState.weekHourOverrides[employee]) {
+          delete appState.weekHourOverrides[employee][weekIndex];
+        }
+
+        const effectiveCode = getCellCode(employee, day, new Date(YEAR, MONTH, day));
+        const visual = getCellAppearance(effectiveCode);
+        inp.className = `planning-cell rounded-lg border transition outline-none focus:ring-2 focus:ring-slate-500 ${visual.classes}`;
+        autoFitCell(inp);
+
+        const weekCfg = WEEKS_CONFIG[weekIndex];
+        if (weekCfg) {
+          const weekDays = buildWeekDays(weekCfg);
+          const stats = computeWeekEmployeeStats(employee, weekDays, weekIndex);
+          const tr = inp.closest('tr');
+          if (tr) {
+            const cells = tr.querySelectorAll('td');
+            if (cells.length >= 2) {
+              cells[cells.length - 2].textContent = `${stats.workedDays} j`;
+              const hrInp = cells[cells.length - 1].querySelector('input.hours-edit-input');
+              if (hrInp) {
+                hrInp.value = formatHours(stats.hours);
+                hrInp.className = 'hours-edit-input text-sm text-emerald-700';
+              }
+            }
+          }
+        }
+
+        renderSummaryTable();
+        saveState();
+      });
+
+      // 2. Modification directe des heures d'une semaine (focus -> nombre brut, blur -> sauvegarde)
+      weeksContainer.addEventListener('focusin', (e) => {
+        const hrInp = e.target;
+        if (!hrInp.classList || !hrInp.classList.contains('hours-edit-input')) return;
+        hrInp.value = hrInp.value.replace(/\s*h\s*$/i, '').trim();
+        hrInp.select();
+      });
+
+      weeksContainer.addEventListener('focusout', (e) => {
+        const hrInp = e.target;
+        if (!hrInp.classList || !hrInp.classList.contains('hours-edit-input')) return;
+
+        const employee = hrInp.dataset.employee;
+        const weekIndex = parseInt(hrInp.dataset.weekIndex, 10);
+        const raw = hrInp.value.trim().replace(',', '.');
+
+        if (!appState.weekHourOverrides[employee]) {
+          appState.weekHourOverrides[employee] = {};
+        }
+
+        if (raw === '' || isNaN(parseFloat(raw))) {
+          delete appState.weekHourOverrides[employee][weekIndex];
+        } else {
+          appState.weekHourOverrides[employee][weekIndex] = Math.max(0, parseFloat(raw));
+        }
+
+        const weekCfg = WEEKS_CONFIG[weekIndex];
+        const weekDays = buildWeekDays(weekCfg);
+        const stats = computeWeekEmployeeStats(employee, weekDays, weekIndex);
+        hrInp.value = formatHours(stats.hours);
+        hrInp.className = `hours-edit-input text-sm ${stats.isManual ? 'text-blue-700 underline decoration-dotted' : 'text-emerald-700'}`;
+
+        renderSummaryTable();
+        saveState();
+      });
+
+      weeksContainer.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && e.target.classList?.contains('hours-edit-input')) {
+          e.preventDefault();
+          e.target.blur();
+        }
+      });
+
+      // 3. Modification directe des heures mensuelles dans le bilan
+      const summaryBody = document.getElementById('summaryTableBody');
+      summaryBody.addEventListener('focusin', (e) => {
+        const mInp = e.target;
+        if (!mInp.classList || !mInp.classList.contains('month-hours-input')) return;
+        mInp.value = mInp.value.replace(/\s*h\s*$/i, '').trim();
+        mInp.select();
+      });
+
+      summaryBody.addEventListener('focusout', (e) => {
+        const mInp = e.target;
+        if (!mInp.classList || !mInp.classList.contains('month-hours-input')) return;
+        const employee = mInp.dataset.monthEmployee;
+        const raw = mInp.value.trim().replace(',', '.');
+
+        if (raw === '' || isNaN(parseFloat(raw))) {
+          delete appState.monthHourOverrides[employee];
+        } else {
+          appState.monthHourOverrides[employee] = Math.max(0, parseFloat(raw));
+        }
+
+        renderSummaryTable();
+        saveState();
+      });
+
+      summaryBody.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && e.target.classList?.contains('month-hours-input')) {
+          e.preventDefault();
+          e.target.blur();
+        }
+      });
+
+      // 4. Modification de la base horaire journalière (ex: passer de 7h à 7.5h ou 8h)
+      document.getElementById('baseHoursInput').addEventListener('input', (e) => {
+        const val = parseFloat(String(e.target.value).replace(',', '.'));
+        if (!isNaN(val) && val >= 0 && val <= 24) {
+          appState.baseHours = val;
+          saveState();
+          renderAll();
+        }
+      });
+
+      // Filtres salariés
+      document.querySelectorAll('.filter-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          appState.filter = btn.getAttribute('data-filter');
+          saveState();
+          renderAll();
+        });
+      });
+
+      document.getElementById('installPwaBtn').addEventListener('click', handleInstallClick);
+
+      document.getElementById('printBtn').addEventListener('click', () => {
+        window.print();
+      });
+
+      document.getElementById('resetBtn').addEventListener('click', () => {
+        openModal(
+          'Réinitialiser le planning ?',
+          '<p>Toutes vos modifications manuelles (cases, heures personnalisées et base horaire) seront effacées pour revenir au planning par défaut (7 h/jour).</p>'
+        );
+        const confirmBtn = document.getElementById('confirmModalBtn');
+        const originalText = confirmBtn.textContent;
+        confirmBtn.textContent = 'Confirmer la réinitialisation';
+
+        const onConfirm = () => {
+          appState.overrides = {};
+          appState.weekHourOverrides = {};
+          appState.monthHourOverrides = {};
+          appState.baseHours = DEFAULT_BASE_HOURS;
+          saveState();
+          renderAll();
+          closeModal();
+          confirmBtn.textContent = originalText;
+          confirmBtn.removeEventListener('click', onConfirm);
+          showToast('Planning réinitialisé aux valeurs par défaut.');
+        };
+
+        confirmBtn.addEventListener('click', onConfirm);
+      });
+
+      document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+      document.getElementById('confirmModalBtn').addEventListener('click', closeModal);
+      document.getElementById('infoModal').addEventListener('click', (e) => {
+        if (e.target.id === 'infoModal') closeModal();
+      });
+      document.getElementById('closeToastBtn').addEventListener('click', () => {
+        document.getElementById('toastBanner').classList.add('hidden');
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      applyMonthLabels();
+      loadState();
+      bindEvents();
+      renderAll();
+    });
+  </script>
+</body>
+</html>

@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
   <meta name="theme-color" content="#0f172a" />
   <link rel="manifest" href="./manifest.json" />
-<link rel="apple-touch-icon" href="./icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Planning" />
@@ -21,7 +21,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
   <style>
-    /* Configuration de base de la typographie et de l'arrière-plan */
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background-color: #f1f5f9;
@@ -29,11 +28,10 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* Styles d'impression optimisés pour tenir sur une page A4 propre */
     @media print {
       body {
         background-color: #ffffff !important;
-        font-size: 11px;
+        font-size: 12px;
       }
       .no-print {
         display: none !important;
@@ -47,20 +45,39 @@
       }
     }
 
-    /* Styles des cases de saisie libre (textarea auto-dimensionnée) */
+    /* Cases de saisie libre agrandies, sans coupure de texte */
     textarea.planning-cell {
       resize: none;
       overflow: hidden;
       white-space: pre-wrap;
-      word-break: break-word;
+      overflow-wrap: break-word;
+      word-break: normal;
       text-align: center;
-      line-height: 1.15;
-      padding: 6px 2px;
+      line-height: 1.25;
+      font-size: 14px;
+      padding: 8px 4px;
+      min-height: 44px;
       font-family: inherit;
       display: block;
+      width: 100%;
     }
 
-    /* Animation douce pour les modales et notifications */
+    /* Champs d'heures totaux modifiables directement */
+    input.hours-edit-input {
+      background: transparent;
+      text-align: center;
+      font-weight: 700;
+      width: 100%;
+      min-width: 56px;
+      padding: 4px 2px;
+      border-radius: 0.5rem;
+      outline: none;
+    }
+    input.hours-edit-input:focus {
+      background-color: #ffffff;
+      box-shadow: 0 0 0 2px #10b981;
+    }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
@@ -74,25 +91,25 @@
 
   <!-- En-tête principal responsive -->
   <header class="sticky top-0 z-30 bg-slate-900 text-white shadow-md no-print">
-    <div class="max-w-3xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-2">
+    <div class="max-w-4xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-2">
       <div class="min-w-0">
         <div class="flex items-center gap-2">
           <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
-          <h1 class="text-base sm:text-lg font-bold tracking-tight truncate">
+          <h1 class="text-lg sm:text-xl font-bold tracking-tight">
             Planning Mensuel
           </h1>
         </div>
-        <p class="text-xs text-slate-300 truncate">
+        <p id="headerSubtitle" class="text-xs sm:text-sm text-slate-300">
           Pierre · Damien · David — Base 7 h / jour travaillé
         </p>
       </div>
 
-      <!-- Boutons d'action rapides -->
+      <!-- Bouton d'installation -->
       <div class="flex items-center gap-2">
         <button
           id="installPwaBtn"
           type="button"
-          class="px-3 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 font-semibold text-xs sm:text-sm transition flex items-center gap-1.5 shadow"
+          class="px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 font-semibold text-sm transition flex items-center gap-1.5 shadow"
           aria-label="Installer ou ajouter à l'écran d'accueil"
         >
           <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
@@ -104,29 +121,29 @@
     </div>
   </header>
 
-  <!-- Bandeau d'information / notification discrète -->
-  <div id="toastBanner" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-md bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl border border-slate-700 text-xs sm:text-sm font-medium flex items-center justify-between gap-3 animate-fade-in no-print">
+  <!-- Notification toast -->
+  <div id="toastBanner" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-md bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl border border-slate-700 text-sm font-medium flex items-center justify-between gap-3 animate-fade-in no-print">
     <span id="toastMessage">Action effectuée.</span>
     <button id="closeToastBtn" type="button" class="text-slate-400 hover:text-white font-bold px-1.5">✕</button>
   </div>
 
-  <!-- Contenu principal centré au format smartphone / tablette -->
-  <main class="flex-1 w-full max-w-3xl mx-auto px-3 sm:px-5 py-4 space-y-5">
+  <!-- Contenu principal -->
+  <main class="flex-1 w-full max-w-4xl mx-auto px-3 sm:px-5 py-4 space-y-5">
 
-    <!-- Barre d'outils : filtre salarié, impression, réinitialisation -->
-    <section class="bg-white rounded-2xl p-3.5 sm:p-4 shadow-sm border border-slate-200 space-y-3 no-print">
-      <div class="flex flex-wrap items-center justify-between gap-2">
+    <!-- Barre d'outils : filtre salarié, base horaire modifiable, impression, réinitialisation -->
+    <section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 space-y-3.5 no-print">
+      <div class="flex flex-wrap items-center justify-between gap-2.5">
         <div class="flex items-center gap-1.5 flex-wrap" role="group" aria-label="Filtrer par salarié">
-          <button type="button" data-filter="ALL" class="filter-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-900 text-white transition">
+          <button type="button" data-filter="ALL" class="filter-btn px-3.5 py-2 rounded-xl text-sm font-semibold bg-slate-900 text-white transition">
             Tous (3)
           </button>
-          <button type="button" data-filter="Pierre" class="filter-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+          <button type="button" data-filter="Pierre" class="filter-btn px-3.5 py-2 rounded-xl text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
             Pierre
           </button>
-          <button type="button" data-filter="Damien" class="filter-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+          <button type="button" data-filter="Damien" class="filter-btn px-3.5 py-2 rounded-xl text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
             Damien
           </button>
-          <button type="button" data-filter="David" class="filter-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+          <button type="button" data-filter="David" class="filter-btn px-3.5 py-2 rounded-xl text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
             David
           </button>
         </div>
@@ -135,38 +152,56 @@
           <button
             id="printBtn"
             type="button"
-            class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 transition"
+            class="px-3.5 py-2 rounded-xl text-sm font-semibold bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 transition"
           >
             Imprimer
           </button>
           <button
             id="resetBtn"
             type="button"
-            class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 transition"
+            class="px-3.5 py-2 rounded-xl text-sm font-semibold bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 transition"
           >
             Réinitialiser
           </button>
         </div>
       </div>
 
-      <p class="text-[11px] sm:text-xs text-slate-500 leading-relaxed">
-        Touchez une case pour <strong class="text-slate-700">écrire librement dedans</strong> (ex. : 7, 8 h, R, CP, F…). Cases préremplies par défaut : vertes = jour travail (7 h), <strong class="text-slate-700">R</strong> = week-end, rosées = jours fériés (détection automatique du mois en cours). Le comptage automatique reste basé sur R (repos) et CP (congés) ; tout autre contenu compte comme un jour travaillé.
+      <!-- Réglage de la base horaire journalière -->
+      <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-100">
+        <label for="baseHoursInput" class="text-sm font-semibold text-slate-700 flex items-center gap-2">
+          <span>Base par défaut (jour travaillé) :</span>
+        </label>
+        <div class="flex items-center gap-1.5">
+          <input
+            id="baseHoursInput"
+            type="number"
+            step="0.25"
+            min="0"
+            max="24"
+            value="7"
+            class="w-20 px-2.5 py-1.5 rounded-xl border border-slate-300 text-center text-sm font-bold text-slate-900 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
+          />
+          <span class="text-sm font-semibold text-slate-600">h / jour</span>
+        </div>
+      </div>
+
+      <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+        Touchez une case pour écrire librement : saisissez un nombre d'heures (<strong class="text-slate-800">8</strong>, <strong class="text-slate-800">8,5 h</strong>, <strong class="text-slate-800">8h-16h</strong>), <strong class="text-slate-800">R</strong> (repos) ou <strong class="text-slate-800">CP</strong> (congés). Vous pouvez aussi cliquer directement sur les totaux d'heures pour les modifier à la main.
       </p>
     </section>
 
-    <!-- Conteneur dynamique des blocs hebdomadaires (semaines couvrant le mois en cours) -->
+    <!-- Blocs hebdomadaires -->
     <section id="weeksContainer" class="space-y-4" aria-label="Planning semaine par semaine">
-      <!-- Rempli automatiquement en JavaScript -->
     </section>
 
     <!-- Bilan mensuel dynamique par salarié -->
     <section class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 print-break-avoid" aria-label="Bilan mensuel par salarié">
       <div class="flex items-center justify-between gap-2 mb-3">
         <div>
-          <h2 class="text-sm sm:text-base font-bold text-slate-900">Bilan Mensuel — Novembre 2026</h2>
-          <p class="text-xs text-slate-500">Calcul automatique (7 h par jour travaillé)</p>
+          <h2 class="text-base sm:text-lg font-bold text-slate-900">Bilan Mensuel</h2>
+          <p id="bilanSubtitle" class="text-xs sm:text-sm text-slate-500">Calcul automatique (heures modifiables)</p>
         </div>
-        <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
+        <span class="px-3 py-1 rounded-full text-xs sm:text-sm font-semibold bg-emerald-100 text-emerald-800">
           30 jours
         </span>
       </div>
@@ -174,36 +209,33 @@
       <div class="overflow-x-auto rounded-xl border border-slate-200">
         <table class="w-full text-left border-collapse">
           <thead>
-            <tr class="bg-slate-50 border-b border-slate-200 text-[11px] sm:text-xs font-semibold text-slate-600 uppercase tracking-wider">
-              <th class="py-2.5 px-3">Salarié</th>
-              <th class="py-2.5 px-2 text-center">Jours Trav.</th>
-              <th class="py-2.5 px-2 text-center">Repos (R)</th>
-              <th class="py-2.5 px-2 text-center">Congés (CP)</th>
-              <th class="py-2.5 px-3 text-right">Total Heures</th>
+            <tr class="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-600 uppercase tracking-wider">
+              <th class="py-3 px-3">Salarié</th>
+              <th class="py-3 px-2 text-center">Jours Trav.</th>
+              <th class="py-3 px-2 text-center">Repos (R)</th>
+              <th class="py-3 px-2 text-center">Congés (CP)</th>
+              <th class="py-3 px-3 text-right">Total Heures</th>
             </tr>
           </thead>
-          <tbody id="summaryTableBody" class="divide-y divide-slate-200 text-xs sm:text-sm">
-            <!-- Rempli automatiquement en JavaScript -->
+          <tbody id="summaryTableBody" class="divide-y divide-slate-200 text-sm">
           </tbody>
         </table>
       </div>
     </section>
 
-
   </main>
 
-  <!-- Modale d'installation PWA -->
+  <!-- Modale informative -->
   <div id="infoModal" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4 no-print" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl border border-slate-200 space-y-4 animate-fade-in">
       <div class="flex items-center justify-between">
-        <h3 id="modalTitle" class="text-base sm:text-lg font-bold text-slate-900">Ajouter à l'écran d'accueil</h3>
+        <h3 id="modalTitle" class="text-lg font-bold text-slate-900">Ajouter à l'écran d'accueil</h3>
         <button id="closeModalBtn" type="button" class="text-slate-400 hover:text-slate-700 font-bold text-lg px-2 py-1 rounded-lg">✕</button>
       </div>
-      <div id="modalContent" class="text-xs sm:text-sm text-slate-600 space-y-2.5 leading-relaxed">
-        <!-- Contenu injecté dynamiquement -->
+      <div id="modalContent" class="text-sm text-slate-600 space-y-2.5 leading-relaxed">
       </div>
       <div class="flex justify-end pt-1">
-        <button id="confirmModalBtn" type="button" class="px-4 py-2 rounded-xl bg-slate-900 text-white text-xs sm:text-sm font-semibold hover:bg-slate-800 transition">
+        <button id="confirmModalBtn" type="button" class="px-4 py-2 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800 transition">
           Compris
         </button>
       </div>
@@ -211,41 +243,22 @@
   </div>
 
   <script>
-    /**
-     * Application de planning mensuelle dynamique
-     * Salariés : Pierre, Damien, David
-     * Le planning suit AUTOMATIQUEMENT le mois en cours (année + mois du jour).
-     * Règles métier :
-     * - Base : 7 h par jour travaillé
-     * - Jours fériés français du mois en cours : calculés automatiquement (cases rosées, vierges)
-     * - Week-ends : 'R' par défaut
-     * - Jours ouvrés hors fériés : cases vertes vierges (7 h comptées tant que la case n'est pas remplie par 'R', 'CP' ou 'F')
-     * - Chaque case est un champ de saisie libre (ex. 7, 8 h, R, CP, F…)
-     * - Le comptage : R = repos, CP = congés, F = férié, tout le reste = jour travaillé (7 h)
-     * - Le contenu est sauvegardé par mois dans localStorage
-     */
-
-    const HOURS_PER_WORK_DAY = 7;
+    const DEFAULT_BASE_HOURS = 7;
     const EMPLOYEES = ['Pierre', 'Damien', 'David'];
 
-    // ---- Mois courant détecté automatiquement au chargement ----
+    // Détection automatique du mois en cours
     const NOW = new Date();
     const YEAR = NOW.getFullYear();
-    const MONTH = NOW.getMonth(); // 0 = Janvier ... 11 = Décembre
+    const MONTH = NOW.getMonth();
 
     const MONTH_NAMES = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
     const MONTH_SHORT = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
     const MONTH_LABEL = MONTH_NAMES[MONTH];
     const DAYS_IN_MONTH = new Date(YEAR, MONTH + 1, 0).getDate();
 
-    // Stockage spécifique au mois en cours
-    const STORAGE_KEY = `planning_${YEAR}_${String(MONTH + 1).padStart(2, '0')}_libre_v1`;
+    const STORAGE_KEY = `planning_${YEAR}_${String(MONTH + 1).padStart(2, '0')}_libre_v2`;
 
-    // ---- Jours fériés français (calculés automatiquement pour l'année en cours) ----
-
-    /**
-     * Calcule la date de Pâques (algorithme de Meeus/Jones/Butcher, calendrier grégorien).
-     */
+    // Calcul des jours fériés français
     function computeEaster(year) {
       const a = year % 19;
       const b = Math.floor(year / 100);
@@ -264,46 +277,27 @@
       return new Date(year, month - 1, day);
     }
 
-    /**
-     * Retourne l'ensemble des jours fériés français de l'année, au format 'mois-jour' (ex. '11-11').
-     */
     function getFrenchHolidays(year) {
       const easter = computeEaster(year);
       const addDays = (date, n) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + n);
 
       const fixed = [
-        [1, 1],   // Jour de l'an
-        [5, 1],   // Fête du Travail
-        [5, 8],   // Victoire 1945
-        [7, 14],  // Fête nationale
-        [8, 15],  // Assomption
-        [11, 1],  // Toussaint
-        [11, 11], // Armistice 1918
-        [12, 25]  // Noël
+        [1, 1], [5, 1], [5, 8], [7, 14], [8, 15], [11, 1], [11, 11], [12, 25]
       ];
-
       const set = new Set(fixed.map(([m, d]) => `${m}-${d}`));
 
-      // Fêtes mobiles : Lundi de Pâques (+1), Ascension (+39), Lundi de Pentecôte (+50)
-      [computeEaster(year), addDays(easter, 39), addDays(easter, 50)].forEach((base) => {
-        const easterMonday = addDays(base, base === easter ? 1 : 0);
-        set.add(`${easterMonday.getMonth() + 1}-${easterMonday.getDate()}`);
+      [addDays(easter, 1), addDays(easter, 39), addDays(easter, 50)].forEach((d) => {
+        set.add(`${d.getMonth() + 1}-${d.getDate()}`);
       });
-
       return set;
     }
 
-    const HOLIDAY_DATES = getFrenchHolidays(YEAR); // Set de 'mois-jour'
+    const HOLIDAY_DATES = getFrenchHolidays(YEAR);
 
     function isHolidayDate(dateObj) {
       return HOLIDAY_DATES.has(`${dateObj.getMonth() + 1}-${dateObj.getDate()}`);
     }
 
-    // ---- Semaines couvrant le mois en cours (du lundi au dimanche) ----
-
-    /**
-     * Numéro de semaine ISO 8601.
-     */
     function getIsoWeekNumber(dateObj) {
       const t = new Date(Date.UTC(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate()));
       t.setUTCDate(t.getUTCDate() + 4 - (t.getUTCDay() || 7));
@@ -311,10 +305,6 @@
       return Math.ceil(((t - yearStart) / 86400000 + 1) / 7);
     }
 
-    /**
-     * Construit la liste des semaines (lundi → dimanche) qui contiennent au moins
-     * un jour du mois en cours. Les jours hors mois sont affichés grisés.
-     */
     function buildWeeksConfig() {
       const firstOfMonth = new Date(YEAR, MONTH, 1);
       const firstMonday = new Date(firstOfMonth);
@@ -326,8 +316,7 @@
       while (guard < 20) {
         const weekEnd = new Date(cursor);
         weekEnd.setDate(cursor.getDate() + 6);
-        const overlapsMonth = weekEnd >= firstOfMonth &&
-          cursor <= new Date(YEAR, MONTH, DAYS_IN_MONTH);
+        const overlapsMonth = weekEnd >= firstOfMonth && cursor <= new Date(YEAR, MONTH, DAYS_IN_MONTH);
         if (!overlapsMonth) break;
         weeks.push({
           weekNumber: getIsoWeekNumber(cursor),
@@ -340,40 +329,71 @@
     }
 
     const WEEKS_CONFIG = buildWeeksConfig();
-
     const DAY_LABELS = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
 
-    // État courant de l'application
+    // État de l'application
     let appState = {
       filter: 'ALL',
-      // overrides[employee][dayOfMonth] = texte libre saisi (ex. 'R', 'CP', '7', '8 h'…)
-      overrides: {}
+      baseHours: DEFAULT_BASE_HOURS,
+      overrides: {},       // overrides[employee][dayOfMonth] = texte saisi
+      weekHourOverrides: {}, // weekHourOverrides[employee][weekIndex] = nombre d'heures manuel
+      monthHourOverrides: {} // monthHourOverrides[employee] = nombre d'heures manuel mensuel
     };
 
     let deferredInstallPrompt = null;
 
     /**
-     * Retourne la valeur par défaut d'une case du mois en cours pour un jour donné.
-     * - Jour férié : 'HOLIDAY' (case rosée vierge)
-     * - Samedi / Dimanche : 'R'
-     * - Lundi à Vendredi (hors férié) : 'WORK' (case verte vierge, 7h)
+     * Formate proprement un nombre d'heures (ex. 7 -> "7 h", 7.5 -> "7,5 h").
      */
-    function getDefaultCellCode(dayOfMonth, dateObj) {
-      if (isHolidayDate(dateObj)) {
-        return 'HOLIDAY';
-      }
-      const jsDay = dateObj.getDay(); // 0 = Dim, 6 = Sam
-      if (jsDay === 0 || jsDay === 6) {
-        return 'R';
-      }
-      return 'WORK';
+    function formatHours(val) {
+      const num = Math.round((Number(val) || 0) * 100) / 100;
+      return `${String(num).replace('.', ',')} h`;
     }
 
     /**
-     * Retourne l'état actif d'une case pour un salarié et un jour du mois en cours (1..DAYS_IN_MONTH).
-     * Les overrides sont du texte libre saisi par l'utilisateur (ex. 7, 8 h, R, CP, F…).
-     * Une valeur vide ou absente retombe sur la valeur par défaut.
+     * Extrait intelligemment une durée en heures depuis le texte d'une case :
+     * - Plage horaire ex. "08h-16h", "8:30-17:00", "7h30 - 15h" -> différence calculée
+     * - Nombre simple ex. "8", "8h", "6,5 h", "7.5" -> valeur numérique
+     * - Autre texte non vide (ex. "Matin", "Présent") -> baseHours par défaut
      */
+    function parseHoursFromText(text, fallbackHours) {
+      const clean = String(text || '').trim();
+      if (!clean) return fallbackHours;
+
+      // 1. Détection d'une plage horaire (ex: 8h-16h, 08:30-16:00, 7h30 - 14h30)
+      const rangeMatch = clean.match(/^(\d{1,2})(?:[h:](\d{1,2}))?\s*[-–à/]\s*(\d{1,2})(?:[h:](\d{1,2}))?$/i);
+      if (rangeMatch) {
+        const h1 = parseInt(rangeMatch[1], 10) + (rangeMatch[2] ? parseInt(rangeMatch[2], 10) / 60 : 0);
+        const h2 = parseInt(rangeMatch[3], 10) + (rangeMatch[4] ? parseInt(rangeMatch[4], 10) / 60 : 0);
+        if (!isNaN(h1) && !isNaN(h2) && h2 >= h1) {
+          return Math.round((h2 - h1) * 100) / 100;
+        }
+      }
+
+      // 2. Détection format "7h30" seul
+      const hmMatch = clean.match(/^(\d{1,2})h(\d{1,2})$/i);
+      if (hmMatch) {
+        const hrs = parseInt(hmMatch[1], 10) + parseInt(hmMatch[2], 10) / 60;
+        if (!isNaN(hrs)) return Math.round(hrs * 100) / 100;
+      }
+
+      // 3. Détection d'un nombre avec ou sans "h" (ex: "8", "8 h", "7,5", "6.25h")
+      const numMatch = clean.match(/^(\d+(?:[.,]\d+)?)\s*h?$/i);
+      if (numMatch) {
+        const parsed = parseFloat(numMatch[1].replace(',', '.'));
+        if (!isNaN(parsed)) return parsed;
+      }
+
+      return fallbackHours;
+    }
+
+    function getDefaultCellCode(dayOfMonth, dateObj) {
+      if (isHolidayDate(dateObj)) return 'HOLIDAY';
+      const jsDay = dateObj.getDay();
+      if (jsDay === 0 || jsDay === 6) return 'R';
+      return 'WORK';
+    }
+
     function getCellCode(employee, dayOfMonth, dateObj) {
       const custom = appState.overrides?.[employee]?.[dayOfMonth];
       if (typeof custom === 'string' && custom.trim() !== '') {
@@ -382,20 +402,24 @@
       return getDefaultCellCode(dayOfMonth, dateObj);
     }
 
-    /**
-     * Charge l'état sauvegardé depuis localStorage avec gestion d'erreur sécurisée.
-     */
     function loadState() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
         if (!raw) return;
         const parsed = JSON.parse(raw);
         if (parsed && typeof parsed === 'object') {
-          if (typeof parsed.filter === 'string') {
-            appState.filter = parsed.filter;
+          if (typeof parsed.filter === 'string') appState.filter = parsed.filter;
+          if (typeof parsed.baseHours === 'number' && !isNaN(parsed.baseHours)) {
+            appState.baseHours = parsed.baseHours;
           }
           if (parsed.overrides && typeof parsed.overrides === 'object') {
             appState.overrides = parsed.overrides;
+          }
+          if (parsed.weekHourOverrides && typeof parsed.weekHourOverrides === 'object') {
+            appState.weekHourOverrides = parsed.weekHourOverrides;
+          }
+          if (parsed.monthHourOverrides && typeof parsed.monthHourOverrides === 'object') {
+            appState.monthHourOverrides = parsed.monthHourOverrides;
           }
         }
       } catch (err) {
@@ -403,9 +427,6 @@
       }
     }
 
-    /**
-     * Sauvegarde l'état actuel dans localStorage.
-     */
     function saveState() {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
@@ -414,9 +435,6 @@
       }
     }
 
-    /**
-     * Affiche un message toast temporaire en bas de l'écran.
-     */
     let toastTimer = null;
     function showToast(message) {
       const banner = document.getElementById('toastBanner');
@@ -430,9 +448,6 @@
       }, 2800);
     }
 
-    /**
-     * Ouvre la modale informative avec un titre et un contenu HTML.
-     */
     function openModal(title, htmlContent) {
       document.getElementById('modalTitle').textContent = title;
       document.getElementById('modalContent').innerHTML = htmlContent;
@@ -440,535 +455,4 @@
     }
 
     function closeModal() {
-      document.getElementById('infoModal').classList.add('hidden');
-    }
-
-    /**
-     * Retourne les classes CSS et l'affichage textuel d'une case selon son contenu.
-     * - 'WORK' (ou vide par défaut) : case verte vierge
-     * - 'HOLIDAY' / 'F' / 'FERIE' : case rosée vierge
-     * - 'R' : affiche 'R'
-     * - 'CP' : affiche 'CP'
-     * - Tout autre texte saisi : case blanche neutre avec le texte de l'utilisateur
-     */
-    function getCellAppearance(rawCode) {
-      const code = (rawCode || '').toUpperCase();
-
-      switch (code) {
-        case 'WORK':
-          return {
-            label: '',
-            classes: 'bg-emerald-100 hover:bg-emerald-200 text-emerald-950 border-emerald-300'
-          };
-        case 'HOLIDAY':
-        case 'F':
-        case 'FERIE':
-          return {
-            label: '',
-            classes: 'bg-rose-100 hover:bg-rose-200 text-rose-900 border-rose-300'
-          };
-        case 'R':
-          return {
-            label: 'R',
-            classes: 'bg-slate-200 hover:bg-slate-300 text-slate-800 border-slate-300 font-bold'
-          };
-        case 'CP':
-          return {
-            label: 'CP',
-            classes: 'bg-amber-100 hover:bg-amber-200 text-amber-900 border-amber-300 font-bold'
-          };
-        case '':
-          return {
-            label: '',
-            classes: 'bg-white text-slate-400 border-slate-200'
-          };
-        default:
-          return {
-            label: rawCode,
-            classes: 'bg-white text-slate-900 border-slate-400 font-semibold'
-          };
-      }
-    }
-
-    /**
-     * Retourne la taille de police adaptée au contenu d'une case,
-     * pour que le texte saisi reste visible en entier.
-     */
-    function getCellFontSize(text) {
-      const len = (text || '').length;
-      if (len <= 2) return '12px';   // R, CP, F, 7…
-      if (len <= 4) return '10.5px'; // 7 h, 8h…
-      if (len <= 8) return '9px';    // 7h-19h…
-      return '8px';                  // textes longs (le champ passe aussi sur plusieurs lignes)
-    }
-
-    /**
-     * Adapte dynamiquement la taille de police et la hauteur d'une case
-     * à son contenu : le texte reste toujours visible en entier.
-     */
-    function autoFitCell(inp) {
-      inp.style.fontSize = getCellFontSize(inp.value.trim());
-      // Hauteur automatique : on remet à plat puis on mesure le contenu réel
-      inp.style.height = 'auto';
-      inp.style.height = `${inp.scrollHeight}px`;
-    }
-
-    /**
-     * Calcule les statistiques complètes d'un salarié sur l'ensemble du mois en cours.
-     */
-    function computeEmployeeStats(employee) {
-      let workedDays = 0;
-      let restDays = 0;
-      let ptoDays = 0;
-      let holidayDays = 0;
-
-      for (let day = 1; day <= DAYS_IN_MONTH; day++) {
-        const dateObj = new Date(YEAR, MONTH, day);
-        const rawCode = getCellCode(employee, day, dateObj);
-        const code = String(rawCode).trim().toUpperCase();
-
-        if (code === 'R') {
-          restDays += 1;
-        } else if (code === 'CP') {
-          ptoDays += 1;
-        } else if (code === 'HOLIDAY' || code === 'F' || code === 'FERIE') {
-          holidayDays += 1;
-        } else {
-          // 'WORK' (jour ouvré par défaut) ou tout texte libre saisi : compté comme jour travaillé
-          workedDays += 1;
-        }
-      }
-
-      return {
-        workedDays,
-        restDays,
-        ptoDays,
-        holidayDays,
-        totalHours: workedDays * HOURS_PER_WORK_DAY
-      };
-    }
-
-    /**
-     * Calcule les jours travaillés et les heures d'un salarié sur une semaine donnée (uniquement les jours du mois en cours).
-     */
-    function computeWeekEmployeeStats(employee, weekDays) {
-      let workedDays = 0;
-      for (const dayInfo of weekDays) {
-        if (!dayInfo.inCurrentMonth) continue;
-        const rawCode = getCellCode(employee, dayInfo.dayOfMonth, dayInfo.dateObj);
-        const code = String(rawCode).trim().toUpperCase();
-        if (code !== 'R' && code !== 'CP' && code !== 'HOLIDAY' && code !== 'F' && code !== 'FERIE' && code !== '') {
-          workedDays += 1;
-        }
-      }
-      return {
-        workedDays,
-        hours: workedDays * HOURS_PER_WORK_DAY
-      };
-    }
-
-    /**
-     * Génère le tableau des 7 jours d'une configuration de semaine.
-     */
-    function buildWeekDays(weekCfg) {
-      const days = [];
-      for (let i = 0; i < 7; i++) {
-        const d = new Date(weekCfg.startDate.getFullYear(), weekCfg.startDate.getMonth(), weekCfg.startDate.getDate() + i);
-        const inCurrentMonth = d.getMonth() === MONTH && d.getFullYear() === YEAR;
-        const dayOfMonth = d.getDate();
-        days.push({
-          dateObj: d,
-          inCurrentMonth,
-          dayOfMonth,
-          dayLabel: DAY_LABELS[i],
-          isHoliday: inCurrentMonth && isHolidayDate(d)
-        });
-      }
-      return days;
-    }
-
-    /**
-     * Met à jour l'apparence visuelle des boutons de filtre salarié.
-     */
-    function updateFilterButtons() {
-      document.querySelectorAll('.filter-btn').forEach((btn) => {
-        const val = btn.getAttribute('data-filter');
-        const active = val === appState.filter;
-        btn.className = active
-          ? 'filter-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-900 text-white transition'
-          : 'filter-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition';
-      });
-    }
-
-    /**
-     * Rendu complet des blocs de semaines et du bilan mensuel.
-     */
-    function renderAll() {
-      updateFilterButtons();
-      renderWeeks();
-      renderSummaryTable();
-    }
-
-    /**
-     * Génère les cartes semaine par semaine au format compact et lisible sur mobile.
-     */
-    function renderWeeks() {
-      const container = document.getElementById('weeksContainer');
-      container.innerHTML = '';
-
-      const visibleEmployees = appState.filter === 'ALL'
-        ? EMPLOYEES
-        : EMPLOYEES.filter((name) => name === appState.filter);
-
-      WEEKS_CONFIG.forEach((weekCfg, index) => {
-        const weekDays = buildWeekDays(weekCfg);
-        const hasCurrentMonthDay = weekDays.some((d) => d.inCurrentMonth);
-        if (!hasCurrentMonthDay) return;
-
-        const card = document.createElement('div');
-        card.className = 'bg-white rounded-2xl p-3 sm:p-4 shadow-sm border border-slate-200 print-break-avoid';
-
-        // En-tête de semaine
-        const monthDaysInWeek = weekDays.filter((d) => d.inCurrentMonth);
-        const firstDate = monthDaysInWeek[0]?.dateObj;
-        const lastDate = monthDaysInWeek[monthDaysInWeek.length - 1]?.dateObj;
-        const fmt = (d) => d ? `${d.getDate()} ${MONTH_SHORT[d.getMonth()]}` : '';
-
-        const headerDiv = document.createElement('div');
-        headerDiv.className = 'flex items-center justify-between gap-2 mb-2.5';
-        headerDiv.innerHTML = `
-          <div class="flex items-center gap-2">
-            <span class="px-2.5 py-1 rounded-lg bg-slate-900 text-white text-xs font-bold">
-              Semaine ${weekCfg.weekNumber}
-            </span>
-            <span class="text-xs font-medium text-slate-500">
-              ${fmt(firstDate)} – ${fmt(lastDate)}
-            </span>
-          </div>
-          <span class="text-[11px] text-slate-400 hidden sm:inline">7 h / jour</span>
-        `;
-        card.appendChild(headerDiv);
-
-        // Tableau responsive de la semaine
-        const tableWrapper = document.createElement('div');
-        tableWrapper.className = 'overflow-x-auto rounded-xl border border-slate-200';
-
-        const table = document.createElement('table');
-        table.className = 'w-full border-collapse text-center';
-
-        // En-tête des colonnes : Nom | Lun..Dim | Jours | Heures
-        const thead = document.createElement('thead');
-        const headRow = document.createElement('tr');
-        headRow.className = 'bg-slate-50 border-b border-slate-200 text-[11px] font-semibold text-slate-600';
-
-        const thName = document.createElement('th');
-        thName.className = 'py-2 px-2.5 text-left sticky left-0 bg-slate-50 z-10 border-r border-slate-200 min-w-[78px] sm:min-w-[92px]';
-        thName.textContent = 'Salarié';
-        headRow.appendChild(thName);
-
-        weekDays.forEach((d) => {
-          const th = document.createElement('th');
-          th.className = 'py-1.5 px-1 border-r border-slate-200 min-w-[38px] sm:min-w-[44px]';
-          if (!d.inCurrentMonth) {
-            th.classList.add('bg-slate-100/70', 'text-slate-300');
-            th.innerHTML = `<div class="text-[10px]">${d.dayLabel}</div><div class="text-[10px]">${d.dayOfMonth}</div>`;
-          } else if (d.isHoliday) {
-            // Jour férié : en-tête rosé/rouge distinctif
-            th.classList.add('bg-rose-100', 'text-rose-800');
-            th.innerHTML = `<div class="text-[10px] font-bold">${d.dayLabel}</div><div class="text-xs font-extrabold">${d.dayOfMonth}</div>`;
-          } else {
-            th.innerHTML = `<div class="text-[10px]">${d.dayLabel}</div><div class="text-xs font-bold text-slate-800">${d.dayOfMonth}</div>`;
-          }
-          headRow.appendChild(th);
-        });
-
-        const thDays = document.createElement('th');
-        thDays.className = 'py-2 px-1.5 border-r border-slate-200 text-[10px] sm:text-[11px] text-slate-700 min-w-[42px]';
-        thDays.textContent = 'Jours';
-        headRow.appendChild(thDays);
-
-        const thHours = document.createElement('th');
-        thHours.className = 'py-2 px-1.5 text-[10px] sm:text-[11px] text-slate-700 min-w-[48px]';
-        thHours.textContent = 'Heures';
-        headRow.appendChild(thHours);
-
-        thead.appendChild(headRow);
-        table.appendChild(thead);
-
-        // Corps du tableau : une ligne par salarié visible
-        const tbody = document.createElement('tbody');
-        tbody.className = 'divide-y divide-slate-200';
-
-        visibleEmployees.forEach((employee) => {
-          const tr = document.createElement('tr');
-          tr.className = 'bg-white';
-
-          const tdName = document.createElement('td');
-          tdName.className = 'py-2 px-2.5 text-left text-xs sm:text-sm font-semibold text-slate-900 sticky left-0 bg-white z-10 border-r border-slate-200';
-          tdName.textContent = employee;
-          tr.appendChild(tdName);
-
-          weekDays.forEach((d) => {
-            const td = document.createElement('td');
-            td.className = 'p-1 border-r border-slate-200';
-
-            if (!d.inCurrentMonth) {
-              td.innerHTML = `<div class="w-full h-9 rounded-lg bg-slate-100/80 border border-slate-200/70"></div>`;
-            } else {
-              const code = getCellCode(employee, d.dayOfMonth, d.dateObj);
-              const visual = getCellAppearance(code);
-              const defaultCode = getDefaultCellCode(d.dayOfMonth, d.dateObj);
-
-              const inp = document.createElement('textarea');
-              inp.rows = 1;
-              inp.className = `planning-cell w-full rounded-lg border bg-transparent text-center transition outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-0 min-h-[36px] ${visual.classes}`;
-              // Valeur affichée : texte saisi par l'utilisateur, sinon 'R' si week-end par défaut, sinon case vierge
-              const isOverridden = typeof appState.overrides?.[employee]?.[d.dayOfMonth] === 'string'
-                && appState.overrides[employee][d.dayOfMonth].trim() !== '';
-              inp.value = isOverridden ? getCellCode(employee, d.dayOfMonth, d.dateObj) : (defaultCode === 'R' ? 'R' : '');
-              inp.placeholder = '·';
-              inp.spellcheck = false;
-              inp.setAttribute(
-                'aria-label',
-                `${employee}, ${d.dayLabel} ${d.dayOfMonth} ${MONTH_LABEL.toLowerCase()} ${YEAR} : saisissez le contenu de la case (R, CP, F, horaires…)`
-              );
-              inp.dataset.employee = employee;
-              inp.dataset.day = d.dayOfMonth;
-              inp.dataset.weekIndex = index;
-              autoFitCell(inp);
-
-              td.appendChild(inp);
-            }
-
-            tr.appendChild(td);
-          });
-
-          const weekStats = computeWeekEmployeeStats(employee, weekDays);
-
-          const tdDays = document.createElement('td');
-          tdDays.className = 'py-2 px-1.5 border-r border-slate-200 text-xs sm:text-sm font-bold text-slate-800';
-          tdDays.textContent = `${weekStats.workedDays} j`;
-          tr.appendChild(tdDays);
-
-          const tdHours = document.createElement('td');
-          tdHours.className = 'py-2 px-1.5 text-xs sm:text-sm font-bold text-emerald-700';
-          tdHours.textContent = `${weekStats.hours} h`;
-          tr.appendChild(tdHours);
-
-          tbody.appendChild(tr);
-        });
-
-        table.appendChild(tbody);
-        tableWrapper.appendChild(table);
-        card.appendChild(tableWrapper);
-        container.appendChild(card);
-      });
-    }
-
-    /**
-     * Met à jour le tableau du bilan mensuel par salarié.
-     */
-    function renderSummaryTable() {
-      const tbody = document.getElementById('summaryTableBody');
-      tbody.innerHTML = '';
-
-      let sumWorked = 0;
-      let sumRest = 0;
-      let sumPto = 0;
-      let sumHours = 0;
-
-      EMPLOYEES.forEach((employee) => {
-        const stats = computeEmployeeStats(employee);
-        sumWorked += stats.workedDays;
-        sumRest += stats.restDays;
-        sumPto += stats.ptoDays;
-        sumHours += stats.totalHours;
-
-        const isHighlighted = appState.filter === employee;
-        const tr = document.createElement('tr');
-        tr.className = isHighlighted ? 'bg-emerald-50/70 font-medium' : 'bg-white';
-
-        tr.innerHTML = `
-          <td class="py-2.5 px-3 font-semibold text-slate-900">${employee}</td>
-          <td class="py-2.5 px-2 text-center font-semibold text-emerald-700">${stats.workedDays} j</td>
-          <td class="py-2.5 px-2 text-center text-slate-700">${stats.restDays}</td>
-          <td class="py-2.5 px-2 text-center text-amber-800">${stats.ptoDays}</td>
-          <td class="py-2.5 px-3 text-right font-extrabold text-slate-900">${stats.totalHours} h</td>
-        `;
-        tbody.appendChild(tr);
-      });
-
-      // Ligne total global des 3 salariés
-      const totalRow = document.createElement('tr');
-      totalRow.className = 'bg-slate-900 text-white font-bold';
-      totalRow.innerHTML = `
-        <td class="py-2.5 px-3">Total équipe</td>
-        <td class="py-2.5 px-2 text-center text-emerald-300">${sumWorked} j</td>
-        <td class="py-2.5 px-2 text-center text-slate-200">${sumRest}</td>
-        <td class="py-2.5 px-2 text-center text-amber-300">${sumPto}</td>
-        <td class="py-2.5 px-3 text-right text-emerald-300">${sumHours} h</td>
-      `;
-      tbody.appendChild(totalRow);
-    }
-
-    /**
-     * Adapte les libellés statiques de la page au mois en cours.
-     */
-    function applyMonthLabels() {
-      document.title = `Planning ${MONTH_LABEL} ${YEAR} — Pierre, Damien & David`;
-
-      const h1 = document.querySelector('header h1');
-      if (h1) h1.textContent = `Planning ${MONTH_LABEL} ${YEAR}`;
-
-      const badge = document.querySelector('section[aria-label="Bilan mensuel par salarié"] span.rounded-full');
-      if (badge) badge.textContent = `${DAYS_IN_MONTH} jours`;
-
-      const bilanTitle = document.querySelector('section[aria-label="Bilan mensuel par salarié"] h2');
-      if (bilanTitle) bilanTitle.textContent = `Bilan Mensuel — ${MONTH_LABEL} ${YEAR}`;
-
-      const metaTitle = document.querySelector('meta[name="apple-mobile-web-app-title"]');
-      if (metaTitle) metaTitle.setAttribute('content', `Planning ${MONTH_LABEL} ${YEAR}`);
-    }
-
-    /**
-     * Gestion de l'installation PWA / ajout à l'écran d'accueil.
-     */
-    window.addEventListener('beforeinstallprompt', (event) => {
-      event.preventDefault();
-      deferredInstallPrompt = event;
-      showToast('Application prête à être installée sur votre écran d\'accueil.');
-    });
-
-    async function handleInstallClick() {
-      if (deferredInstallPrompt) {
-        deferredInstallPrompt.prompt();
-        const choice = await deferredInstallPrompt.userChoice;
-        deferredInstallPrompt = null;
-        if (choice.outcome === 'accepted') {
-          showToast('Application installée sur l\'écran d\'accueil.');
-        } else {
-          showToast('Installation annulée.');
-        }
-        return;
-      }
-
-      openModal(
-        'Ajouter à l\'écran d\'accueil',
-        `
-          <p><strong>Sur Android (Chrome) :</strong> ouvrez le menu <strong>⋮</strong> en haut à droite puis sélectionnez <strong>« Ajouter à l'écran d'accueil »</strong> ou <strong>« Installer l'application »</strong>.</p>
-          <p><strong>Sur iPhone / iPad (Safari) :</strong> touchez l'icône <strong>Partager</strong> puis <strong>« Sur l'écran d'accueil »</strong>.</p>
-        `
-      );
-    }
-
-    /**
-     * Initialisation des écouteurs d'événements.
-     */
-    function bindEvents() {
-      // Saisie libre dans les cases : sauvegarde immédiate + mise à jour des compteurs en direct
-      document.getElementById('weeksContainer').addEventListener('input', (e) => {
-        const inp = e.target;
-        if (!inp.classList || !inp.classList.contains('planning-cell')) return;
-
-        const employee = inp.dataset.employee;
-        const day = parseInt(inp.dataset.day, 10);
-        const weekIndex = parseInt(inp.dataset.weekIndex, 10);
-        if (!employee || isNaN(day)) return;
-
-        if (!appState.overrides[employee]) {
-          appState.overrides[employee] = {};
-        }
-        const val = inp.value.trim();
-        if (val === '') {
-          delete appState.overrides[employee][day];
-        } else {
-          appState.overrides[employee][day] = val;
-        }
-
-        // Mise à jour visuelle de la case sans la recréer (pour conserver le focus et le curseur)
-        const visual = getCellAppearance(val);
-        inp.className = `planning-cell w-full rounded-lg border bg-transparent text-center transition outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-0 min-h-[36px] ${visual.classes}`;
-        autoFitCell(inp);
-
-        // Mise à jour des compteurs Jours / Heures de la ligne de semaine
-        const weekCfg = WEEKS_CONFIG[weekIndex];
-        if (weekCfg) {
-          const weekDays = buildWeekDays(weekCfg);
-          const stats = computeWeekEmployeeStats(employee, weekDays);
-          const tr = inp.closest('tr');
-          if (tr) {
-            const cells = tr.querySelectorAll('td');
-            if (cells.length >= 2) {
-              cells[cells.length - 2].textContent = `${stats.workedDays} j`;
-              cells[cells.length - 1].textContent = `${stats.hours} h`;
-            }
-          }
-        }
-
-        renderSummaryTable();
-        saveState();
-      });
-
-      // Filtres salariés
-      document.querySelectorAll('.filter-btn').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          appState.filter = btn.getAttribute('data-filter');
-          saveState();
-          renderAll();
-        });
-      });
-
-      // Bouton Installer / Écran d'accueil
-      document.getElementById('installPwaBtn').addEventListener('click', handleInstallClick);
-
-      // Bouton Installer / Écran d'accueil (voir gestion d'erreur ci-dessous)
-
-      // Bouton Impression
-      document.getElementById('printBtn').addEventListener('click', () => {
-        window.print();
-      });
-
-      // Bouton Réinitialisation
-      document.getElementById('resetBtn').addEventListener('click', () => {
-        openModal(
-          'Réinitialiser le planning ?',
-          '<p>Toutes vos modifications manuelles (textes saisis dans les cases) seront effacées pour revenir au planning par défaut du mois en cours.</p>'
-        );
-        const confirmBtn = document.getElementById('confirmModalBtn');
-        const originalText = confirmBtn.textContent;
-        confirmBtn.textContent = 'Confirmer la réinitialisation';
-
-        const onConfirm = () => {
-          appState.overrides = {};
-          saveState();
-          renderAll();
-          closeModal();
-          confirmBtn.textContent = originalText;
-          confirmBtn.removeEventListener('click', onConfirm);
-          showToast('Planning réinitialisé aux valeurs par défaut.');
-        };
-
-        confirmBtn.addEventListener('click', onConfirm);
-      });
-
-      // Fermeture modale et toast
-      document.getElementById('closeModalBtn').addEventListener('click', closeModal);
-      document.getElementById('confirmModalBtn').addEventListener('click', closeModal);
-      document.getElementById('infoModal').addEventListener('click', (e) => {
-        if (e.target.id === 'infoModal') closeModal();
-      });
-      document.getElementById('closeToastBtn').addEventListener('click', () => {
-        document.getElementById('toastBanner').classList.add('hidden');
-      });
-    }
-
-    // Démarrage de l'application
-    document.addEventListener('DOMContentLoaded', () => {
-      applyMonthLabels();
-      loadState();
-      bindEvents();
-      renderAll();
-    });
-  </script>
-</body>
-</html>
+      document.getElementBy

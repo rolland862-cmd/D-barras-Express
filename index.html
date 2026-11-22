@@ -52,7 +52,7 @@
     @media print {
       @page {
         size: A4 portrait;
-        margin: 5mm;
+        margin: 6mm;
       }
       * {
         -webkit-print-color-adjust: exact !important;
@@ -64,7 +64,7 @@
         overflow: visible !important;
         background-color: #ffffff !important;
         color: var(--ink-main) !important;
-        font-size: 10.5px;
+        font-size: 11px;
         padding-bottom: 0 !important;
         margin: 0 !important;
       }
@@ -75,7 +75,7 @@
         display: block !important;
         box-shadow: none !important;
         border-radius: 10px !important;
-        margin-bottom: 6px !important;
+        margin-bottom: 8px !important;
       }
       #openMonthlyBalanceMenuBtn,
       #openOvertimeMenuBtn,
@@ -91,17 +91,24 @@
         padding: 0 !important;
         margin: 0 !important;
       }
+
+      /* Vue d'ensemble (toutes les semaines) : répartition équilibrée et lisible */
       #weeksContainer {
         display: flex !important;
         flex-direction: column !important;
-        gap: 5px !important;
+        gap: 9px !important;
+        width: 100% !important;
       }
       #weeksContainer > div {
-        padding: 6px 8px !important;
-        border-radius: 10px !important;
+        padding: 9px 11px !important;
+        border-radius: 12px !important;
+        border: 1px solid #d5c8ae !important;
+        background-color: #fffdf9 !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
       }
       #weeksContainer > div > div:first-child {
-        margin-bottom: 4px !important;
+        margin-bottom: 6px !important;
       }
       #weeksContainer table {
         table-layout: fixed !important;
@@ -109,32 +116,32 @@
         border-collapse: collapse !important;
       }
       #weeksContainer th {
-        padding-top: 3px !important;
-        padding-bottom: 3px !important;
+        padding-top: 5px !important;
+        padding-bottom: 5px !important;
         min-width: 0 !important;
-        font-size: 10px !important;
-        line-height: 1.15 !important;
+        font-size: 10.5px !important;
+        line-height: 1.2 !important;
       }
       #weeksContainer td {
-        padding: 2px !important;
+        padding: 3px !important;
       }
       #weeksContainer td:first-child,
       #weeksContainer th:first-child {
         position: static !important;
-        width: 72px !important;
-        padding: 3px 5px !important;
+        width: 84px !important;
+        padding: 4px 6px !important;
         min-width: 0 !important;
-        font-size: 10.5px !important;
+        font-size: 11px !important;
       }
       #weeksContainer th:nth-last-child(2),
       #weeksContainer td:nth-last-child(2) {
-        width: 44px !important;
-        font-size: 10.5px !important;
+        width: 50px !important;
+        font-size: 11px !important;
       }
       #weeksContainer th:last-child,
       #weeksContainer td:last-child {
-        width: 58px !important;
-        font-size: 10.5px !important;
+        width: 64px !important;
+        font-size: 11px !important;
       }
       .today-col-highlight {
         box-shadow: none !important;
@@ -438,7 +445,7 @@
         color: #5b6358 !important;
       }
 
-      /* Mode impression : UNE SEULE SEMAINE — COMPACT & DENSE SUR 1 PAGE */
+      /* Mode impression : UNE SEULE SEMAINE (validé dans la vidéo) */
       .week-fullscreen-vertical {
         position: static !important;
         inset: auto !important;
@@ -632,24 +639,40 @@
         color: #5b6358 !important;
       }
 
-      /* Mode impression : PLANNING COMPLET (TOUTES LES SEMAINES) COMPACT */
+      /* Vue d'ensemble (mode ALL) : aération et lisibilité confortables */
       body[data-print-mode="all"] #weeksContainer {
         display: flex !important;
         flex-direction: column !important;
-        gap: 4px !important;
+        gap: 10px !important;
+        width: 100% !important;
       }
       body[data-print-mode="all"] #weeksContainer > div {
-        padding: 4px 6px !important;
+        padding: 10px 12px !important;
+        border-radius: 12px !important;
+        border: 1px solid #d5c8ae !important;
+        background-color: #fffdf9 !important;
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
       }
       body[data-print-mode="all"] #weeksContainer .overflow-x-auto {
         overflow: visible !important;
+        border-radius: 10px !important;
+      }
+      body[data-print-mode="all"] #weeksContainer th {
+        padding-top: 6px !important;
+        padding-bottom: 6px !important;
+        font-size: 10.5px !important;
+      }
+      body[data-print-mode="all"] #weeksContainer td {
+        padding: 4px !important;
       }
       body[data-print-mode="all"] #weeksContainer .print-cell-mirror {
-        min-height: 20px !important;
+        min-height: 28px !important;
         height: auto !important;
-        font-size: 9px !important;
-        line-height: 1.1 !important;
-        padding: 2px 3px !important;
+        font-size: 10.5px !important;
+        line-height: 1.2 !important;
+        padding: 4px 5px !important;
+        border-radius: 7px !important;
       }
 
       .print-break-avoid {
@@ -673,9 +696,9 @@
         overflow-wrap: normal !important;
         word-break: normal !important;
         hyphens: none !important;
-        font-size: 9.5px !important;
-        line-height: 1.15 !important;
-        padding: 2px !important;
+        font-size: 10px !important;
+        line-height: 1.2 !important;
+        padding: 3px !important;
       }
 
       input.hours-edit-input,
@@ -686,8 +709,8 @@
         box-shadow: none !important;
         width: auto !important;
         min-width: 0 !important;
-        font-size: 9.5px !important;
-        padding: 1px 3px !important;
+        font-size: 10.5px !important;
+        padding: 2px 4px !important;
         height: auto !important;
       }
       #printSummarySection,
@@ -2946,22 +2969,41 @@
         renderWeeks();
         document.title = `Planning ${MONTH_NAMES[activeMonth]} ${activeYear}${empSuffix} — Débarras Express 09`;
         setDynamicPrintStyle(`
-          @page { size: A4 portrait; margin: 5mm; }
+          @page { size: A4 portrait; margin: 6mm; }
           #printSummarySection, #printOvertimeSection { display: none !important; }
           #weeksContainer {
             display: flex !important;
             flex-direction: column !important;
-            gap: 4px !important;
+            gap: 10px !important;
+            width: 100% !important;
           }
           #weeksContainer > div {
-            padding: 4px 6px !important;
+            padding: 10px 12px !important;
+            border-radius: 12px !important;
+            border: 1px solid #d5c8ae !important;
+            background-color: #fffdf9 !important;
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
+          }
+          #weeksContainer .overflow-x-auto {
+            overflow: visible !important;
+            border-radius: 10px !important;
+          }
+          #weeksContainer th {
+            padding-top: 6px !important;
+            padding-bottom: 6px !important;
+            font-size: 10.5px !important;
+          }
+          #weeksContainer td {
+            padding: 4px !important;
           }
           #weeksContainer .print-cell-mirror {
-            min-height: 20px !important;
+            min-height: 28px !important;
             height: auto !important;
-            font-size: 9px !important;
-            line-height: 1.1 !important;
-            padding: 2px 3px !important;
+            font-size: 10.5px !important;
+            line-height: 1.2 !important;
+            padding: 4px 5px !important;
+            border-radius: 7px !important;
           }
         `);
       }
@@ -2982,7 +3024,7 @@
         const lineCount = Math.max(1, val.split('\n').length);
         const minH = isSingleWeekPrint
           ? Math.max(22, lineCount * 11 + 4)
-          : Math.max(20, lineCount * 10 + 4);
+          : Math.max(28, lineCount * 13 + 6);
         const cleanClasses = ta.className
           .replace(/planning-cell/g, '')
           .replace(/min-h-\[[^\]]+\]/g, '')

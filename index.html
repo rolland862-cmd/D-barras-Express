@@ -1637,13 +1637,64 @@
         }
       }
 
+      const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
+      let weekSumHours = 0;
+      let hasAnyWeekHourOverride = false;
+      let weekSumDays = 0;
+      let hasAnyWeekDayOverride = false;
+
+      weeksConfig.forEach((weekCfg, idx) => {
+        const weekDays = buildWeekDays(weekCfg);
+        const wStats = computeWeekEmployeeStats(employee, weekDays, idx);
+        const inMonthDaysCount = weekDays.filter((d) => !d.isOtherMonth).length;
+        const ratio = inMonthDaysCount / 7;
+
+        if (wStats.isManual) {
+          hasAnyWeekHourOverride = true;
+          weekSumHours += wStats.hours * ratio;
+        } else {
+          weekSumHours += weekDays
+            .filter((d) => !d.isOtherMonth)
+            .reduce((acc, d) => {
+              const rc = getCellCode(employee, d.dateObj);
+              const c = String(rc).trim().toUpperCase();
+              if (c === 'R' || c === 'CP' || c === 'HOLIDAY' || c === 'F' || c === 'FERIE' || c === '') return acc;
+              const dh = c === 'WORK' ? empBase : parseHoursFromText(rc, empBase);
+              return acc + (dh > 0 ? dh : 0);
+            }, 0);
+        }
+
+        if (wStats.isManualDays) {
+          hasAnyWeekDayOverride = true;
+          weekSumDays += wStats.workedDays * ratio;
+        } else {
+          weekSumDays += weekDays
+            .filter((d) => !d.isOtherMonth)
+            .reduce((acc, d) => {
+              const rc = getCellCode(employee, d.dateObj);
+              const c = String(rc).trim().toUpperCase();
+              if (c === 'R' || c === 'CP' || c === 'HOLIDAY' || c === 'F' || c === 'FERIE' || c === '') return acc;
+              const dh = c === 'WORK' ? empBase : parseHoursFromText(rc, empBase);
+              return acc + (dh > 0 ? 1 : 0);
+            }, 0);
+        }
+      });
+
       const manualMonthHours = appState.monthHourOverrides?.[employee];
       const hasManualMonth = typeof manualMonthHours === 'number' && !isNaN(manualMonthHours);
 
       const manualMonthDays = appState.monthDayOverrides?.[employee];
       const hasManualDays = typeof manualMonthDays === 'number' && !isNaN(manualMonthDays);
 
-      const totalHours = hasManualMonth ? manualMonthHours : autoMonthHours;
+      const computedHours = hasAnyWeekHourOverride
+        ? Math.round(weekSumHours * 100) / 100
+        : autoMonthHours;
+
+      const computedDays = hasAnyWeekDayOverride
+        ? Math.round(weekSumDays * 100) / 100
+        : workedDays;
+
+      const totalHours = hasManualMonth ? manualMonthHours : computedHours;
       const threshold = typeof appState.overtimeThreshold === 'number' && !isNaN(appState.overtimeThreshold)
         ? appState.overtimeThreshold
         : DEFAULT_OVERTIME_THRESHOLD;
@@ -1652,15 +1703,15 @@
       const hasManualOvertime = typeof manualOvertime === 'number' && !isNaN(manualOvertime);
 
       return {
-        workedDays: hasManualDays ? manualMonthDays : workedDays,
+        workedDays: hasManualDays ? manualMonthDays : computedDays,
         restDays,
         ptoDays,
         holidayDays,
         totalHours,
         threshold,
         overtimeHours: hasManualOvertime ? manualOvertime : autoOvertime,
-        isManual: hasManualMonth,
-        isManualDays: hasManualDays,
+        isManual: hasManualMonth || hasAnyWeekHourOverride,
+        isManualDays: hasManualDays || hasAnyWeekDayOverride,
         isManualOvertime: hasManualOvertime
       };
     }

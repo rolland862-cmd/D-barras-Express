@@ -1753,13 +1753,15 @@
       function preparePrintTextMirrors() {
         document.querySelectorAll('.print-cell-mirror').forEach((n) => n.remove());
         document.querySelectorAll('textarea.planning-cell').forEach((ta) => {
+          const td = ta.closest('td');
+          if (!td || td.querySelector('.print-cell-mirror')) return;
           const val = ta.value || '';
           const mirror = document.createElement('div');
           mirror.className = `print-cell-mirror hidden print:flex items-center justify-center text-center rounded-lg border ${ta.className.replace('planning-cell', '').replace(/min-h-\[[^\]]+\]/g, '').replace(/!w-\S+/g, '').replace(/!min-w-\[[^\]]+\]/g, '')}`;
           mirror.style.cssText = 'white-space: pre-wrap; overflow-wrap: break-word; word-break: break-word; min-height: 42px; height: auto; width: 100%; font-size: 10.5px; line-height: 1.25; padding: 4px 3px; box-sizing: border-box;';
           mirror.textContent = val || '·';
           ta.classList.add('print:hidden');
-          ta.parentNode.insertBefore(mirror, ta.nextSibling);
+          td.appendChild(mirror);
         });
       }
 
@@ -1771,6 +1773,7 @@
       }
 
       window.addEventListener('beforeprint', () => {
+        cleanupPrintTextMirrors();
         preparePrintTextMirrors();
       });
 

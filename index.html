@@ -144,7 +144,8 @@
         padding-top: 0 !important;
         padding-bottom: 0 !important;
       }
-      body.printing-balance-only #printSummarySection {
+      body.printing-balance-only #printSummarySection,
+      body.printing-balance-only section#printSummarySection.hidden {
         display: block !important;
         margin-top: 0 !important;
         padding: 16px !important;
@@ -167,8 +168,14 @@
         background-color: transparent !important;
         z-index: auto !important;
       }
-      body.printing-single-week #weeksContainer > div:not(.print-target-week):not(:has(.print-target-week)) {
+      body.printing-single-week #weeksContainer > div:not(.print-target-week) {
         display: none !important;
+      }
+      body.printing-single-week #weeksContainer > div.print-target-week {
+        display: block !important;
+      }
+      body.printing-single-week #weeksContainer > div.week-fullscreen-vertical {
+        display: block !important;
       }
       body.printing-single-week #weeksContainer > div.week-fullscreen-vertical > div:not(.print-target-week) {
         display: none !important;
@@ -1766,6 +1773,8 @@
 
         let targetEl = null;
         if (focusedWeekIndex !== null && focusedWeekIndex === weekIdx) {
+          const fwWrapper = document.querySelector('#weeksContainer .week-fullscreen-vertical');
+          if (fwWrapper) fwWrapper.classList.add('print-target-week');
           targetEl = document.querySelector('#weeksContainer .week-fullscreen-vertical > div');
         } else {
           const topCards = document.querySelectorAll('#weeksContainer > div');
@@ -1792,9 +1801,11 @@
           const td = ta.closest('td');
           if (!td || td.querySelector('.print-cell-mirror')) return;
           const val = ta.value || '';
+          const lineCount = Math.max(1, val.split('\n').length);
+          const minH = lineCount > 1 ? Math.max(54, lineCount * 15 + 10) : 42;
           const mirror = document.createElement('div');
           mirror.className = `print-cell-mirror hidden print:flex items-center justify-center text-center rounded-lg border ${ta.className.replace('planning-cell', '').replace(/min-h-\[[^\]]+\]/g, '').replace(/!w-\S+/g, '').replace(/!min-w-\[[^\]]+\]/g, '')}`;
-          mirror.style.cssText = 'white-space: pre-wrap; overflow-wrap: break-word; word-break: break-word; min-height: 42px; height: auto; width: 100%; font-size: 10.5px; line-height: 1.25; padding: 4px 3px; box-sizing: border-box;';
+          mirror.style.cssText = `white-space: pre-wrap; overflow-wrap: break-word; word-break: normal; hyphens: none; min-height: ${minH}px; height: auto; width: 100%; font-size: 10.5px; line-height: 1.25; padding: 4px 3px; box-sizing: border-box;`;
           mirror.textContent = val || '·';
           ta.classList.add('print:hidden');
           td.appendChild(mirror);

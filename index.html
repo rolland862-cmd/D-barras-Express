@@ -42,17 +42,20 @@
       }
     }
 
+    /* Cases de saisie libre agrandies et élargies pour éviter toute coupure de mot */
     textarea.planning-cell {
       resize: none;
       overflow: hidden;
       white-space: pre-wrap;
-      overflow-wrap: break-word;
+      overflow-wrap: normal;
       word-break: normal;
+      hyphens: none;
       text-align: center;
-      line-height: 1.25;
+      line-height: 1.3;
       font-size: 14px;
       padding: 8px 4px;
-      min-height: 44px;
+      min-height: 46px;
+      min-width: 82px;
       font-family: inherit;
       display: block;
       width: 100%;
@@ -63,7 +66,7 @@
       text-align: center;
       font-weight: 700;
       width: 100%;
-      min-width: 58px;
+      min-width: 62px;
       padding: 4px 2px;
       border-radius: 0.5rem;
       outline: none;
@@ -110,7 +113,7 @@
   <!-- Contenu principal -->
   <main class="flex-1 w-full max-w-4xl mx-auto px-3 sm:px-5 py-4 space-y-5">
 
-    <!-- Barre de navigation des mois (accès aux mois précédents et suivants) -->
+    <!-- Barre de navigation des mois -->
     <section class="bg-white rounded-2xl p-3.5 sm:p-4 shadow-sm border border-slate-200 no-print" aria-label="Navigation par mois">
       <div class="flex items-center justify-between gap-2">
         <button
@@ -265,12 +268,10 @@
     const MONTH_SHORT = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
     const DAY_LABELS = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
 
-    // Suivi de la date système réelle (pour bascule automatique en temps réel au changement de mois)
     let systemNow = new Date();
     let systemYear = systemNow.getFullYear();
     let systemMonth = systemNow.getMonth();
 
-    // Mois et année actuellement affichés (modifiables via Précédent / Suivant)
     let activeYear = systemYear;
     let activeMonth = systemMonth;
 
@@ -427,7 +428,6 @@
 
       try {
         let raw = localStorage.getItem(getStorageKey(year, month));
-        // Récupération automatique des données enregistrées dans une version précédente du même mois
         if (!raw) {
           for (const legacyKey of getLegacyStorageKeys(year, month)) {
             const legacyRaw = localStorage.getItem(legacyKey);
@@ -508,7 +508,7 @@
 
     function autoFitCell(inp) {
       inp.style.height = 'auto';
-      const targetHeight = Math.max(44, inp.scrollHeight);
+      const targetHeight = Math.max(46, inp.scrollHeight);
       inp.style.height = `${targetHeight}px`;
     }
 
@@ -725,7 +725,7 @@
 
         weekDays.forEach((d) => {
           const th = document.createElement('th');
-          th.className = 'py-2 px-1 border-r border-slate-200 min-w-[56px] sm:min-w-[64px]';
+          th.className = 'py-2 px-1 border-r border-slate-200 min-w-[82px] sm:min-w-[92px]';
           if (!d.inCurrentMonth) {
             th.classList.add('bg-slate-100/70', 'text-slate-300');
             th.innerHTML = `<div class="text-xs">${d.dayLabel}</div><div class="text-xs">${d.dayOfMonth}</div>`;
@@ -739,12 +739,12 @@
         });
 
         const thDays = document.createElement('th');
-        thDays.className = 'py-2.5 px-2 border-r border-slate-200 text-xs text-slate-700 min-w-[50px]';
+        thDays.className = 'py-2.5 px-2 border-r border-slate-200 text-xs text-slate-700 min-w-[54px]';
         thDays.textContent = 'Jours';
         headRow.appendChild(thDays);
 
         const thHours = document.createElement('th');
-        thHours.className = 'py-2.5 px-2 text-xs text-slate-700 min-w-[68px]';
+        thHours.className = 'py-2.5 px-2 text-xs text-slate-700 min-w-[70px]';
         thHours.textContent = 'Heures';
         headRow.appendChild(thHours);
 
@@ -768,7 +768,7 @@
             td.className = 'p-1 border-r border-slate-200 align-middle';
 
             if (!d.inCurrentMonth) {
-              td.innerHTML = `<div class="w-full min-h-[44px] rounded-lg bg-slate-100/80 border border-slate-200/70"></div>`;
+              td.innerHTML = `<div class="w-full min-h-[46px] rounded-lg bg-slate-100/80 border border-slate-200/70"></div>`;
             } else {
               const code = getCellCode(employee, d.dayOfMonth, d.dateObj);
               const visual = getCellAppearance(code);
@@ -878,9 +878,6 @@
       tbody.appendChild(totalRow);
     }
 
-    /**
-     * Vérifie en temps réel si la date système a changé de mois (ex: passage à minuit le 1er du mois).
-     */
     function checkRealTimeMonthChange() {
       const freshNow = new Date();
       const freshYear = freshNow.getFullYear();
@@ -903,7 +900,6 @@
     function bindEvents() {
       const weeksContainer = document.getElementById('weeksContainer');
 
-      // Navigation Mois précédent / Mois suivant / Aujourd'hui
       document.getElementById('prevMonthBtn').addEventListener('click', () => {
         const prevDate = new Date(activeYear, activeMonth - 1, 1);
         switchToMonth(prevDate.getFullYear(), prevDate.getMonth());
@@ -921,7 +917,6 @@
         switchToMonth(systemYear, systemMonth);
       });
 
-      // Saisie libre dans les cases journalières
       weeksContainer.addEventListener('input', (e) => {
         const inp = e.target;
         if (!inp.classList || !inp.classList.contains('planning-cell')) return;
@@ -973,7 +968,6 @@
         saveState();
       });
 
-      // Modification directe des heures d'une semaine
       weeksContainer.addEventListener('focusin', (e) => {
         const hrInp = e.target;
         if (!hrInp.classList || !hrInp.classList.contains('hours-edit-input')) return;
@@ -1017,7 +1011,6 @@
         }
       });
 
-      // Modification directe des heures mensuelles dans le bilan
       const summaryBody = document.getElementById('summaryTableBody');
       summaryBody.addEventListener('focusin', (e) => {
         const mInp = e.target;
@@ -1049,7 +1042,6 @@
         }
       });
 
-      // Modification de la base horaire journalière
       document.getElementById('baseHoursInput').addEventListener('input', (e) => {
         const val = parseFloat(String(e.target.value).replace(',', '.'));
         if (!isNaN(val) && val >= 0 && val <= 24) {
@@ -1106,7 +1098,6 @@
         document.getElementById('toastBanner').classList.add('hidden');
       });
 
-      // Surveillance en temps réel du changement de mois (toutes les 30 s et au retour sur l'application)
       setInterval(checkRealTimeMonthChange, 30000);
       document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'visible') {

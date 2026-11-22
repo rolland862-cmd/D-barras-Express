@@ -640,6 +640,7 @@
 
     let currentPrintMode = 'all';
     let currentPrintWeekIdx = null;
+    let afterPrintCleanupTimer = null;
 
     let appState = {
       filter: 'ALL',
@@ -1623,6 +1624,123 @@
       }
     }
 
+    function setDynamicPrintStyle(cssText) {
+      let styleEl = document.getElementById('dynamicPrintOverride');
+      if (!cssText) {
+        if (styleEl) styleEl.remove();
+        return;
+      }
+      if (!styleEl) {
+        styleEl = document.createElement('style');
+        styleEl.id = 'dynamicPrintOverride';
+        document.head.appendChild(styleEl);
+      }
+      styleEl.textContent = `@media print { ${cssText} }`;
+    }
+
+    function applyPrintClassesToDom() {
+      if (afterPrintCleanupTimer) {
+        clearTimeout(afterPrintCleanupTimer);
+        afterPrintCleanupTimer = null;
+      }
+      document.body.classList.remove('printing-single-week', 'printing-balance-only');
+      document.querySelectorAll('.print-target-week').forEach((el) => el.classList.remove('print-target-week'));
+      setDynamicPrintStyle('');
+
+      if (currentPrintMode === 'balance') {
+        renderSummaryTable();
+        applyMonthLabels();
+        document.body.classList.add('printing-balance-only');
+        document.title = `Bilan Heures ${MONTH_NAMES[activeMonth]} ${activeYear} — Débarras Express 09`;
+        setDynamicPrintStyle(`
+          header.app-header,
+          #weeksContainer,
+          main > section:not(#printSummarySection) {
+            display: none !important;
+          }
+          #printSummarySection,
+          section#printSummarySection,
+          section#printSummarySection.hidden {
+            display: block !important;
+            visibility: visible !important;
+            margin: 0 !important;
+            padding: 16px !important;
+          }
+        `);
+      } else if (currentPrintMode === 'single-week' && typeof currentPrintWeekIdx === 'number') {
+        const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
+        const wkCfg = weeksConfig[currentPrintWeekIdx];
+        let targetEl = null;
+        if (focusedWeekIndex !== null && focusedWeekIndex === currentPrintWeekIdx) {
+          const fwWrapper = document.querySelector('#weeksContainer .week-fullscreen-vertical');
+          if (fwWrapper) fwWrapper.classList.add('print-target-week');
+          targetEl = document.querySelector('#weeksContainer .week-fullscreen-vertical > div');
+        } else {
+          const topCards = document.querySelectorAll('#weeksContainer > div');
+          targetEl = topCards[currentPrintWeekIdx] || null;
+        }
+        if (targetEl) {
+          targetEl.classList.add('print-target-week');
+          document.body.classList.add('printing-single-week');
+        }
+        if (wkCfg) {
+          document.title = `Semaine ${wkCfg.weekNumber} — ${MONTH_NAMES[activeMonth]} ${activeYear} — Débarras Express 09`;
+        }
+        setDynamicPrintStyle(`
+          #printSummarySection { display: none !important; }
+          #weeksContainer { display: block !important; }
+          #weeksContainer > div:not(.print-target-week) { display: none !important; }
+          #weeksContainer > div.week-fullscreen-vertical > div:not(.print-target-week) { display: none !important; }
+          .week-fullscreen-vertical .sm\\:hidden { display: none !important; }
+          .week-fullscreen-vertical .overflow-x-auto { display: block !important; overflow: visible !important; }
+        `);
+      } else {
+        applyMonthLabels();
+        setDynamicPrintStyle(`
+          #printSummarySection { display: none !important; }
+        `);
+      }
+    }
+
+    function preparePrintTextMirrors() {
+      document.querySelectorAll('.print-cell-mirror').forEach((n) => n.remove());
+      const selector = (currentPrintMode === 'single-week' && document.querySelector('.print-target-week'))
+        ? '.print-target-week textarea.planning-cell'
+        : '#weeksContainer textarea.planning-cell';
+      document.querySelectorAll(selector).forEach((ta) => {
+        const td = ta.closest('td');
+        if (!td || td.querySelector('.print-cell-mirror')) return;
+        const val = (ta.value || '').trim();
+        const lineCount = Math.max(1, val.split('\n').length);
+        const minH = lineCount > 1 ? Math.max(48, lineCount * 13 + 8) : 34;
+        const cleanClasses = ta.className
+          .replace(/planning-cell/g, '')
+          .replace(/min-h-\[[^\]]+\]/g, '')
+          .replace(/!w-\S+/g, '')
+          .replace(/!min-w-\[[^\]]+\]/g, '')
+          .replace(/py-\S+/g, '')
+          .replace(/px-\S+/g, '');
+        const mirror = document.createElement('div');
+        mirror.className = `print-cell-mirror ${cleanClasses}`;
+        mirror.style.minHeight = `${minH}px`;
+        mirror.textContent = val || '·';
+        td.appendChild(mirror);
+      });
+    }
+
+    function cleanupPrintTextMirrors() {
+      document.querySelectorAll('.print-cell-mirror').forEach((n) => n.remove());
+    }
+
+    function printSingleWeek(weekIdx) {
+      currentPrintMode = 'single-week';
+      currentPrintWeekIdx = weekIdx;
+      applyPrintClassesToDom();
+      cleanupPrintTextMirrors();
+      preparePrintTextMirrors();
+      window.print();
+    }
+
     function bindEvents() {
       const weeksContainer = document.getElementById('weeksContainer');
 
@@ -1788,78 +1906,6 @@
         });
       });
 
-      function applyPrintClassesToDom() {
-        document.body.classList.remove('printing-single-week', 'printing-balance-only');
-        document.querySelectorAll('.print-target-week').forEach((el) => el.classList.remove('print-target-week'));
-
-        if (currentPrintMode === 'balance') {
-          renderSummaryTable();
-          applyMonthLabels();
-          document.body.classList.add('printing-balance-only');
-          document.title = `Bilan Heures ${MONTH_NAMES[activeMonth]} ${activeYear} — Débarras Express 09`;
-        } else if (currentPrintMode === 'single-week' && typeof currentPrintWeekIdx === 'number') {
-          const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
-          const wkCfg = weeksConfig[currentPrintWeekIdx];
-          let targetEl = null;
-          if (focusedWeekIndex !== null && focusedWeekIndex === currentPrintWeekIdx) {
-            const fwWrapper = document.querySelector('#weeksContainer .week-fullscreen-vertical');
-            if (fwWrapper) fwWrapper.classList.add('print-target-week');
-            targetEl = document.querySelector('#weeksContainer .week-fullscreen-vertical > div');
-          } else {
-            const topCards = document.querySelectorAll('#weeksContainer > div');
-            targetEl = topCards[currentPrintWeekIdx] || null;
-          }
-          if (targetEl) {
-            targetEl.classList.add('print-target-week');
-            document.body.classList.add('printing-single-week');
-          }
-          if (wkCfg) {
-            document.title = `Semaine ${wkCfg.weekNumber} — ${MONTH_NAMES[activeMonth]} ${activeYear} — Débarras Express 09`;
-          }
-        } else {
-          applyMonthLabels();
-        }
-      }
-
-      function printSingleWeek(weekIdx) {
-        currentPrintMode = 'single-week';
-        currentPrintWeekIdx = weekIdx;
-        applyPrintClassesToDom();
-        cleanupPrintTextMirrors();
-        preparePrintTextMirrors();
-        window.print();
-      }
-
-      function preparePrintTextMirrors() {
-        document.querySelectorAll('.print-cell-mirror').forEach((n) => n.remove());
-        const selector = (currentPrintMode === 'single-week' && document.querySelector('.print-target-week'))
-          ? '.print-target-week textarea.planning-cell'
-          : '#weeksContainer textarea.planning-cell';
-        document.querySelectorAll(selector).forEach((ta) => {
-          const td = ta.closest('td');
-          if (!td || td.querySelector('.print-cell-mirror')) return;
-          const val = (ta.value || '').trim();
-          const lineCount = Math.max(1, val.split('\n').length);
-          const minH = lineCount > 1 ? Math.max(48, lineCount * 13 + 8) : 34;
-          const cleanClasses = ta.className
-            .replace(/planning-cell/g, '')
-            .replace(/min-h-\[[^\]]+\]/g, '')
-            .replace(/!w-\S+/g, '')
-            .replace(/!min-w-\[[^\]]+\]/g, '')
-            .replace(/py-\S+/g, '')
-            .replace(/px-\S+/g, '');
-          const mirror = document.createElement('div');
-          mirror.className = `print-cell-mirror ${cleanClasses}`;
-          mirror.style.minHeight = `${minH}px`;
-          mirror.textContent = val || '·';
-          td.appendChild(mirror);
-        });
-      }
-
-      function cleanupPrintTextMirrors() {
-        document.querySelectorAll('.print-cell-mirror').forEach((n) => n.remove());
-      }
-
       window.addEventListener('beforeprint', () => {
         applyPrintClassesToDom();
         cleanupPrintTextMirrors();
@@ -1867,15 +1913,22 @@
       });
 
       window.addEventListener('afterprint', () => {
-        cleanupPrintTextMirrors();
-        currentPrintMode = 'all';
-        currentPrintWeekIdx = null;
-        document.body.classList.remove('printing-single-week', 'printing-balance-only');
-        document.querySelectorAll('.print-target-week').forEach((el) => el.classList.remove('print-target-week'));
-        applyMonthLabels();
+        afterPrintCleanupTimer = setTimeout(() => {
+          cleanupPrintTextMirrors();
+          currentPrintMode = 'all';
+          currentPrintWeekIdx = null;
+          document.body.classList.remove('printing-single-week', 'printing-balance-only');
+          document.querySelectorAll('.print-target-week').forEach((el) => el.classList.remove('print-target-week'));
+          setDynamicPrintStyle('');
+          applyMonthLabels();
+        }, 1200);
       });
 
       document.getElementById('printBtn').addEventListener('click', () => {
+        if (focusedWeekIndex !== null) {
+          printSingleWeek(focusedWeekIndex);
+          return;
+        }
         currentPrintMode = 'all';
         currentPrintWeekIdx = null;
         applyPrintClassesToDom();

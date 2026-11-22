@@ -113,6 +113,20 @@
       background-color: #eef6eb !important;
     }
 
+
+    .week-fullscreen-vertical {
+      position: fixed;
+      inset: 60px 0 0 0;
+      z-index: 25;
+      overflow-y: auto;
+      background-color: var(--bg-cream);
+      padding: 12px 14px calc(24px + env(safe-area-inset-bottom, 0px));
+      margin: 0 !important;
+      border-radius: 0 !important;
+      border: none !important;
+      box-shadow: none !important;
+    }
+
     .week-focused-card {
       border-width: 2px !important;
       border-color: #2d4727 !important;
@@ -760,29 +774,41 @@
       const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
       if (weekIdx === null || weekIdx < 0 || weekIdx >= weeksConfig.length) {
         focusedWeekIndex = null;
-        if (pushHistory && window.location.hash.startsWith('#semaine-')) {
-          history.back();
-          return;
-        }
         if (pushHistory) {
-          history.replaceState({ year: activeYear, month: activeMonth, week: null }, '', `#mois-${activeYear}-${String(activeMonth + 1).padStart(2, '0')}`);
+          try {
+            history.replaceState(
+              { year: activeYear, month: activeMonth, week: null },
+              '',
+              `#mois-${activeYear}-${String(activeMonth + 1).padStart(2, '0')}`
+            );
+          } catch (_) {}
         }
         renderWeeks();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, behavior: 'auto' });
         return;
       }
 
       focusedWeekIndex = weekIdx;
       const wkNum = weeksConfig[weekIdx].weekNumber;
+      requestAnimationFrame(() => {
+        const hdr = document.querySelector('header.app-header');
+        const fw = document.querySelector('.week-fullscreen-vertical');
+        if (hdr && fw) {
+          const bottomPx = Math.max(56, Math.round(hdr.getBoundingClientRect().bottom));
+          fw.style.top = `${bottomPx}px`;
+        }
+      });
       if (pushHistory) {
-        history.pushState(
-          { year: activeYear, month: activeMonth, week: weekIdx },
-          '',
-          `#semaine-${wkNum}`
-        );
+        try {
+          history.pushState(
+            { year: activeYear, month: activeMonth, week: weekIdx },
+            '',
+            `#semaine-${wkNum}`
+          );
+        } catch (_) {}
       }
       renderWeeks();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'auto' });
     }
 
     function switchToMonth(newYear, newMonth) {
@@ -820,20 +846,24 @@
       weeksConfig.forEach((weekCfg, index) => {
         const weekDays = buildWeekDays(weekCfg);
 
-        const card = document.createElement('div');
-        card.className = 'bg-[#fffdf9] rounded-2xl p-3.5 sm:p-4 shadow-sm border border-[#dfd5c0] print-break-avoid';
-
-        const firstDate = weekDays[0]?.dateObj;
-        const lastDate = weekDays[6]?.dateObj;
-        const fmt = (d) => d ? `${d.getDate()} ${MONTH_SHORT[d.getMonth()]}` : '';
-
         const isFocusedWeek = focusedWeekIndex === index;
         if (focusedWeekIndex !== null && !isFocusedWeek) {
           return;
         }
-        if (isFocusedWeek) {
-          card.classList.add('week-focused-card');
+
+        const outerWrapper = isFocusedWeek ? document.createElement('div') : null;
+        if (outerWrapper) {
+          outerWrapper.className = 'week-fullscreen-vertical animate-fade-in';
         }
+
+        const card = document.createElement('div');
+        card.className = isFocusedWeek
+          ? 'bg-[#fffdf9] rounded-2xl p-3.5 sm:p-5 shadow-md border-2 border-[#2d4727] min-h-full flex flex-col max-w-4xl mx-auto'
+          : 'bg-[#fffdf9] rounded-2xl p-3.5 sm:p-4 shadow-sm border border-[#dfd5c0] print-break-avoid';
+
+        const firstDate = weekDays[0]?.dateObj;
+        const lastDate = weekDays[6]?.dateObj;
+        const fmt = (d) => d ? `${d.getDate()} ${MONTH_SHORT[d.getMonth()]}` : '';
 
         const headerDiv = document.createElement('div');
         headerDiv.className = 'flex items-center justify-between gap-2 mb-3 flex-wrap';
@@ -863,6 +893,16 @@
           titleTag.className = 'px-2.5 py-1 rounded-full bg-[#e4eee0] text-[#2d4727] text-xs font-bold';
           titleTag.textContent = `Semaine ${weekCfg.weekNumber} · Grand format`;
           leftGroup.appendChild(titleTag);
+
+          const backBtn = document.createElement('button');
+          backBtn.type = 'button';
+          backBtn.className = 'back-to-month-btn px-3 py-1.5 rounded-lg bg-[#efe8d8] hover:bg-[#e3d7be] active:scale-95 text-[#232921] text-xs sm:text-sm font-bold border border-[#d6c9ae] cursor-pointer';
+          backBtn.textContent = '← Retour au mois';
+          backBtn.addEventListener('click', (ev) => {
+            ev.stopPropagation();
+            setFocusedWeek(null, false);
+          });
+          leftGroup.appendChild(backBtn);
         }
 
         const rightInfo = document.createElement('span');
@@ -989,9 +1029,127 @@
         });
 
         table.appendChild(tbody);
+        if (isFocusedWeek) {
+          tableWrapper.classList.add('hidden', 'sm:block');
+        }
         tableWrapper.appendChild(table);
         card.appendChild(tableWrapper);
-        container.appendChild(card);
+
+        if (isFocusedWeek) {
+          const mobileVerticalBox = document.createElement('div');
+          mobileVerticalBox.className = 'sm:hidden space-y-2.5 mt-2 flex-1';
+
+          const todayKey = formatDateKey(new Date());
+
+          weekDays.forEach((d) => {
+            const isToday = d.dateKey === todayKey;
+            const dayCard = document.createElement('div');
+            dayCard.className = isToday
+              ? 'rounded-xl border-2 border-[#2d4727] bg-[#eef6eb] p-2.5'
+              : (d.isHoliday
+                ? 'rounded-xl border border-[#e2b4a8] bg-[#fdf3f0] p-2.5'
+                : 'rounded-xl border border-[#dfd5c0] bg-[#fcfaf5] p-2.5');
+
+            const dayHeader = document.createElement('div');
+            dayHeader.className = 'flex items-center justify-between mb-2';
+            const dateBadge = d.isOtherMonth
+              ? `${d.dayOfMonth}/${String(d.dateObj.getMonth() + 1).padStart(2, '0')}`
+              : `${d.dayOfMonth}`;
+            dayHeader.innerHTML = `
+              <span class="text-sm font-extrabold text-[#232921]">${d.dayLabel} ${dateBadge} ${MONTH_SHORT[d.dateObj.getMonth()]}</span>
+              <span class="text-xs font-semibold ${isToday ? 'text-[#2d4727]' : (d.isHoliday ? 'text-[#8c3827]' : 'text-[#5b6358]')}">${isToday ? 'Aujourd’hui' : (d.isHoliday ? 'Férié' : '')}</span>
+            `;
+            dayCard.appendChild(dayHeader);
+
+            const empGrid = document.createElement('div');
+            empGrid.className = 'grid grid-cols-3 gap-2';
+
+            visibleEmployees.forEach((employee) => {
+              const col = document.createElement('div');
+              col.className = 'flex flex-col items-center gap-1';
+
+              const lbl = document.createElement('span');
+              lbl.className = 'text-xs font-bold text-[#232921] truncate w-full text-center';
+              lbl.textContent = employee;
+              col.appendChild(lbl);
+
+              const code = getCellCode(employee, d.dateObj);
+              const visual = getCellAppearance(code);
+              const defaultCode = getDefaultCellCode(d.dateObj);
+              const customVal = getRawOverrideForDate(employee, d.dateObj);
+
+              const inp = document.createElement('textarea');
+              inp.rows = 1;
+              inp.className = `planning-cell rounded-lg border transition outline-none focus:ring-2 focus:ring-[#2d4727] ${visual.classes}`;
+              inp.value = customVal !== undefined ? customVal : (defaultCode === 'R' ? 'R' : '');
+              inp.placeholder = '·';
+              inp.spellcheck = false;
+              inp.setAttribute(
+                'aria-label',
+                `${employee}, ${d.dayLabel} ${d.dayOfMonth} ${MONTH_NAMES[d.dateObj.getMonth()].toLowerCase()} ${d.dateObj.getFullYear()}`
+              );
+              inp.dataset.employee = employee;
+              inp.dataset.dateKey = d.dateKey;
+              inp.dataset.weekIndex = index;
+
+              col.appendChild(inp);
+              requestAnimationFrame(() => autoFitCell(inp));
+              empGrid.appendChild(col);
+            });
+
+            dayCard.appendChild(empGrid);
+            mobileVerticalBox.appendChild(dayCard);
+          });
+
+          const totalsBox = document.createElement('div');
+          totalsBox.className = 'rounded-xl border border-[#dfd5c0] bg-[#f3ece0] p-3 mt-3 space-y-2';
+          const totTitle = document.createElement('div');
+          totTitle.className = 'text-xs font-bold uppercase tracking-wide text-[#4c5449]';
+          totTitle.textContent = `Totaux Semaine ${weekCfg.weekNumber}`;
+          totalsBox.appendChild(totTitle);
+
+          visibleEmployees.forEach((employee) => {
+            const weekStats = computeWeekEmployeeStats(employee, weekDays, index);
+            const row = document.createElement('div');
+            row.className = 'flex items-center justify-between gap-2 bg-[#fffdf9] rounded-lg px-3 py-2 border border-[#dfd5c0]';
+
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'text-sm font-bold text-[#232921]';
+            nameSpan.textContent = employee;
+
+            const rightStats = document.createElement('div');
+            rightStats.className = 'flex items-center gap-3';
+
+            const daysSpan = document.createElement('span');
+            daysSpan.className = 'text-sm font-bold text-[#232921]';
+            daysSpan.textContent = `${weekStats.workedDays} j`;
+
+            const hrInp = document.createElement('input');
+            hrInp.type = 'text';
+            hrInp.inputMode = 'decimal';
+            hrInp.className = `hours-edit-input text-sm !w-20 border border-[#dfd5c0] bg-[#fcfaf5] ${weekStats.isManual ? 'text-[#9a4e28] underline decoration-dotted' : 'text-[#2d4727]'}`;
+            hrInp.value = formatHours(weekStats.hours);
+            hrInp.title = 'Cliquez pour modifier manuellement le total d’heures de la semaine';
+            hrInp.dataset.employee = employee;
+            hrInp.dataset.weekIndex = index;
+
+            rightStats.appendChild(daysSpan);
+            rightStats.appendChild(hrInp);
+            row.appendChild(nameSpan);
+            row.appendChild(rightStats);
+            totalsBox.appendChild(row);
+          });
+
+          mobileVerticalBox.appendChild(totalsBox);
+          card.appendChild(mobileVerticalBox);
+        }
+
+        if (outerWrapper) {
+          outerWrapper.appendChild(card);
+          container.appendChild(outerWrapper);
+        } else {
+          container.appendChild(card);
+        }
       });
     }
 
@@ -1366,6 +1524,7 @@
       });
 
       weeksContainer.addEventListener('click', (e) => {
+        if (e.target.closest('.back-to-month-btn')) return;
         const btn = e.target.closest('.open-week-btn');
         if (!btn) return;
         const idx = parseInt(btn.dataset.weekIndex, 10);

@@ -1,1 +1,1706 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#2d4727" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="./icons/logo-debarras-09.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Débarras Express 09" />
+  <title>Planning Mensuel — Débarras Express 09</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg-cream: #f6f1e7;
+      --surface-card: #fffdf9;
+      --surface-muted: #efe8d8;
+      --border-warm: #dfd5c0;
+      --ink-main: #232921;
+      --ink-muted: #5b6358;
+      --brand-green: #2d4727;
+      --brand-green-hover: #22371e;
+      --brand-terracotta: #b5633b;
+      --brand-terracotta-soft: #f7e6dc;
+    }
+
+    html, body {
+      background-color: var(--bg-cream);
+      overscroll-behavior-y: none;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg-cream);
+      color: var(--ink-main);
+      -webkit-tap-highlight-color: transparent;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    header.app-header {
+      padding-top: env(safe-area-inset-top, 0px);
+      background-color: var(--brand-green);
+    }
+
+    @media print {
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      body {
+        background-color: var(--bg-cream) !important;
+        color: var(--ink-main) !important;
+        font-size: 11px;
+        padding-bottom: 0 !important;
+      }
+      header.app-header {
+        position: static !important;
+        background-color: var(--brand-green) !important;
+        color: #fffdf9 !important;
+        display: block !important;
+        box-shadow: none !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-only-banner {
+        display: flex !important;
+      }
+      .week-fullscreen-vertical {
+        position: static !important;
+        inset: auto !important;
+        overflow: visible !important;
+        padding: 0 !important;
+        margin: 0 0 16px 0 !important;
+        background-color: transparent !important;
+        z-index: auto !important;
+      }
+      .week-fullscreen-vertical .sm\:hidden {
+        display: none !important;
+      }
+      .week-fullscreen-vertical .overflow-x-auto {
+        display: block !important;
+        overflow: visible !important;
+      }
+      .print-break-avoid {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+      textarea.planning-cell {
+        min-height: 36px !important;
+        min-width: 0 !important;
+        font-size: 11px !important;
+        padding: 4px 2px !important;
+        border-width: 1px !important;
+      }
+      input.hours-edit-input,
+      input.month-hours-input {
+        border: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        width: auto !important;
+        min-width: 0 !important;
+      }
+      .shadow-sm, .shadow-md, .shadow-lg, .shadow-xl {
+        box-shadow: none !important;
+      }
+    }
+    .print-only-banner {
+      display: none;
+    }
+
+    /* Cases de saisie libre agrandies et élargies pour éviter toute coupure de mot */
+    textarea.planning-cell {
+      resize: none;
+      overflow: hidden;
+      white-space: pre-wrap;
+      overflow-wrap: normal;
+      word-break: normal;
+      hyphens: none;
+      text-align: center;
+      line-height: 1.3;
+      font-size: 14px;
+      padding: 8px 4px;
+      min-height: 46px;
+      min-width: 82px;
+      font-family: inherit;
+      display: block;
+      width: 100%;
+    }
+
+    input.hours-edit-input {
+      background: transparent;
+      text-align: center;
+      font-weight: 700;
+      width: 100%;
+      min-width: 62px;
+      padding: 4px 2px;
+      border-radius: 0.5rem;
+      outline: none;
+    }
+    input.hours-edit-input:focus {
+      background-color: #ffffff;
+      box-shadow: 0 0 0 2px var(--brand-green);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.2s ease-out forwards;
+    }
+
+    .today-col-highlight {
+      box-shadow: inset 0 0 0 2px #2d4727;
+      background-color: #eef6eb !important;
+    }
+
+
+    .week-fullscreen-vertical {
+      position: fixed;
+      inset: 60px 0 0 0;
+      z-index: 25;
+      overflow-y: auto;
+      background-color: var(--bg-cream);
+      padding: 12px 14px calc(24px + env(safe-area-inset-bottom, 0px));
+      margin: 0 !important;
+      border-radius: 0 !important;
+      border: none !important;
+      box-shadow: none !important;
+    }
+
+    .week-focused-card {
+      border-width: 2px !important;
+      border-color: #2d4727 !important;
+      box-shadow: 0 12px 28px -8px rgba(45, 71, 39, 0.22) !important;
+      padding: 1.15rem !important;
+    }
+
+    .week-focused-card textarea.planning-cell {
+      min-height: 64px;
+      min-width: 98px;
+      font-size: 16px;
+      padding: 10px 6px;
+    }
+
+    .week-focused-card th,
+    .week-focused-card td:not(:first-child) {
+      min-width: 96px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#f6f1e7] text-[#232921]">
+
+  <!-- En-tête principal avec logo Débarras Express 09 -->
+  <header class="app-header sticky top-0 z-30 bg-[#2d4727] text-[#fffdf9] shadow-md border-b border-[#46663e] no-print">
+    <div class="max-w-4xl mx-auto px-4 py-2.5 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3 min-w-0">
+        <img
+          id="brandLogoImg"
+          src="./icons/logo-debarras-09.png"
+          alt="Logo Débarras Express 09"
+          class="w-11 h-11 sm:w-12 sm:h-12 rounded-full object-cover bg-[#f6f1e7] border-2 border-[#e5d8be] shrink-0 shadow-sm"
+          onerror="if (!this.dataset.fb1) { this.dataset.fb1 = '1'; this.src = './ic%C3%B4nes/logo-debarras-09.png'; } else if (!this.dataset.fb2) { this.dataset.fb2 = '1'; this.src = './icônes/logo-debarras-09.png'; } else { this.style.display = 'none'; }"
+        />
+        <div class="min-w-0">
+          <div class="flex items-center gap-2">
+            <h1 id="mainHeaderTitle" class="text-base sm:text-xl font-bold tracking-tight truncate">
+              Planning Mensuel
+            </h1>
+          </div>
+          <p id="headerSubtitle" class="text-xs sm:text-sm text-[#e6decb] truncate">
+            Débarras Express 09 · Pierre, Damien & David — Base 7 h / jour
+          </p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Notification toast -->
+  <div id="toastBanner" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-md bg-[#2d4727] text-[#fffdf9] px-4 py-3 rounded-2xl shadow-xl border border-[#618258] text-sm font-medium flex items-center justify-between gap-3 animate-fade-in no-print">
+    <span id="toastMessage">Action effectuée.</span>
+    <button id="closeToastBtn" type="button" class="text-[#dce4d8] hover:text-white font-bold px-1.5">✕</button>
+  </div>
+
+  <!-- Contenu principal -->
+  <main class="flex-1 w-full max-w-4xl mx-auto px-3 sm:px-5 py-4 space-y-5">
+
+    <!-- Bandeau visible uniquement à l'impression / export PDF -->
+    <div id="printMetaBanner" class="print-only-banner items-center justify-between gap-3 bg-[#fffdf9] border border-[#dfd5c0] rounded-2xl px-4 py-2.5 text-xs text-[#232921]">
+      <div class="flex items-center gap-2.5">
+        <img
+          src="./icons/logo-debarras-09.png"
+          alt="Débarras Express 09"
+          class="w-8 h-8 rounded-full object-cover border border-[#2d4727]"
+          onerror="this.style.display='none'"
+        />
+        <div>
+          <div id="printBannerTitle" class="font-bold text-sm text-[#2d4727]">Débarras Express 09 — Planning</div>
+          <div id="printBannerSub" class="text-[#5b6358]">Base horaire &amp; présences</div>
+        </div>
+      </div>
+      <div id="printBannerDate" class="font-semibold text-[#4c5449]"></div>
+    </div>
+
+    <!-- Barre de navigation des mois -->
+    <section class="bg-[#fffdf9] rounded-2xl p-3.5 sm:p-4 shadow-sm border border-[#dfd5c0] no-print" aria-label="Navigation par mois">
+      <div class="flex items-center justify-between gap-2">
+        <button
+          id="prevMonthBtn"
+          type="button"
+          class="px-3 py-2 rounded-xl bg-[#efe8d8] hover:bg-[#e3d7be] active:scale-95 text-[#232921] text-xs sm:text-sm font-bold transition flex items-center gap-1 border border-[#d6c9ae]"
+          aria-label="Mois précédent"
+        >
+          <span>◀</span>
+          <span>Précédent</span>
+        </button>
+
+        <div class="text-center flex flex-col items-center">
+          <span id="currentMonthDisplay" class="text-base sm:text-lg font-extrabold text-[#232921] capitalize">
+            Novembre 2026
+          </span>
+          <button
+            id="todayMonthBtn"
+            type="button"
+            class="hidden mt-0.5 px-2.5 py-0.5 rounded-full bg-[#e4eee0] hover:bg-[#d3e4cc] text-[#2d4727] text-xs font-semibold transition"
+          >
+            Revenir au mois actuel
+          </button>
+        </div>
+
+        <button
+          id="nextMonthBtn"
+          type="button"
+          class="px-3 py-2 rounded-xl bg-[#efe8d8] hover:bg-[#e3d7be] active:scale-95 text-[#232921] text-xs sm:text-sm font-bold transition flex items-center gap-1 border border-[#d6c9ae]"
+          aria-label="Mois suivant"
+        >
+          <span>Suivant</span>
+          <span>▶</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Barre d'outils : filtre salarié, base horaire modifiable, impression, réinitialisation -->
+    <section class="bg-[#fffdf9] rounded-2xl p-4 shadow-sm border border-[#dfd5c0] space-y-3.5 no-print">
+      <div class="flex flex-wrap items-center justify-between gap-2.5">
+        <div class="flex items-center gap-1.5 flex-wrap" role="group" aria-label="Filtrer par salarié">
+          <button type="button" data-filter="ALL" class="filter-btn px-3.5 py-2 rounded-xl text-sm font-semibold bg-[#2d4727] text-[#fffdf9] transition">
+            Tous (3)
+          </button>
+          <button type="button" data-filter="Pierre" class="filter-btn px-3.5 py-2 rounded-xl text-sm font-semibold bg-[#efe8d8] text-[#232921] hover:bg-[#e3d7be] transition">
+            Pierre
+          </button>
+          <button type="button" data-filter="Damien" class="filter-btn px-3.5 py-2 rounded-xl text-sm font-semibold bg-[#efe8d8] text-[#232921] hover:bg-[#e3d7be] transition">
+            Damien
+          </button>
+          <button type="button" data-filter="David" class="filter-btn px-3.5 py-2 rounded-xl text-sm font-semibold bg-[#efe8d8] text-[#232921] hover:bg-[#e3d7be] transition">
+            David
+          </button>
+        </div>
+
+        <div class="flex items-center gap-2 flex-wrap">
+          <button
+            id="exportBtn"
+            type="button"
+            class="px-3.5 py-2 rounded-xl text-sm font-semibold bg-[#efe8d8] text-[#232921] hover:bg-[#e3d7be] border border-[#d6c9ae] transition"
+            title="Choisir un format d'exportation (PDF ou sauvegarde JSON)"
+          >
+            Exporter
+          </button>
+          <button
+            id="importBtn"
+            type="button"
+            class="px-3.5 py-2 rounded-xl text-sm font-semibold bg-[#efe8d8] text-[#232921] hover:bg-[#e3d7be] border border-[#d6c9ae] transition"
+            title="Restaurer une sauvegarde JSON"
+          >
+            Importer
+          </button>
+          <input id="importFileInput" type="file" accept=".json,application/json" class="hidden" />
+          <button
+            id="printBtn"
+            type="button"
+            class="px-3.5 py-2 rounded-xl text-sm font-semibold bg-[#e6efe3] text-[#2d4727] hover:bg-[#d6e4d1] border border-[#b9cfb2] transition"
+          >
+            Imprimer
+          </button>
+          <button
+            id="resetBtn"
+            type="button"
+            class="px-3.5 py-2 rounded-xl text-sm font-semibold bg-[#f7e6dc] text-[#9a4e28] hover:bg-[#efd3c2] border border-[#e0b89f] transition"
+          >
+            Réinitialiser
+          </button>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-[#ece3d1]">
+        <label for="baseHoursInput" class="text-sm font-semibold text-[#232921] flex items-center gap-2">
+          <span>Base par défaut (jour travaillé) :</span>
+        </label>
+        <div class="flex items-center gap-1.5">
+          <input
+            id="baseHoursInput"
+            type="number"
+            step="0.25"
+            min="0"
+            max="24"
+            value="7"
+            class="w-20 px-2.5 py-1.5 rounded-xl border border-[#cfc2a8] bg-[#fffdf9] text-center text-sm font-bold text-[#232921] focus:ring-2 focus:ring-[#2d4727] focus:border-[#2d4727] outline-none"
+          />
+          <span class="text-sm font-semibold text-[#5b6358]">h / jour</span>
+        </div>
+      </div>
+
+      <p class="text-xs sm:text-sm text-[#5b6358] leading-relaxed">
+        Touchez une case pour écrire librement : saisissez un nombre d'heures (<strong class="text-[#232921]">8</strong>, <strong class="text-[#232921]">8,5 h</strong>, <strong class="text-[#232921]">8h-16h</strong>), <strong class="text-[#232921]">R</strong> (repos) ou <strong class="text-[#9a4e28]">CP</strong> (congés). Toutes les cases de la semaine (débuts de semaine, vendredis et changements de mois) restent actives et modifiables.
+      </p>
+    </section>
+
+    <section id="weeksContainer" class="space-y-4" aria-label="Planning semaine par semaine">
+    </section>
+
+    <section class="bg-[#fffdf9] rounded-2xl p-4 sm:p-5 shadow-sm border border-[#dfd5c0] print-break-avoid" aria-label="Bilan mensuel par salarié">
+      <div class="flex items-center justify-between gap-2 mb-3">
+        <div>
+          <h2 id="bilanMonthTitle" class="text-base sm:text-lg font-bold text-[#232921]">Bilan Mensuel</h2>
+          <p id="bilanSubtitle" class="text-xs sm:text-sm text-[#5b6358]">Calcul automatique (heures modifiables)</p>
+        </div>
+        <div class="flex items-center gap-2 no-print">
+          <button
+            id="copySummaryBtn"
+            type="button"
+            class="px-3 py-1 rounded-xl text-xs sm:text-sm font-semibold bg-[#efe8d8] hover:bg-[#e3d7be] text-[#232921] border border-[#d6c9ae] transition"
+            title="Copier le bilan mensuel sous forme de texte"
+          >
+            Copier bilan
+          </button>
+          <span id="daysInMonthBadge" class="px-3 py-1 rounded-full text-xs sm:text-sm font-semibold bg-[#e4eee0] text-[#2d4727]">
+            30 jours
+          </span>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto rounded-xl border border-[#dfd5c0]">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-[#f3ece0] border-b border-[#dfd5c0] text-[11px] sm:text-xs font-semibold text-[#4c5449] uppercase tracking-wide">
+              <th class="py-3 px-2.5">Salarié</th>
+              <th class="py-3 px-1.5 text-center">Jours</th>
+              <th class="py-3 px-1.5 text-center">Repos</th>
+              <th class="py-3 px-1.5 text-center">Congés</th>
+              <th class="py-3 px-2.5 text-right whitespace-nowrap">Total Heures</th>
+            </tr>
+          </thead>
+          <tbody id="summaryTableBody" class="divide-y divide-[#e7decb] text-sm">
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modale de confirmation -->
+  <div id="infoModal" class="hidden fixed inset-0 z-50 bg-[#1a2418]/60 backdrop-blur-xs flex items-center justify-center p-4 no-print" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="bg-[#fffdf9] rounded-2xl max-w-md w-full p-5 shadow-2xl border border-[#dfd5c0] space-y-4 animate-fade-in">
+      <div class="flex items-center justify-between">
+        <h3 id="modalTitle" class="text-lg font-bold text-[#232921]">Confirmation</h3>
+        <button id="closeModalBtn" type="button" class="text-[#5b6358] hover:text-[#232921] font-bold text-lg px-2 py-1 rounded-lg">✕</button>
+      </div>
+      <div id="modalContent" class="text-sm text-[#4c5449] space-y-2.5 leading-relaxed">
+      </div>
+      <div class="flex justify-end pt-1">
+        <button id="confirmModalBtn" type="button" class="px-4 py-2 rounded-xl bg-[#2d4727] text-[#fffdf9] text-sm font-semibold hover:bg-[#22371e] transition">
+          Compris
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const DEFAULT_BASE_HOURS = 7;
+    const EMPLOYEES = ['Pierre', 'Damien', 'David'];
+
+    const MONTH_NAMES = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+    const MONTH_SHORT = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+    const DAY_LABELS = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+
+    let systemNow = new Date();
+    let systemYear = systemNow.getFullYear();
+    let systemMonth = systemNow.getMonth();
+
+    let activeYear = systemYear;
+    let activeMonth = systemMonth;
+    let focusedWeekIndex = null;
+
+    let appState = {
+      filter: 'ALL',
+      baseHours: DEFAULT_BASE_HOURS,
+      overrides: {},
+      weekHourOverrides: {},
+      monthHourOverrides: {}
+    };
+
+    const holidaysCache = new Map();
+
+    function getStorageKey(year, month) {
+      return `planning_${year}_${String(month + 1).padStart(2, '0')}_libre_v4`;
+    }
+
+    function getLegacyStorageKeys(year, month) {
+      const mStr = String(month + 1).padStart(2, '0');
+      return [
+        `planning_${year}_${mStr}_libre_v3`,
+        `planning_${year}_${mStr}_libre_v2`,
+        `planning_${year}_${mStr}_libre_v1`
+      ];
+    }
+
+    function formatDateKey(dateObj) {
+      const y = dateObj.getFullYear();
+      const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const d = String(dateObj.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function getDaysInMonth(year, month) {
+      return new Date(year, month + 1, 0).getDate();
+    }
+
+    function computeEaster(year) {
+      const a = year % 19;
+      const b = Math.floor(year / 100);
+      const c = year % 100;
+      const d = Math.floor(b / 4);
+      const e = b % 4;
+      const f = Math.floor((b + 8) / 25);
+      const g = Math.floor((b - f + 1) / 3);
+      const h = (19 * a + b - d - g + 15) % 30;
+      const i = Math.floor(c / 4);
+      const k = c % 4;
+      const l = (32 + 2 * e + 2 * i - h - k) % 7;
+      const m = Math.floor((a + 11 * h + 22 * l) / 451);
+      const month = Math.floor((h + l - 7 * m + 114) / 31);
+      const day = ((h + l - 7 * m + 114) % 31) + 1;
+      return new Date(year, month - 1, day);
+    }
+
+    function getFrenchHolidays(year) {
+      if (holidaysCache.has(year)) {
+        return holidaysCache.get(year);
+      }
+      const easter = computeEaster(year);
+      const addDays = (date, n) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + n);
+
+      const fixed = [
+        [1, 1], [5, 1], [5, 8], [7, 14], [8, 15], [11, 1], [11, 11], [12, 25]
+      ];
+      const set = new Set(fixed.map(([m, d]) => `${m}-${d}`));
+
+      [addDays(easter, 1), addDays(easter, 39), addDays(easter, 50)].forEach((d) => {
+        set.add(`${d.getMonth() + 1}-${d.getDate()}`);
+      });
+      holidaysCache.set(year, set);
+      return set;
+    }
+
+    function isHolidayDate(dateObj) {
+      const holidays = getFrenchHolidays(dateObj.getFullYear());
+      return holidays.has(`${dateObj.getMonth() + 1}-${dateObj.getDate()}`);
+    }
+
+    function getIsoWeekNumber(dateObj) {
+      const t = new Date(Date.UTC(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate()));
+      t.setUTCDate(t.getUTCDate() + 4 - (t.getUTCDay() || 7));
+      const yearStart = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
+      return Math.ceil(((t - yearStart) / 86400000 + 1) / 7);
+    }
+
+    function buildWeeksConfig(year, month) {
+      const daysInMonth = getDaysInMonth(year, month);
+      const firstOfMonth = new Date(year, month, 1);
+      const firstMonday = new Date(firstOfMonth);
+      firstMonday.setDate(firstOfMonth.getDate() - ((firstOfMonth.getDay() + 6) % 7));
+
+      const weeks = [];
+      let cursor = new Date(firstMonday);
+      let guard = 0;
+      while (guard < 20) {
+        if (cursor > new Date(year, month, daysInMonth)) break;
+        weeks.push({
+          weekNumber: getIsoWeekNumber(cursor),
+          startDate: new Date(cursor)
+        });
+        cursor.setDate(cursor.getDate() + 7);
+        guard += 1;
+      }
+      return weeks;
+    }
+
+    function formatHours(val) {
+      const num = Math.round((Number(val) || 0) * 100) / 100;
+      return `${String(num).replace('.', ',')} h`;
+    }
+
+    function parseHoursFromText(text, fallbackHours) {
+      const clean = String(text || '').trim();
+      if (!clean) return fallbackHours;
+
+      const rangeMatch = clean.match(/^(\d{1,2})(?:[h:](\d{1,2}))?\s*[-–à/]\s*(\d{1,2})(?:[h:](\d{1,2}))?$/i);
+      if (rangeMatch) {
+        const h1 = parseInt(rangeMatch[1], 10) + (rangeMatch[2] ? parseInt(rangeMatch[2], 10) / 60 : 0);
+        const h2 = parseInt(rangeMatch[3], 10) + (rangeMatch[4] ? parseInt(rangeMatch[4], 10) / 60 : 0);
+        if (!isNaN(h1) && !isNaN(h2) && h2 >= h1) {
+          return Math.round((h2 - h1) * 100) / 100;
+        }
+      }
+
+      const hmMatch = clean.match(/^(\d{1,2})h(\d{1,2})$/i);
+      if (hmMatch) {
+        const hrs = parseInt(hmMatch[1], 10) + parseInt(hmMatch[2], 10) / 60;
+        if (!isNaN(hrs)) return Math.round(hrs * 100) / 100;
+      }
+
+      const numMatch = clean.match(/^(\d+(?:[.,]\d+)?)\s*h?$/i);
+      if (numMatch) {
+        const parsed = parseFloat(numMatch[1].replace(',', '.'));
+        if (!isNaN(parsed)) return parsed;
+      }
+
+      return fallbackHours;
+    }
+
+    function getDefaultCellCode(dateObj) {
+      if (isHolidayDate(dateObj)) return 'HOLIDAY';
+      const jsDay = dateObj.getDay();
+      if (jsDay === 0 || jsDay === 6) return 'R';
+      return 'WORK';
+    }
+
+    function getRawOverrideForDate(employee, dateObj) {
+      const empMap = appState.overrides?.[employee];
+      if (!empMap || typeof empMap !== 'object') return undefined;
+
+      const dateKey = formatDateKey(dateObj);
+      if (typeof empMap[dateKey] === 'string' && empMap[dateKey].trim() !== '') {
+        return empMap[dateKey].trim();
+      }
+
+      if (dateObj.getFullYear() === activeYear && dateObj.getMonth() === activeMonth) {
+        const dayNum = String(dateObj.getDate());
+        if (typeof empMap[dayNum] === 'string' && empMap[dayNum].trim() !== '') {
+          return empMap[dayNum].trim();
+        }
+      }
+      return undefined;
+    }
+
+    function getCellCode(employee, dateObj) {
+      const custom = getRawOverrideForDate(employee, dateObj);
+      if (typeof custom === 'string' && custom.trim() !== '') {
+        return custom.trim();
+      }
+      return getDefaultCellCode(dateObj);
+    }
+
+    function loadStateForMonth(year, month) {
+      const currentFilter = appState.filter || 'ALL';
+      appState = {
+        filter: currentFilter,
+        baseHours: DEFAULT_BASE_HOURS,
+        overrides: {},
+        weekHourOverrides: {},
+        monthHourOverrides: {}
+      };
+
+      try {
+        let raw = localStorage.getItem(getStorageKey(year, month));
+        if (!raw) {
+          for (const legacyKey of getLegacyStorageKeys(year, month)) {
+            const legacyRaw = localStorage.getItem(legacyKey);
+            if (legacyRaw) {
+              raw = legacyRaw;
+              break;
+            }
+          }
+        }
+        if (!raw) return;
+
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object') {
+          if (typeof parsed.filter === 'string') appState.filter = parsed.filter;
+          if (typeof parsed.baseHours === 'number' && !isNaN(parsed.baseHours)) {
+            appState.baseHours = parsed.baseHours;
+          }
+          if (parsed.overrides && typeof parsed.overrides === 'object') appState.overrides = parsed.overrides;
+          if (parsed.weekHourOverrides && typeof parsed.weekHourOverrides === 'object') appState.weekHourOverrides = parsed.weekHourOverrides;
+          if (parsed.monthHourOverrides && typeof parsed.monthHourOverrides === 'object') appState.monthHourOverrides = parsed.monthHourOverrides;
+        }
+      } catch (err) {
+        console.warn('Impossible de charger les préférences locales :', err);
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(getStorageKey(activeYear, activeMonth), JSON.stringify(appState));
+      } catch (err) {
+        console.warn('Impossible de sauvegarder dans localStorage :', err);
+      }
+    }
+
+    let toastTimer = null;
+    function showToast(message) {
+      const banner = document.getElementById('toastBanner');
+      const textEl = document.getElementById('toastMessage');
+      textEl.textContent = message;
+      banner.classList.remove('hidden');
+
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        banner.classList.add('hidden');
+      }, 2800);
+    }
+
+    function openModal(title, htmlContent) {
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalContent').innerHTML = htmlContent;
+      document.getElementById('infoModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('infoModal').classList.add('hidden');
+    }
+
+    function getCellAppearance(rawCode) {
+      const code = (rawCode || '').toUpperCase();
+
+      switch (code) {
+        case 'WORK':
+          return { classes: 'bg-[#e6f0e3] hover:bg-[#d7e6d2] text-[#232e20] border-[#b7ccb1]' };
+        case 'HOLIDAY':
+        case 'F':
+        case 'FERIE':
+          return { classes: 'bg-[#f8e5e0] hover:bg-[#f2d3cb] text-[#8c3827] border-[#e2b4a8] font-semibold' };
+        case 'R':
+          return { classes: 'bg-[#efe8d8] hover:bg-[#e3d9c3] text-[#4c5449] border-[#d3c7ae] font-bold' };
+        case 'CP':
+          return { classes: 'bg-[#f7e6dc] hover:bg-[#efd3c2] text-[#9a4e28] border-[#e0b89f] font-bold' };
+        case '':
+          return { classes: 'bg-[#fffdf9] text-[#7a8277] border-[#dfd5c0]' };
+        default:
+          return { classes: 'bg-[#f1f6ee] text-[#232921] border-[#4f7346] font-semibold' };
+      }
+    }
+
+    function autoFitCell(inp) {
+      inp.style.height = 'auto';
+      const targetHeight = Math.max(46, inp.scrollHeight);
+      inp.style.height = `${targetHeight}px`;
+    }
+
+    function buildWeekDays(weekCfg) {
+      const days = [];
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(weekCfg.startDate.getFullYear(), weekCfg.startDate.getMonth(), weekCfg.startDate.getDate() + i);
+        days.push({
+          dateObj: d,
+          dateKey: formatDateKey(d),
+          dayOfMonth: d.getDate(),
+          dayLabel: DAY_LABELS[i],
+          isHoliday: isHolidayDate(d),
+          isOtherMonth: d.getMonth() !== activeMonth || d.getFullYear() !== activeYear
+        });
+      }
+      return days;
+    }
+
+    function computeWeekEmployeeStats(employee, weekDays, weekIndex) {
+      let workedDays = 0;
+      let autoHours = 0;
+
+      for (const dayInfo of weekDays) {
+        const rawCode = getCellCode(employee, dayInfo.dateObj);
+        const code = String(rawCode).trim().toUpperCase();
+
+        if (code === 'R' || code === 'CP' || code === 'HOLIDAY' || code === 'F' || code === 'FERIE' || code === '') {
+          continue;
+        }
+
+        const dayHours = code === 'WORK'
+          ? appState.baseHours
+          : parseHoursFromText(rawCode, appState.baseHours);
+
+        if (dayHours > 0) {
+          workedDays += 1;
+          autoHours += dayHours;
+        }
+      }
+
+      const manualWeekHours = appState.weekHourOverrides?.[employee]?.[weekIndex];
+      const hasManualOverride = typeof manualWeekHours === 'number' && !isNaN(manualWeekHours);
+
+      return {
+        workedDays,
+        hours: hasManualOverride ? manualWeekHours : autoHours,
+        isManual: hasManualOverride
+      };
+    }
+
+    function computeEmployeeStats(employee) {
+      const daysInMonth = getDaysInMonth(activeYear, activeMonth);
+      let workedDays = 0;
+      let restDays = 0;
+      let ptoDays = 0;
+      let holidayDays = 0;
+      let autoMonthHours = 0;
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateObj = new Date(activeYear, activeMonth, day);
+        const rawCode = getCellCode(employee, dateObj);
+        const code = String(rawCode).trim().toUpperCase();
+
+        if (code === 'R') {
+          restDays += 1;
+        } else if (code === 'CP') {
+          ptoDays += 1;
+        } else if (code === 'HOLIDAY' || code === 'F' || code === 'FERIE') {
+          holidayDays += 1;
+        } else {
+          const h = code === 'WORK' ? appState.baseHours : parseHoursFromText(rawCode, appState.baseHours);
+          if (h > 0) {
+            workedDays += 1;
+            autoMonthHours += h;
+          }
+        }
+      }
+
+      const manualMonthHours = appState.monthHourOverrides?.[employee];
+      const hasManualMonth = typeof manualMonthHours === 'number' && !isNaN(manualMonthHours);
+
+      return {
+        workedDays,
+        restDays,
+        ptoDays,
+        holidayDays,
+        totalHours: hasManualMonth ? manualMonthHours : autoMonthHours,
+        isManual: hasManualMonth
+      };
+    }
+
+    function updateFilterButtons() {
+      document.querySelectorAll('.filter-btn').forEach((btn) => {
+        const val = btn.getAttribute('data-filter');
+        const active = val === appState.filter;
+        btn.className = active
+          ? 'filter-btn px-3.5 py-2 rounded-xl text-sm font-semibold bg-[#2d4727] text-[#fffdf9] transition'
+          : 'filter-btn px-3.5 py-2 rounded-xl text-sm font-semibold bg-[#efe8d8] text-[#232921] hover:bg-[#e3d7be] transition';
+      });
+    }
+
+    function applyMonthLabels() {
+      const monthLabel = MONTH_NAMES[activeMonth];
+      const daysInMonth = getDaysInMonth(activeYear, activeMonth);
+      const isCurrentSystemMonth = (activeYear === systemYear && activeMonth === systemMonth);
+
+      document.title = `Planning ${monthLabel} ${activeYear} — Débarras Express 09`;
+
+      const h1 = document.getElementById('mainHeaderTitle');
+      if (h1) h1.textContent = `Planning ${monthLabel} ${activeYear}`;
+
+      const monthDisplay = document.getElementById('currentMonthDisplay');
+      if (monthDisplay) monthDisplay.textContent = `${monthLabel} ${activeYear}`;
+
+      const todayBtn = document.getElementById('todayMonthBtn');
+      if (todayBtn) {
+        if (isCurrentSystemMonth) {
+          todayBtn.classList.add('hidden');
+        } else {
+          todayBtn.classList.remove('hidden');
+        }
+      }
+
+      const badge = document.getElementById('daysInMonthBadge');
+      if (badge) badge.textContent = `${daysInMonth} jours`;
+
+      const bilanTitle = document.getElementById('bilanMonthTitle');
+      if (bilanTitle) bilanTitle.textContent = `Bilan Mensuel — ${monthLabel} ${activeYear}`;
+
+      const metaTitle = document.querySelector('meta[name="apple-mobile-web-app-title"]');
+      if (metaTitle) metaTitle.setAttribute('content', `Planning ${monthLabel} ${activeYear}`);
+
+      const pTitle = document.getElementById('printBannerTitle');
+      const pSub = document.getElementById('printBannerSub');
+      const pDate = document.getElementById('printBannerDate');
+      if (pTitle) pTitle.textContent = `Débarras Express 09 — Planning ${monthLabel} ${activeYear}`;
+      if (pSub) pSub.textContent = `Pierre, Damien & David · Base ${formatHours(appState.baseHours)} / jour`;
+      if (pDate) pDate.textContent = `Édité le ${new Date().toLocaleDateString('fr-FR')}`;
+    }
+
+    function setFocusedWeek(weekIdx, pushHistory = true) {
+      const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
+      if (weekIdx === null || weekIdx < 0 || weekIdx >= weeksConfig.length) {
+        focusedWeekIndex = null;
+        if (pushHistory) {
+          try {
+            history.replaceState(
+              { year: activeYear, month: activeMonth, week: null },
+              '',
+              `#mois-${activeYear}-${String(activeMonth + 1).padStart(2, '0')}`
+            );
+          } catch (_) {}
+        }
+        renderWeeks();
+        window.scrollTo({ top: 0, behavior: 'auto' });
+        return;
+      }
+
+      focusedWeekIndex = weekIdx;
+      const wkNum = weeksConfig[weekIdx].weekNumber;
+      requestAnimationFrame(() => {
+        const hdr = document.querySelector('header.app-header');
+        const fw = document.querySelector('.week-fullscreen-vertical');
+        if (hdr && fw) {
+          const bottomPx = Math.max(56, Math.round(hdr.getBoundingClientRect().bottom));
+          fw.style.top = `${bottomPx}px`;
+        }
+      });
+      if (pushHistory) {
+        try {
+          history.pushState(
+            { year: activeYear, month: activeMonth, week: weekIdx },
+            '',
+            `#semaine-${wkNum}`
+          );
+        } catch (_) {}
+      }
+      renderWeeks();
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+
+    function switchToMonth(newYear, newMonth) {
+      focusedWeekIndex = null;
+      activeYear = newYear;
+      activeMonth = newMonth;
+      loadStateForMonth(activeYear, activeMonth);
+      renderAll();
+    }
+
+    function renderAll() {
+      applyMonthLabels();
+
+      const baseInput = document.getElementById('baseHoursInput');
+      if (baseInput) baseInput.value = appState.baseHours;
+
+      const sub = document.getElementById('headerSubtitle');
+      if (sub) sub.textContent = `Débarras Express 09 · Pierre, Damien & David — Base ${formatHours(appState.baseHours)} / jour`;
+
+      updateFilterButtons();
+      renderWeeks();
+      renderSummaryTable();
+    }
+
+    function renderWeeks() {
+      const container = document.getElementById('weeksContainer');
+      container.innerHTML = '';
+
+      const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
+
+      const visibleEmployees = appState.filter === 'ALL'
+        ? EMPLOYEES
+        : EMPLOYEES.filter((name) => name === appState.filter);
+
+      weeksConfig.forEach((weekCfg, index) => {
+        const weekDays = buildWeekDays(weekCfg);
+
+        const isFocusedWeek = focusedWeekIndex === index;
+        if (focusedWeekIndex !== null && !isFocusedWeek) {
+          return;
+        }
+
+        const outerWrapper = isFocusedWeek ? document.createElement('div') : null;
+        if (outerWrapper) {
+          outerWrapper.className = 'week-fullscreen-vertical animate-fade-in';
+        }
+
+        const card = document.createElement('div');
+        card.className = isFocusedWeek
+          ? 'bg-[#fffdf9] rounded-2xl p-3.5 sm:p-5 shadow-md border-2 border-[#2d4727] min-h-full flex flex-col max-w-4xl mx-auto'
+          : 'bg-[#fffdf9] rounded-2xl p-3.5 sm:p-4 shadow-sm border border-[#dfd5c0] print-break-avoid';
+
+        const firstDate = weekDays[0]?.dateObj;
+        const lastDate = weekDays[6]?.dateObj;
+        const fmt = (d) => d ? `${d.getDate()} ${MONTH_SHORT[d.getMonth()]}` : '';
+
+        const headerDiv = document.createElement('div');
+        headerDiv.className = 'flex items-center justify-between gap-2 mb-3 flex-wrap';
+
+        const leftGroup = document.createElement('div');
+        leftGroup.className = 'flex items-center gap-2 flex-wrap';
+
+        const weekBadgeBtn = document.createElement('button');
+        weekBadgeBtn.type = 'button';
+        weekBadgeBtn.className = 'open-week-btn px-3.5 py-1.5 rounded-lg bg-[#2d4727] hover:bg-[#22371e] active:scale-95 text-[#fffdf9] text-xs sm:text-sm font-bold transition flex items-center gap-1.5 cursor-pointer';
+        weekBadgeBtn.dataset.weekIndex = index;
+        weekBadgeBtn.dataset.weekNumber = weekCfg.weekNumber;
+        weekBadgeBtn.title = isFocusedWeek ? 'Revenir à la vue d’ensemble du mois' : `Ouvrir la Semaine ${weekCfg.weekNumber} en grand`;
+        weekBadgeBtn.innerHTML = isFocusedWeek
+          ? `<span>◀</span><span>Vue d’ensemble</span>`
+          : `<span>Semaine ${weekCfg.weekNumber}</span><span class="text-[11px] opacity-85">⤢</span>`;
+
+        const dateRangeSpan = document.createElement('span');
+        dateRangeSpan.className = 'text-xs sm:text-sm font-medium text-[#4c5449]';
+        dateRangeSpan.textContent = `${fmt(firstDate)} – ${fmt(lastDate)}`;
+
+        leftGroup.appendChild(weekBadgeBtn);
+        leftGroup.appendChild(dateRangeSpan);
+
+        if (isFocusedWeek) {
+          const titleTag = document.createElement('span');
+          titleTag.className = 'px-2.5 py-1 rounded-full bg-[#e4eee0] text-[#2d4727] text-xs font-bold';
+          titleTag.textContent = `Semaine ${weekCfg.weekNumber} · Grand format`;
+          leftGroup.appendChild(titleTag);
+
+          const backBtn = document.createElement('button');
+          backBtn.type = 'button';
+          backBtn.className = 'back-to-month-btn px-3 py-1.5 rounded-lg bg-[#efe8d8] hover:bg-[#e3d7be] active:scale-95 text-[#232921] text-xs sm:text-sm font-bold border border-[#d6c9ae] cursor-pointer';
+          backBtn.textContent = '← Retour au mois';
+          backBtn.addEventListener('click', (ev) => {
+            ev.stopPropagation();
+            setFocusedWeek(null, false);
+          });
+          leftGroup.appendChild(backBtn);
+        }
+
+        const rightInfo = document.createElement('span');
+        rightInfo.className = 'text-xs text-[#5b6358]';
+        rightInfo.textContent = isFocusedWeek
+          ? 'Bouton « Précédent » du téléphone ou « Vue d’ensemble » pour revenir'
+          : `Base ${formatHours(appState.baseHours)} / jour`;
+
+        headerDiv.appendChild(leftGroup);
+        headerDiv.appendChild(rightInfo);
+        card.appendChild(headerDiv);
+
+        const tableWrapper = document.createElement('div');
+        tableWrapper.className = 'overflow-x-auto rounded-xl border border-[#dfd5c0]';
+
+        const table = document.createElement('table');
+        table.className = 'w-full border-collapse text-center';
+
+        const thead = document.createElement('thead');
+        const headRow = document.createElement('tr');
+        headRow.className = 'bg-[#f3ece0] border-b border-[#dfd5c0] text-xs font-semibold text-[#4c5449]';
+
+        const thName = document.createElement('th');
+        thName.className = 'py-2.5 px-3 text-left sticky left-0 bg-[#f3ece0] z-10 border-r border-[#dfd5c0] min-w-[84px] sm:min-w-[100px] text-sm';
+        thName.textContent = 'Salarié';
+        headRow.appendChild(thName);
+
+        weekDays.forEach((d) => {
+          const th = document.createElement('th');
+          th.className = 'py-2 px-1 border-r border-[#dfd5c0] min-w-[82px] sm:min-w-[92px]';
+          const dateBadge = d.isOtherMonth
+            ? `${d.dayOfMonth}/${String(d.dateObj.getMonth() + 1).padStart(2, '0')}`
+            : `${d.dayOfMonth}`;
+
+          const todayKey = formatDateKey(new Date());
+          const isToday = d.dateKey === todayKey;
+          if (isToday) {
+            th.classList.add('today-col-highlight');
+          }
+          if (d.isHoliday) {
+            th.classList.add('bg-[#f8e5e0]', 'text-[#8c3827]');
+            th.innerHTML = `<div class="text-xs font-bold">${d.dayLabel}</div><div class="text-sm font-extrabold">${dateBadge}${isToday ? ' · Aujourd’hui' : ''}</div>`;
+          } else {
+            th.innerHTML = `<div class="text-xs">${d.dayLabel}</div><div class="text-sm font-bold text-[#232921]">${dateBadge}${isToday ? ' · Aujourd’hui' : ''}</div>`;
+          }
+          headRow.appendChild(th);
+        });
+
+        const thDays = document.createElement('th');
+        thDays.className = 'py-2.5 px-2 border-r border-[#dfd5c0] text-xs text-[#232921] min-w-[54px]';
+        thDays.textContent = 'Jours';
+        headRow.appendChild(thDays);
+
+        const thHours = document.createElement('th');
+        thHours.className = 'py-2.5 px-2 text-xs text-[#232921] min-w-[70px]';
+        thHours.textContent = 'Heures';
+        headRow.appendChild(thHours);
+
+        thead.appendChild(headRow);
+        table.appendChild(thead);
+
+        const tbody = document.createElement('tbody');
+        tbody.className = 'divide-y divide-[#e7decb]';
+
+        visibleEmployees.forEach((employee) => {
+          const tr = document.createElement('tr');
+          tr.className = 'bg-[#fffdf9]';
+
+          const tdName = document.createElement('td');
+          tdName.className = 'py-2.5 px-3 text-left text-sm sm:text-base font-bold text-[#232921] sticky left-0 bg-[#fffdf9] z-10 border-r border-[#dfd5c0]';
+          tdName.textContent = employee;
+          tr.appendChild(tdName);
+
+          weekDays.forEach((d) => {
+            const td = document.createElement('td');
+            td.className = 'p-1 border-r border-[#dfd5c0] align-middle';
+
+            const code = getCellCode(employee, d.dateObj);
+            const visual = getCellAppearance(code);
+            const defaultCode = getDefaultCellCode(d.dateObj);
+            const customVal = getRawOverrideForDate(employee, d.dateObj);
+
+            const inp = document.createElement('textarea');
+            inp.rows = 1;
+            inp.className = `planning-cell rounded-lg border transition outline-none focus:ring-2 focus:ring-[#2d4727] ${visual.classes}`;
+            inp.value = customVal !== undefined ? customVal : (defaultCode === 'R' ? 'R' : '');
+            inp.placeholder = '·';
+            inp.spellcheck = false;
+            inp.setAttribute(
+              'aria-label',
+              `${employee}, ${d.dayLabel} ${d.dayOfMonth} ${MONTH_NAMES[d.dateObj.getMonth()].toLowerCase()} ${d.dateObj.getFullYear()}`
+            );
+            inp.dataset.employee = employee;
+            inp.dataset.dateKey = d.dateKey;
+            inp.dataset.weekIndex = index;
+
+            td.appendChild(inp);
+            requestAnimationFrame(() => autoFitCell(inp));
+
+            tr.appendChild(td);
+          });
+
+          const weekStats = computeWeekEmployeeStats(employee, weekDays, index);
+
+          const tdDays = document.createElement('td');
+          tdDays.className = 'py-2 px-2 border-r border-[#dfd5c0] text-sm font-bold text-[#232921] whitespace-nowrap';
+          tdDays.textContent = `${weekStats.workedDays} j`;
+          tr.appendChild(tdDays);
+
+          const tdHours = document.createElement('td');
+          tdHours.className = 'py-1.5 px-1.5 text-sm font-bold text-[#2d4727] whitespace-nowrap';
+          const weekHourInput = document.createElement('input');
+          weekHourInput.type = 'text';
+          weekHourInput.inputMode = 'decimal';
+          weekHourInput.className = `hours-edit-input text-sm ${weekStats.isManual ? 'text-[#9a4e28] underline decoration-dotted' : 'text-[#2d4727]'}`;
+          weekHourInput.value = formatHours(weekStats.hours);
+          weekHourInput.title = 'Cliquez pour modifier manuellement le total d’heures de la semaine';
+          weekHourInput.dataset.employee = employee;
+          weekHourInput.dataset.weekIndex = index;
+          tdHours.appendChild(weekHourInput);
+          tr.appendChild(tdHours);
+
+          tbody.appendChild(tr);
+        });
+
+        table.appendChild(tbody);
+        if (isFocusedWeek) {
+          tableWrapper.classList.add('hidden', 'sm:block');
+        }
+        tableWrapper.appendChild(table);
+        card.appendChild(tableWrapper);
+
+        if (isFocusedWeek) {
+          const mobileVerticalBox = document.createElement('div');
+          mobileVerticalBox.className = 'sm:hidden space-y-2.5 mt-2 flex-1';
+
+          const todayKey = formatDateKey(new Date());
+
+          weekDays.forEach((d) => {
+            const isToday = d.dateKey === todayKey;
+            const dayCard = document.createElement('div');
+            dayCard.className = isToday
+              ? 'rounded-xl border-2 border-[#2d4727] bg-[#eef6eb] p-2.5'
+              : (d.isHoliday
+                ? 'rounded-xl border border-[#e2b4a8] bg-[#fdf3f0] p-2.5'
+                : 'rounded-xl border border-[#dfd5c0] bg-[#fcfaf5] p-2.5');
+
+            const dayHeader = document.createElement('div');
+            dayHeader.className = 'flex items-center justify-between mb-2';
+            const dateBadge = d.isOtherMonth
+              ? `${d.dayOfMonth}/${String(d.dateObj.getMonth() + 1).padStart(2, '0')}`
+              : `${d.dayOfMonth}`;
+            dayHeader.innerHTML = `
+              <span class="text-sm font-extrabold text-[#232921]">${d.dayLabel} ${dateBadge} ${MONTH_SHORT[d.dateObj.getMonth()]}</span>
+              <span class="text-xs font-semibold ${isToday ? 'text-[#2d4727]' : (d.isHoliday ? 'text-[#8c3827]' : 'text-[#5b6358]')}">${isToday ? 'Aujourd’hui' : (d.isHoliday ? 'Férié' : '')}</span>
+            `;
+            dayCard.appendChild(dayHeader);
+
+            const empGrid = document.createElement('div');
+            empGrid.className = 'grid grid-cols-3 gap-2';
+
+            visibleEmployees.forEach((employee) => {
+              const col = document.createElement('div');
+              col.className = 'flex flex-col items-center gap-1';
+
+              const lbl = document.createElement('span');
+              lbl.className = 'text-xs font-bold text-[#232921] truncate w-full text-center';
+              lbl.textContent = employee;
+              col.appendChild(lbl);
+
+              const code = getCellCode(employee, d.dateObj);
+              const visual = getCellAppearance(code);
+              const defaultCode = getDefaultCellCode(d.dateObj);
+              const customVal = getRawOverrideForDate(employee, d.dateObj);
+
+              const inp = document.createElement('textarea');
+              inp.rows = 1;
+              inp.className = `planning-cell rounded-lg border transition outline-none focus:ring-2 focus:ring-[#2d4727] ${visual.classes}`;
+              inp.value = customVal !== undefined ? customVal : (defaultCode === 'R' ? 'R' : '');
+              inp.placeholder = '·';
+              inp.spellcheck = false;
+              inp.setAttribute(
+                'aria-label',
+                `${employee}, ${d.dayLabel} ${d.dayOfMonth} ${MONTH_NAMES[d.dateObj.getMonth()].toLowerCase()} ${d.dateObj.getFullYear()}`
+              );
+              inp.dataset.employee = employee;
+              inp.dataset.dateKey = d.dateKey;
+              inp.dataset.weekIndex = index;
+
+              col.appendChild(inp);
+              requestAnimationFrame(() => autoFitCell(inp));
+              empGrid.appendChild(col);
+            });
+
+            dayCard.appendChild(empGrid);
+            mobileVerticalBox.appendChild(dayCard);
+          });
+
+          const totalsBox = document.createElement('div');
+          totalsBox.className = 'rounded-xl border border-[#dfd5c0] bg-[#f3ece0] p-3 mt-3 space-y-2';
+          const totTitle = document.createElement('div');
+          totTitle.className = 'text-xs font-bold uppercase tracking-wide text-[#4c5449]';
+          totTitle.textContent = `Totaux Semaine ${weekCfg.weekNumber}`;
+          totalsBox.appendChild(totTitle);
+
+          visibleEmployees.forEach((employee) => {
+            const weekStats = computeWeekEmployeeStats(employee, weekDays, index);
+            const row = document.createElement('div');
+            row.className = 'flex items-center justify-between gap-2 bg-[#fffdf9] rounded-lg px-3 py-2 border border-[#dfd5c0]';
+
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'text-sm font-bold text-[#232921]';
+            nameSpan.textContent = employee;
+
+            const rightStats = document.createElement('div');
+            rightStats.className = 'flex items-center gap-3';
+
+            const daysSpan = document.createElement('span');
+            daysSpan.className = 'text-sm font-bold text-[#232921]';
+            daysSpan.textContent = `${weekStats.workedDays} j`;
+
+            const hrInp = document.createElement('input');
+            hrInp.type = 'text';
+            hrInp.inputMode = 'decimal';
+            hrInp.className = `hours-edit-input text-sm !w-20 border border-[#dfd5c0] bg-[#fcfaf5] ${weekStats.isManual ? 'text-[#9a4e28] underline decoration-dotted' : 'text-[#2d4727]'}`;
+            hrInp.value = formatHours(weekStats.hours);
+            hrInp.title = 'Cliquez pour modifier manuellement le total d’heures de la semaine';
+            hrInp.dataset.employee = employee;
+            hrInp.dataset.weekIndex = index;
+
+            rightStats.appendChild(daysSpan);
+            rightStats.appendChild(hrInp);
+            row.appendChild(nameSpan);
+            row.appendChild(rightStats);
+            totalsBox.appendChild(row);
+          });
+
+          mobileVerticalBox.appendChild(totalsBox);
+          card.appendChild(mobileVerticalBox);
+        }
+
+        if (outerWrapper) {
+          outerWrapper.appendChild(card);
+          container.appendChild(outerWrapper);
+        } else {
+          container.appendChild(card);
+        }
+      });
+    }
+
+    function renderSummaryTable() {
+      const tbody = document.getElementById('summaryTableBody');
+      tbody.innerHTML = '';
+
+      let sumWorked = 0;
+      let sumRest = 0;
+      let sumPto = 0;
+      let sumHours = 0;
+
+      EMPLOYEES.forEach((employee) => {
+        const stats = computeEmployeeStats(employee);
+        sumWorked += stats.workedDays;
+        sumRest += stats.restDays;
+        sumPto += stats.ptoDays;
+        sumHours += stats.totalHours;
+
+        const isHighlighted = appState.filter === employee;
+        const tr = document.createElement('tr');
+        tr.className = isHighlighted ? 'bg-[#eef5eb] font-medium' : 'bg-[#fffdf9]';
+
+        tr.innerHTML = `
+          <td class="py-3 px-2.5 font-bold text-[#232921] text-sm">${employee}</td>
+          <td class="py-3 px-1.5 text-center font-semibold text-[#2d4727] text-sm whitespace-nowrap">${stats.workedDays} j</td>
+          <td class="py-3 px-1.5 text-center text-[#4c5449] text-sm whitespace-nowrap">${stats.restDays}</td>
+          <td class="py-3 px-1.5 text-center text-[#9a4e28] text-sm whitespace-nowrap">${stats.ptoDays}</td>
+          <td class="py-2 px-2 text-right whitespace-nowrap">
+            <input
+              type="text"
+              inputmode="decimal"
+              data-month-employee="${employee}"
+              value="${formatHours(stats.totalHours)}"
+              title="Cliquez pour modifier manuellement le total mensuel"
+              class="month-hours-input text-right font-extrabold text-sm w-20 sm:w-24 px-1.5 py-1 rounded-lg bg-transparent focus:bg-white focus:ring-2 focus:ring-[#2d4727] outline-none ${stats.isManual ? 'text-[#9a4e28] underline decoration-dotted' : 'text-[#232921]'}"
+            />
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const totalRow = document.createElement('tr');
+      totalRow.className = 'bg-[#2d4727] text-[#fffdf9] font-bold text-sm';
+      totalRow.innerHTML = `
+        <td class="py-3 px-2.5">Total équipe</td>
+        <td class="py-3 px-1.5 text-center text-[#d7ead1] whitespace-nowrap">${sumWorked} j</td>
+        <td class="py-3 px-1.5 text-center text-[#ece4d3] whitespace-nowrap">${sumRest}</td>
+        <td class="py-3 px-1.5 text-center text-[#f7d0b8] whitespace-nowrap">${sumPto}</td>
+        <td id="teamTotalHoursCell" class="py-3 px-2.5 text-right text-[#d7ead1] whitespace-nowrap">${formatHours(sumHours)}</td>
+      `;
+      tbody.appendChild(totalRow);
+    }
+
+    function checkRealTimeMonthChange() {
+      const freshNow = new Date();
+      const freshYear = freshNow.getFullYear();
+      const freshMonth = freshNow.getMonth();
+
+      if (freshYear !== systemYear || freshMonth !== systemMonth) {
+        const wasOnCurrentMonth = (activeYear === systemYear && activeMonth === systemMonth);
+        systemYear = freshYear;
+        systemMonth = freshMonth;
+
+        if (wasOnCurrentMonth) {
+          switchToMonth(systemYear, systemMonth);
+          showToast(`Nouveau mois détecté : ${MONTH_NAMES[systemMonth]} ${systemYear}`);
+        } else {
+          applyMonthLabels();
+        }
+      }
+    }
+
+    function bindEvents() {
+      const weeksContainer = document.getElementById('weeksContainer');
+
+      document.getElementById('prevMonthBtn').addEventListener('click', () => {
+        const prevDate = new Date(activeYear, activeMonth - 1, 1);
+        switchToMonth(prevDate.getFullYear(), prevDate.getMonth());
+      });
+
+      document.getElementById('nextMonthBtn').addEventListener('click', () => {
+        const nextDate = new Date(activeYear, activeMonth + 1, 1);
+        switchToMonth(nextDate.getFullYear(), nextDate.getMonth());
+      });
+
+      document.getElementById('todayMonthBtn').addEventListener('click', () => {
+        const now = new Date();
+        systemYear = now.getFullYear();
+        systemMonth = now.getMonth();
+        switchToMonth(systemYear, systemMonth);
+      });
+
+      weeksContainer.addEventListener('input', (e) => {
+        const inp = e.target;
+        if (!inp.classList || !inp.classList.contains('planning-cell')) return;
+
+        const employee = inp.dataset.employee;
+        const dateKey = inp.dataset.dateKey;
+        const weekIndex = parseInt(inp.dataset.weekIndex, 10);
+        if (!employee || !dateKey) return;
+
+        const parts = dateKey.split('-').map((n) => parseInt(n, 10));
+        const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
+
+        if (!appState.overrides[employee]) {
+          appState.overrides[employee] = {};
+        }
+        const val = inp.value.trim();
+        if (val === '') {
+          delete appState.overrides[employee][dateKey];
+        } else {
+          appState.overrides[employee][dateKey] = val;
+        }
+
+        if (appState.weekHourOverrides[employee]) {
+          delete appState.weekHourOverrides[employee][weekIndex];
+        }
+
+        const effectiveCode = getCellCode(employee, dateObj);
+        const visual = getCellAppearance(effectiveCode);
+        inp.className = `planning-cell rounded-lg border transition outline-none focus:ring-2 focus:ring-[#2d4727] ${visual.classes}`;
+        autoFitCell(inp);
+
+        const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
+        const weekCfg = weeksConfig[weekIndex];
+        if (weekCfg) {
+          const weekDays = buildWeekDays(weekCfg);
+          const stats = computeWeekEmployeeStats(employee, weekDays, weekIndex);
+          const tr = inp.closest('tr');
+          if (tr) {
+            const cells = tr.querySelectorAll('td');
+            if (cells.length >= 2) {
+              cells[cells.length - 2].textContent = `${stats.workedDays} j`;
+              const hrInp = cells[cells.length - 1].querySelector('input.hours-edit-input');
+              if (hrInp) {
+                hrInp.value = formatHours(stats.hours);
+                hrInp.className = 'hours-edit-input text-sm text-[#2d4727]';
+              }
+            }
+          }
+        }
+
+        renderSummaryTable();
+        saveState();
+      });
+
+      weeksContainer.addEventListener('focusin', (e) => {
+        const hrInp = e.target;
+        if (!hrInp.classList || !hrInp.classList.contains('hours-edit-input')) return;
+        hrInp.value = hrInp.value.replace(/\s*h\s*$/i, '').trim();
+        hrInp.select();
+      });
+
+      weeksContainer.addEventListener('focusout', (e) => {
+        const hrInp = e.target;
+        if (!hrInp.classList || !hrInp.classList.contains('hours-edit-input')) return;
+
+        const employee = hrInp.dataset.employee;
+        const weekIndex = parseInt(hrInp.dataset.weekIndex, 10);
+        const raw = hrInp.value.trim().replace(',', '.');
+
+        if (!appState.weekHourOverrides[employee]) {
+          appState.weekHourOverrides[employee] = {};
+        }
+
+        if (raw === '' || isNaN(parseFloat(raw))) {
+          delete appState.weekHourOverrides[employee][weekIndex];
+        } else {
+          appState.weekHourOverrides[employee][weekIndex] = Math.max(0, parseFloat(raw));
+        }
+
+        const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
+        const weekCfg = weeksConfig[weekIndex];
+        const weekDays = buildWeekDays(weekCfg);
+        const stats = computeWeekEmployeeStats(employee, weekDays, weekIndex);
+        hrInp.value = formatHours(stats.hours);
+        hrInp.className = `hours-edit-input text-sm ${stats.isManual ? 'text-[#9a4e28] underline decoration-dotted' : 'text-[#2d4727]'}`;
+
+        renderSummaryTable();
+        saveState();
+      });
+
+      weeksContainer.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && e.target.classList?.contains('hours-edit-input')) {
+          e.preventDefault();
+          e.target.blur();
+        }
+      });
+
+      const summaryBody = document.getElementById('summaryTableBody');
+      summaryBody.addEventListener('focusin', (e) => {
+        const mInp = e.target;
+        if (!mInp.classList || !mInp.classList.contains('month-hours-input')) return;
+        mInp.value = mInp.value.replace(/\s*h\s*$/i, '').trim();
+        mInp.select();
+      });
+
+      summaryBody.addEventListener('focusout', (e) => {
+        const mInp = e.target;
+        if (!mInp.classList || !mInp.classList.contains('month-hours-input')) return;
+        const employee = mInp.dataset.monthEmployee;
+        const raw = mInp.value.trim().replace(',', '.');
+
+        if (raw === '' || isNaN(parseFloat(raw))) {
+          delete appState.monthHourOverrides[employee];
+        } else {
+          appState.monthHourOverrides[employee] = Math.max(0, parseFloat(raw));
+        }
+
+        renderSummaryTable();
+        saveState();
+      });
+
+      summaryBody.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && e.target.classList?.contains('month-hours-input')) {
+          e.preventDefault();
+          e.target.blur();
+        }
+      });
+
+      document.getElementById('baseHoursInput').addEventListener('input', (e) => {
+        const val = parseFloat(String(e.target.value).replace(',', '.'));
+        if (!isNaN(val) && val >= 0 && val <= 24) {
+          appState.baseHours = val;
+          saveState();
+          renderAll();
+        }
+      });
+
+      document.querySelectorAll('.filter-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          appState.filter = btn.getAttribute('data-filter');
+          saveState();
+          renderAll();
+        });
+      });
+
+      document.getElementById('printBtn').addEventListener('click', () => {
+        applyMonthLabels();
+        window.print();
+      });
+
+      document.getElementById('resetBtn').addEventListener('click', () => {
+        const monthLabel = MONTH_NAMES[activeMonth];
+        openModal(
+          `Réinitialiser ${monthLabel} ${activeYear} ?`,
+          `<p>Les modifications manuelles du mois de <strong>${monthLabel} ${activeYear}</strong> seront effacées. Les autres mois enregistrés ne seront pas touchés.</p>`
+        );
+        const confirmBtn = document.getElementById('confirmModalBtn');
+        const originalText = confirmBtn.textContent;
+        confirmBtn.textContent = 'Confirmer la réinitialisation';
+
+        const onConfirm = () => {
+          appState.overrides = {};
+          appState.weekHourOverrides = {};
+          appState.monthHourOverrides = {};
+          appState.baseHours = DEFAULT_BASE_HOURS;
+          saveState();
+          renderAll();
+          closeModal();
+          confirmBtn.textContent = originalText;
+          confirmBtn.removeEventListener('click', onConfirm);
+          showToast(`Planning de ${monthLabel} ${activeYear} réinitialisé.`);
+        };
+
+        confirmBtn.addEventListener('click', onConfirm);
+      });
+
+      document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+      document.getElementById('confirmModalBtn').addEventListener('click', closeModal);
+      document.getElementById('infoModal').addEventListener('click', (e) => {
+        if (e.target.id === 'infoModal') closeModal();
+      });
+      document.getElementById('closeToastBtn').addEventListener('click', () => {
+        document.getElementById('toastBanner').classList.add('hidden');
+      });
+
+      function exportCurrentMonthBackup() {
+        const payload = {
+          app: 'DebarrasExpress09Planning',
+          version: 1,
+          exportedAt: new Date().toISOString(),
+          year: activeYear,
+          month: activeMonth + 1,
+          state: {
+            filter: appState.filter,
+            baseHours: appState.baseHours,
+            overrides: appState.overrides,
+            weekHourOverrides: appState.weekHourOverrides,
+            monthHourOverrides: appState.monthHourOverrides
+          }
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const mStr = String(activeMonth + 1).padStart(2, '0');
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `planning-debarras-09-${activeYear}-${mStr}.json`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        showToast(`Sauvegarde exportée (${MONTH_NAMES[activeMonth]} ${activeYear}).`);
+      }
+
+      function triggerPdfExport() {
+        applyMonthLabels();
+        showToast('Ouverture de l’aperçu PDF : choisissez « Enregistrer en PDF » ou « Imprimer ».');
+        setTimeout(() => {
+          window.print();
+        }, 180);
+      }
+
+      function openExportChoiceModal() {
+        const monthLabel = MONTH_NAMES[activeMonth];
+        openModal(
+          `Exporter — ${monthLabel} ${activeYear}`,
+          `
+            <p class="text-sm text-[#4c5449]">Choisissez le format d’exportation souhaité pour ce planning :</p>
+            <div class="grid grid-cols-1 gap-2.5 pt-1">
+              <button id="chooseExportPdfBtn" type="button" class="w-full text-left px-4 py-3 rounded-xl bg-[#2d4727] hover:bg-[#22371e] text-[#fffdf9] transition flex items-center justify-between gap-2">
+                <div>
+                  <div class="font-bold text-sm">Exporter en PDF (thème &amp; logo conservés)</div>
+                  <div class="text-xs text-[#e2ecde]">Mise en page fidèle Débarras Express 09</div>
+                </div>
+                <span class="text-base font-bold">PDF</span>
+              </button>
+              <button id="chooseExportJsonBtn" type="button" class="w-full text-left px-4 py-3 rounded-xl bg-[#efe8d8] hover:bg-[#e3d7be] text-[#232921] border border-[#d6c9ae] transition flex items-center justify-between gap-2">
+                <div>
+                  <div class="font-bold text-sm">Sauvegarde fichier JSON (.json)</div>
+                  <div class="text-xs text-[#5b6358]">Pour archiver ou réimporter les données</div>
+                </div>
+                <span class="text-xs font-extrabold px-2 py-0.5 rounded bg-[#fffdf9] border border-[#d6c9ae]">.JSON</span>
+              </button>
+            </div>
+          `
+        );
+
+        const pdfBtn = document.getElementById('chooseExportPdfBtn');
+        const jsonBtn = document.getElementById('chooseExportJsonBtn');
+        if (pdfBtn) {
+          pdfBtn.addEventListener('click', () => {
+            closeModal();
+            triggerPdfExport();
+          });
+        }
+        if (jsonBtn) {
+          jsonBtn.addEventListener('click', () => {
+            closeModal();
+            exportCurrentMonthBackup();
+          });
+        }
+      }
+
+      document.getElementById('exportBtn').addEventListener('click', openExportChoiceModal);
+
+      const importFileInput = document.getElementById('importFileInput');
+      document.getElementById('importBtn').addEventListener('click', () => {
+        importFileInput.value = '';
+        importFileInput.click();
+      });
+
+      importFileInput.addEventListener('change', (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            const parsed = JSON.parse(String(reader.result || ''));
+            const st = parsed?.state && typeof parsed.state === 'object' ? parsed.state : parsed;
+            if (!st || typeof st !== 'object') {
+              showToast('Fichier de sauvegarde invalide.');
+              return;
+            }
+            if (typeof parsed.year === 'number' && typeof parsed.month === 'number' && parsed.month >= 1 && parsed.month <= 12) {
+              activeYear = parsed.year;
+              activeMonth = parsed.month - 1;
+            }
+            appState = {
+              filter: typeof st.filter === 'string' ? st.filter : appState.filter,
+              baseHours: typeof st.baseHours === 'number' && !isNaN(st.baseHours) ? st.baseHours : DEFAULT_BASE_HOURS,
+              overrides: st.overrides && typeof st.overrides === 'object' ? st.overrides : {},
+              weekHourOverrides: st.weekHourOverrides && typeof st.weekHourOverrides === 'object' ? st.weekHourOverrides : {},
+              monthHourOverrides: st.monthHourOverrides && typeof st.monthHourOverrides === 'object' ? st.monthHourOverrides : {}
+            };
+            saveState();
+            renderAll();
+            showToast(`Sauvegarde restaurée (${MONTH_NAMES[activeMonth]} ${activeYear}).`);
+          } catch (err) {
+            showToast('Impossible de lire le fichier JSON.');
+          }
+        };
+        reader.readAsText(file);
+      });
+
+      document.getElementById('copySummaryBtn').addEventListener('click', () => {
+        const monthLabel = MONTH_NAMES[activeMonth];
+        const lines = [`Bilan ${monthLabel} ${activeYear} — Débarras Express 09`];
+        let totJ = 0, totR = 0, totCP = 0, totH = 0;
+
+        EMPLOYEES.forEach((emp) => {
+          const st = computeEmployeeStats(emp);
+          totJ += st.workedDays;
+          totR += st.restDays;
+          totCP += st.ptoDays;
+          totH += st.totalHours;
+          lines.push(`• ${emp} : ${st.workedDays} j travaillés | ${st.restDays} R | ${st.ptoDays} CP | ${formatHours(st.totalHours)}`);
+        });
+        lines.push(`Total équipe : ${totJ} j | ${totR} R | ${totCP} CP | ${formatHours(totH)}`);
+        const textOut = lines.join('\n');
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(textOut).then(() => {
+            showToast('Bilan copié dans le presse-papiers.');
+          }).catch(() => {
+            showToast('Impossible de copier automatiquement.');
+          });
+        } else {
+          showToast('Copie non prise en charge sur ce navigateur.');
+        }
+      });
+
+      weeksContainer.addEventListener('click', (e) => {
+        if (e.target.closest('.back-to-month-btn')) return;
+        const btn = e.target.closest('.open-week-btn');
+        if (!btn) return;
+        const idx = parseInt(btn.dataset.weekIndex, 10);
+        if (isNaN(idx)) return;
+        if (focusedWeekIndex === idx) {
+          setFocusedWeek(null, true);
+        } else {
+          setFocusedWeek(idx, true);
+        }
+      });
+
+      window.addEventListener('popstate', (e) => {
+        const st = e.state;
+        if (st && typeof st.year === 'number' && typeof st.month === 'number') {
+          if (st.year !== activeYear || st.month !== activeMonth) {
+            activeYear = st.year;
+            activeMonth = st.month;
+            loadStateForMonth(activeYear, activeMonth);
+            focusedWeekIndex = typeof st.week === 'number' ? st.week : null;
+            renderAll();
+            return;
+          }
+          focusedWeekIndex = typeof st.week === 'number' ? st.week : null;
+          renderWeeks();
+          return;
+        }
+        const match = window.location.hash.match(/^#semaine-(\d+)$/);
+        if (match) {
+          const targetNum = parseInt(match[1], 10);
+          const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
+          const foundIdx = weeksConfig.findIndex((w) => w.weekNumber === targetNum);
+          focusedWeekIndex = foundIdx >= 0 ? foundIdx : null;
+        } else {
+          focusedWeekIndex = null;
+        }
+        renderWeeks();
+      });
+
+      setInterval(checkRealTimeMonthChange, 30000);
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+          checkRealTimeMonthChange();
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadStateForMonth(activeYear, activeMonth);
+      bindEvents();
+      renderAll();
+    });
+  </script>
+</body>
+</html>
 

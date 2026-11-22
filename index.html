@@ -52,7 +52,7 @@
     @media print {
       @page {
         size: A4 portrait;
-        margin: 8mm;
+        margin: 10mm;
       }
       * {
         -webkit-print-color-adjust: exact !important;
@@ -82,7 +82,7 @@
         max-width: 100% !important;
         padding-left: 0 !important;
         padding-right: 0 !important;
-        padding-top: 4px !important;
+        padding-top: 6px !important;
         padding-bottom: 4px !important;
       }
       #weeksContainer {
@@ -103,11 +103,11 @@
         border-collapse: collapse !important;
       }
       #weeksContainer th {
-        padding-top: 3px !important;
-        padding-bottom: 3px !important;
+        padding-top: 4px !important;
+        padding-bottom: 4px !important;
         min-width: 0 !important;
-        font-size: 10px !important;
-        line-height: 1.15 !important;
+        font-size: 10.5px !important;
+        line-height: 1.2 !important;
       }
       #weeksContainer td {
         padding: 2px !important;
@@ -115,20 +115,20 @@
       #weeksContainer td:first-child,
       #weeksContainer th:first-child {
         position: static !important;
-        width: 66px !important;
-        padding: 3px 4px !important;
+        width: 70px !important;
+        padding: 4px 5px !important;
         min-width: 0 !important;
-        font-size: 10.5px !important;
+        font-size: 11px !important;
       }
       #weeksContainer th:nth-last-child(2),
       #weeksContainer td:nth-last-child(2) {
-        width: 42px !important;
-        font-size: 10.5px !important;
+        width: 44px !important;
+        font-size: 11px !important;
       }
       #weeksContainer th:last-child,
       #weeksContainer td:last-child {
-        width: 56px !important;
-        font-size: 10.5px !important;
+        width: 58px !important;
+        font-size: 11px !important;
       }
       .today-col-highlight {
         box-shadow: none !important;
@@ -138,7 +138,7 @@
         display: none !important;
       }
 
-      /* Mode impression : BILAN SEUL */
+      /* Mode impression : BILAN SEUL (mise en page aérée et équilibrée sur 1 page A4) */
       body.printing-balance-only header.app-header,
       body.printing-balance-only #weeksContainer,
       body.printing-balance-only main > section:not(#printSummarySection) {
@@ -151,29 +151,101 @@
       body.printing-balance-only #printSummarySection,
       body.printing-balance-only section#printSummarySection,
       body.printing-balance-only section#printSummarySection.hidden {
-        display: block !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
         visibility: visible !important;
         margin-top: 0 !important;
-        padding: 16px !important;
-        border: 1px solid #dfd5c0 !important;
-        border-radius: 12px !important;
+        padding: 22px 24px !important;
+        min-height: 255mm !important;
+        max-height: 272mm !important;
+        box-sizing: border-box !important;
+        border: 1.5px solid #cfc2a8 !important;
+        border-radius: 16px !important;
         background-color: #fffdf9 !important;
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+      }
+      body.printing-balance-only #printBilanHeader {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 12px !important;
+        padding: 14px 18px !important;
+        border-radius: 12px !important;
+        background-color: #2d4727 !important;
+        color: #fffdf9 !important;
+        margin-bottom: 18px !important;
       }
       body.printing-balance-only #printBilanTitle {
-        font-size: 17px !important;
-        margin-bottom: 12px !important;
+        font-size: 19px !important;
+        font-weight: 800 !important;
+        margin: 0 !important;
+        color: #fffdf9 !important;
+      }
+      body.printing-balance-only #printBilanSubtitle {
+        display: block !important;
+        font-size: 12px !important;
+        color: #e6decb !important;
+        margin-top: 2px !important;
+      }
+      body.printing-balance-only #printBilanKpis {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 12px !important;
+        margin-bottom: 20px !important;
+      }
+      body.printing-balance-only .print-kpi-card {
+        border: 1px solid #dfd5c0 !important;
+        background-color: #f8f4eb !important;
+        border-radius: 12px !important;
+        padding: 14px 12px !important;
+        text-align: center !important;
+      }
+      body.printing-balance-only .print-kpi-label {
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.04em !important;
+        color: #5b6358 !important;
+      }
+      body.printing-balance-only .print-kpi-value {
+        font-size: 22px !important;
+        font-weight: 800 !important;
+        color: #2d4727 !important;
+        margin-top: 4px !important;
+      }
+      body.printing-balance-only #printSummarySection .print-table-wrap {
+        border-radius: 12px !important;
+        margin-bottom: 18px !important;
       }
       body.printing-balance-only #printSummarySection table {
-        font-size: 13px !important;
+        font-size: 14px !important;
+      }
+      body.printing-balance-only #printSummarySection th {
+        padding: 12px 10px !important;
+        font-size: 12px !important;
+      }
+      body.printing-balance-only #printSummarySection td {
+        padding: 16px 10px !important;
+      }
+      body.printing-balance-only #printBilanFooter {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding-top: 14px !important;
+        border-top: 1px solid #e7decb !important;
+        font-size: 11.5px !important;
+        color: #5b6358 !important;
       }
 
-      /* Mode impression : UNE SEULE SEMAINE */
+      /* Mode impression : UNE SEULE SEMAINE (remplit proprement la page A4 sans déborder sur page 2) */
       .week-fullscreen-vertical {
         position: static !important;
         inset: auto !important;
         overflow: visible !important;
         padding: 0 !important;
-        margin: 0 0 10px 0 !important;
+        margin: 0 !important;
         background-color: transparent !important;
         z-index: auto !important;
       }
@@ -196,15 +268,69 @@
         display: none !important;
       }
       body.printing-single-week .print-target-week {
-        padding: 14px 16px !important;
+        padding: 16px 18px !important;
         max-width: 100% !important;
         margin: 0 !important;
+        min-height: 252mm !important;
+        max-height: 270mm !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        border: 1.5px solid #cfc2a8 !important;
+        border-radius: 14px !important;
+        background-color: #fffdf9 !important;
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+      }
+      body.printing-single-week .print-target-week .open-week-btn .text-\[11px\],
+      body.printing-single-week .print-target-week .back-to-month-btn,
+      body.printing-single-week .print-target-week .print-week-btn,
+      body.printing-single-week .print-target-week .print-hide-hint {
+        display: none !important;
+      }
+      body.printing-single-week .print-target-week .overflow-x-auto {
+        flex: 1 1 auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        margin-top: 8px !important;
+        border-radius: 12px !important;
+      }
+      body.printing-single-week .print-target-week table {
+        height: 100% !important;
+      }
+      body.printing-single-week .print-target-week thead th {
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+        font-size: 12px !important;
+      }
+      body.printing-single-week .print-target-week tbody td {
+        padding: 6px 5px !important;
+        font-size: 12.5px !important;
       }
       body.printing-single-week .print-target-week .print-cell-mirror {
-        min-height: 58px !important;
-        font-size: 11.5px !important;
-        line-height: 1.3 !important;
-        padding: 5px 4px !important;
+        min-height: 68px !important;
+        height: 100% !important;
+        font-size: 12px !important;
+        line-height: 1.35 !important;
+        padding: 8px 6px !important;
+      }
+      body.printing-single-week.single-emp-week .print-target-week tbody tr {
+        height: 145px !important;
+      }
+      body.printing-single-week.single-emp-week .print-target-week .print-cell-mirror {
+        min-height: 126px !important;
+        font-size: 13.5px !important;
+      }
+      body.printing-single-week .print-target-week .print-week-note {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        margin-top: 14px !important;
+        padding-top: 10px !important;
+        border-top: 1px solid #e7decb !important;
+        font-size: 11px !important;
+        color: #5b6358 !important;
       }
       .week-fullscreen-vertical .sm\:hidden {
         display: none !important;
@@ -229,15 +355,15 @@
         text-align: center !important;
         width: 100% !important;
         box-sizing: border-box !important;
-        border-radius: 6px !important;
+        border-radius: 8px !important;
         border-width: 1px !important;
         white-space: pre-wrap !important;
         overflow-wrap: break-word !important;
         word-break: break-word !important;
         hyphens: none !important;
-        font-size: 10px !important;
-        line-height: 1.2 !important;
-        padding: 3px 2px !important;
+        font-size: 10.5px !important;
+        line-height: 1.25 !important;
+        padding: 4px 3px !important;
       }
 
       input.hours-edit-input,
@@ -247,7 +373,7 @@
         box-shadow: none !important;
         width: 100% !important;
         min-width: 0 !important;
-        font-size: 10.5px !important;
+        font-size: 11px !important;
         padding: 2px 1px !important;
       }
       #printSummarySection {
@@ -585,8 +711,30 @@
     </section>
 
     <section id="printSummarySection" class="hidden print:block bg-[#fffdf9] rounded-xl p-3 border border-[#dfd5c0] mt-3 print-break-avoid" aria-label="Bilan mensuel par salarié">
-      <h2 id="printBilanTitle" class="text-sm font-bold text-[#232921] mb-2">Bilan Mensuel</h2>
-      <div class="overflow-hidden rounded-lg border border-[#dfd5c0]">
+      <div id="printBilanHeader" class="hidden">
+        <div>
+          <h2 id="printBilanTitle" class="text-sm font-bold text-[#232921]">Bilan Mensuel</h2>
+          <p id="printBilanSubtitle" class="hidden">Débarras Express 09 — Récapitulatif des heures effectuées</p>
+        </div>
+        <span id="printBilanBadge" class="px-3 py-1 rounded-full bg-[#e4eee0] text-[#2d4727] text-xs font-extrabold">A4</span>
+      </div>
+
+      <div id="printBilanKpis" class="hidden">
+        <div class="print-kpi-card">
+          <div class="print-kpi-label">Heures cumulées</div>
+          <div id="printKpiHours" class="print-kpi-value">0 h</div>
+        </div>
+        <div class="print-kpi-card">
+          <div class="print-kpi-label">Jours travaillés</div>
+          <div id="printKpiDays" class="print-kpi-value">0 j</div>
+        </div>
+        <div class="print-kpi-card">
+          <div class="print-kpi-label">Repos / Congés</div>
+          <div id="printKpiRestPto" class="print-kpi-value">0 R · 0 CP</div>
+        </div>
+      </div>
+
+      <div class="print-table-wrap overflow-hidden rounded-lg border border-[#dfd5c0]">
         <table class="w-full text-left border-collapse text-xs">
           <thead>
             <tr class="bg-[#f3ece0] border-b border-[#dfd5c0] font-semibold text-[#4c5449] uppercase">
@@ -600,6 +748,11 @@
           <tbody id="printSummaryTableBody" class="divide-y divide-[#e7decb]">
           </tbody>
         </table>
+      </div>
+
+      <div id="printBilanFooter" class="hidden">
+        <span>Document généré depuis Planning Mensuel — Débarras Express 09</span>
+        <span id="printBilanBaseInfo">Base : 7 h / jour</span>
       </div>
     </section>
 
@@ -1046,6 +1199,10 @@
           ? `Bilan Mensuel — ${selectedEmp} — ${monthLabel} ${activeYear}`
           : `Bilan Mensuel — ${monthLabel} ${activeYear}`;
       }
+      const printBilanBaseInfo = document.getElementById('printBilanBaseInfo');
+      if (printBilanBaseInfo) {
+        printBilanBaseInfo.textContent = `Base : ${formatHours(appState.baseHours)} / jour`;
+      }
 
       const metaTitle = document.querySelector('meta[name="apple-mobile-web-app-title"]');
       if (metaTitle) metaTitle.setAttribute('content', `Planning ${monthLabel} ${activeYear}`);
@@ -1190,7 +1347,7 @@
         rightGroup.className = 'flex items-center gap-2 flex-wrap';
 
         const rightInfo = document.createElement('span');
-        rightInfo.className = 'text-xs text-[#5b6358]';
+        rightInfo.className = isFocusedWeek ? 'text-xs text-[#5b6358] print-hide-hint' : 'text-xs text-[#5b6358]';
         rightInfo.textContent = isFocusedWeek
           ? 'Bouton « Précédent » du téléphone ou « Vue d’ensemble » pour revenir'
           : `Base ${formatHours(appState.baseHours)} / jour`;
@@ -1330,6 +1487,14 @@
         }
         tableWrapper.appendChild(table);
         card.appendChild(tableWrapper);
+
+        const weekPrintNote = document.createElement('div');
+        weekPrintNote.className = 'hidden print-week-note';
+        weekPrintNote.innerHTML = `
+          <span>Débarras Express 09 · Semaine ${weekCfg.weekNumber} (${MONTH_NAMES[activeMonth]} ${activeYear})</span>
+          <span>R : Repos · CP : Congés payés · Base : ${formatHours(appState.baseHours)} / j</span>
+        `;
+        card.appendChild(weekPrintNote);
 
         if (isFocusedWeek) {
           const isSingleEmployee = visibleEmployees.length === 1;
@@ -1586,6 +1751,25 @@
           : `Bilan Mensuel — ${monthLabel} ${activeYear}`;
       }
 
+      const printBilanBadge = document.getElementById('printBilanBadge');
+      if (printBilanBadge) {
+        printBilanBadge.textContent = isSingleSelected ? selectedEmp : 'Équipe (3)';
+      }
+
+      const printKpiHours = document.getElementById('printKpiHours');
+      if (printKpiHours) printKpiHours.textContent = formatHours(shownHours);
+
+      const printKpiDays = document.getElementById('printKpiDays');
+      if (printKpiDays) printKpiDays.textContent = `${shownWorked} j`;
+
+      const printKpiRestPto = document.getElementById('printKpiRestPto');
+      if (printKpiRestPto) printKpiRestPto.textContent = `${shownRest} R · ${shownPto} CP`;
+
+      const printBilanBaseInfo = document.getElementById('printBilanBaseInfo');
+      if (printBilanBaseInfo) {
+        printBilanBaseInfo.textContent = `Base : ${formatHours(appState.baseHours)} / jour`;
+      }
+
       const printTbody = document.getElementById('printSummaryTableBody');
       if (printTbody) {
         printTbody.innerHTML = '';
@@ -1654,7 +1838,7 @@
         clearTimeout(afterPrintCleanupTimer);
         afterPrintCleanupTimer = null;
       }
-      document.body.classList.remove('printing-single-week', 'printing-balance-only');
+      document.body.classList.remove('printing-single-week', 'printing-balance-only', 'single-emp-week');
       document.querySelectorAll('.print-target-week').forEach((el) => el.classList.remove('print-target-week'));
       setDynamicPrintStyle('');
 
@@ -1674,15 +1858,21 @@
           #printSummarySection,
           section#printSummarySection,
           section#printSummarySection.hidden {
-            display: block !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
             visibility: visible !important;
             margin: 0 !important;
-            padding: 16px !important;
+            padding: 22px 24px !important;
+            min-height: 255mm !important;
+            max-height: 272mm !important;
+            box-sizing: border-box !important;
           }
         `);
       } else if (currentPrintMode === 'single-week' && typeof currentPrintWeekIdx === 'number') {
         const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
         const wkCfg = weeksConfig[currentPrintWeekIdx];
+        const isSingleEmpVisible = appState.filter !== 'ALL';
         let targetEl = null;
         if (focusedWeekIndex !== null && focusedWeekIndex === currentPrintWeekIdx) {
           const fwWrapper = document.querySelector('#weeksContainer .week-fullscreen-vertical');
@@ -1695,6 +1885,9 @@
         if (targetEl) {
           targetEl.classList.add('print-target-week');
           document.body.classList.add('printing-single-week');
+          if (isSingleEmpVisible) {
+            document.body.classList.add('single-emp-week');
+          }
         }
         if (wkCfg) {
           document.title = `Semaine ${wkCfg.weekNumber} — ${MONTH_NAMES[activeMonth]} ${activeYear} — Débarras Express 09`;
@@ -1705,7 +1898,7 @@
           #weeksContainer > div:not(.print-target-week) { display: none !important; }
           #weeksContainer > div.week-fullscreen-vertical > div:not(.print-target-week) { display: none !important; }
           .week-fullscreen-vertical .sm\\:hidden { display: none !important; }
-          .week-fullscreen-vertical .overflow-x-auto { display: block !important; overflow: visible !important; }
+          .week-fullscreen-vertical .overflow-x-auto { display: flex !important; overflow: visible !important; }
         `);
       } else {
         applyMonthLabels();
@@ -1720,12 +1913,18 @@
       const selector = (currentPrintMode === 'single-week' && document.querySelector('.print-target-week'))
         ? '.print-target-week textarea.planning-cell'
         : '#weeksContainer textarea.planning-cell';
+      const isSingleWeekPrint = currentPrintMode === 'single-week';
+      const isSingleEmpWeek = isSingleWeekPrint && appState.filter !== 'ALL';
+
       document.querySelectorAll(selector).forEach((ta) => {
         const td = ta.closest('td');
         if (!td || td.querySelector('.print-cell-mirror')) return;
         const val = (ta.value || '').trim();
         const lineCount = Math.max(1, val.split('\n').length);
-        const minH = lineCount > 1 ? Math.max(48, lineCount * 13 + 8) : 34;
+        let minH = lineCount > 1 ? Math.max(48, lineCount * 13 + 8) : 34;
+        if (isSingleWeekPrint) {
+          minH = isSingleEmpWeek ? 124 : Math.max(66, lineCount * 15 + 14);
+        }
         const cleanClasses = ta.className
           .replace(/planning-cell/g, '')
           .replace(/min-h-\[[^\]]+\]/g, '')
@@ -1930,7 +2129,7 @@
           cleanupPrintTextMirrors();
           currentPrintMode = 'all';
           currentPrintWeekIdx = null;
-          document.body.classList.remove('printing-single-week', 'printing-balance-only');
+          document.body.classList.remove('printing-single-week', 'printing-balance-only', 'single-emp-week');
           document.querySelectorAll('.print-target-week').forEach((el) => el.classList.remove('print-target-week'));
           setDynamicPrintStyle('');
           applyMonthLabels();

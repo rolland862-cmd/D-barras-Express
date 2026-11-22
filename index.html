@@ -129,7 +129,34 @@
         font-size: 11px !important;
       }
       .today-col-highlight {
-        box-shadow: inset 0 0 0 1.5px #2d4727 !important;
+        box-shadow: none !important;
+        background-color: transparent !important;
+      }
+      .today-label {
+        display: none !important;
+      }
+      body.printing-balance-only header.app-header,
+      body.printing-balance-only #weeksContainer,
+      body.printing-balance-only main > section:not(#printSummarySection) {
+        display: none !important;
+      }
+      body.printing-balance-only main {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+      }
+      body.printing-balance-only #printSummarySection {
+        display: block !important;
+        margin-top: 0 !important;
+        padding: 16px !important;
+        border: 1px solid #dfd5c0 !important;
+        border-radius: 12px !important;
+      }
+      body.printing-balance-only #printBilanTitle {
+        font-size: 16px !important;
+        margin-bottom: 10px !important;
+      }
+      body.printing-balance-only #printSummarySection table {
+        font-size: 13px !important;
       }
       .week-fullscreen-vertical {
         position: static !important;
@@ -208,6 +235,7 @@
       }
     }
 
+    /* Cases de saisie libre agrandies et élargies pour éviter toute coupure de mot */
     textarea.planning-cell {
       resize: none;
       overflow: hidden;
@@ -289,6 +317,7 @@
 </head>
 <body class="min-h-screen flex flex-col bg-[#f6f1e7] text-[#232921]">
 
+  <!-- En-tête principal avec logo Débarras Express 09 -->
   <header class="app-header sticky top-0 z-30 bg-[#2d4727] text-[#fffdf9] shadow-md border-b border-[#46663e] no-print">
     <div class="max-w-4xl mx-auto px-4 py-2.5 flex items-center justify-between gap-3">
       <div class="flex items-center gap-3 min-w-0">
@@ -325,6 +354,7 @@
     </div>
   </header>
 
+  <!-- Menu / Fenêtre centrée du bilan mensuel des heures effectuées -->
   <div id="monthlyBalanceDrawer" class="hidden fixed inset-0 z-50 bg-[#1a2418]/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 no-print" role="dialog" aria-modal="true" aria-labelledby="drawerBilanTitle">
     <div id="monthlyBalancePanel" class="bg-[#fffdf9] w-full max-w-2xl max-h-[92vh] rounded-2xl shadow-2xl border border-[#dfd5c0] flex flex-col justify-between p-4 sm:p-6 overflow-y-auto animate-fade-in">
       <div class="space-y-4">
@@ -402,13 +432,16 @@
     </div>
   </div>
 
+  <!-- Notification toast -->
   <div id="toastBanner" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-md bg-[#2d4727] text-[#fffdf9] px-4 py-3 rounded-2xl shadow-xl border border-[#618258] text-sm font-medium flex items-center justify-between gap-3 animate-fade-in no-print">
     <span id="toastMessage">Action effectuée.</span>
     <button id="closeToastBtn" type="button" class="text-[#dce4d8] hover:text-white font-bold px-1.5">✕</button>
   </div>
 
+  <!-- Contenu principal -->
   <main class="flex-1 w-full max-w-4xl mx-auto px-3 sm:px-5 py-4 space-y-5">
 
+    <!-- Barre de navigation des mois -->
     <section class="bg-[#fffdf9] rounded-2xl p-3.5 sm:p-4 shadow-sm border border-[#dfd5c0] no-print" aria-label="Navigation par mois">
       <div class="flex items-center justify-between gap-2">
         <button
@@ -446,6 +479,7 @@
       </div>
     </section>
 
+    <!-- Barre d'outils : filtre salarié, base horaire modifiable, impression, réinitialisation -->
     <section class="bg-[#fffdf9] rounded-2xl p-4 shadow-sm border border-[#dfd5c0] space-y-3.5 no-print">
       <div class="flex flex-wrap items-center justify-between gap-2.5">
         <div class="flex items-center gap-1.5 flex-wrap" role="group" aria-label="Filtrer par salarié">
@@ -468,7 +502,7 @@
             id="exportBtn"
             type="button"
             class="px-3.5 py-2 rounded-xl text-sm font-semibold bg-[#efe8d8] text-[#232921] hover:bg-[#e3d7be] border border-[#d6c9ae] transition"
-            title="Choisir un format d'exportation (PDF ou sauvegarde JSON)"
+            title="Télécharger une sauvegarde JSON de ce mois"
           >
             Exporter
           </button>
@@ -545,6 +579,7 @@
 
   </main>
 
+  <!-- Modale de confirmation -->
   <div id="infoModal" class="hidden fixed inset-0 z-50 bg-[#1a2418]/60 backdrop-blur-xs flex items-center justify-center p-4 no-print" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="bg-[#fffdf9] rounded-2xl max-w-md w-full p-5 shadow-2xl border border-[#dfd5c0] space-y-4 animate-fade-in">
       <div class="flex items-center justify-between">
@@ -1166,11 +1201,12 @@
           if (isToday) {
             th.classList.add('today-col-highlight');
           }
+          const todaySpan = isToday ? '<span class="today-label"> · Aujourd’hui</span>' : '';
           if (d.isHoliday) {
             th.classList.add('bg-[#f8e5e0]', 'text-[#8c3827]');
-            th.innerHTML = `<div class="text-xs font-bold">${d.dayLabel}</div><div class="text-sm font-extrabold">${dateBadge}${isToday ? ' · Aujourd’hui' : ''}</div>`;
+            th.innerHTML = `<div class="text-xs font-bold">${d.dayLabel}</div><div class="text-sm font-extrabold">${dateBadge}${todaySpan}</div>`;
           } else {
-            th.innerHTML = `<div class="text-xs">${d.dayLabel}</div><div class="text-sm font-bold text-[#232921]">${dateBadge}${isToday ? ' · Aujourd’hui' : ''}</div>`;
+            th.innerHTML = `<div class="text-xs">${d.dayLabel}</div><div class="text-sm font-bold text-[#232921]">${dateBadge}${todaySpan}</div>`;
           }
           headRow.appendChild(th);
         });
@@ -1779,13 +1815,13 @@
 
       window.addEventListener('afterprint', () => {
         cleanupPrintTextMirrors();
-        document.body.classList.remove('printing-single-week');
+        document.body.classList.remove('printing-single-week', 'printing-balance-only');
         document.querySelectorAll('.print-target-week').forEach((el) => el.classList.remove('print-target-week'));
         applyMonthLabels();
       });
 
       document.getElementById('printBtn').addEventListener('click', () => {
-        document.body.classList.remove('printing-single-week');
+        document.body.classList.remove('printing-single-week', 'printing-balance-only');
         applyMonthLabels();
         window.print();
       });
@@ -2069,7 +2105,11 @@
       if (drawerPrintBtn) {
         drawerPrintBtn.addEventListener('click', () => {
           setMonthlyDrawerOpen(false);
+          document.body.classList.remove('printing-single-week');
+          document.body.classList.add('printing-balance-only');
+          renderSummaryTable();
           applyMonthLabels();
+          document.title = `Bilan Heures ${MONTH_NAMES[activeMonth]} ${activeYear} — Débarras Express 09`;
           window.print();
         });
       }

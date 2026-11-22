@@ -149,20 +149,30 @@
       body.printing-balance-only header.app-header,
       body.printing-balance-only #weeksContainer,
       body.printing-balance-only #printOvertimeSection,
-      body.printing-balance-only main > section:not(#printSummarySection) {
+      body.printing-balance-only main > section:not(#printSummarySection),
+      body[data-print-mode="balance"] header.app-header,
+      body[data-print-mode="balance"] #weeksContainer,
+      body[data-print-mode="balance"] #printOvertimeSection,
+      body[data-print-mode="balance"] main > section:not(#printSummarySection) {
         display: none !important;
+        visibility: hidden !important;
       }
-      body.printing-balance-only main {
+      body.printing-balance-only main,
+      body[data-print-mode="balance"] main {
         padding-top: 0 !important;
         padding-bottom: 0 !important;
       }
       body.printing-balance-only #printSummarySection,
       body.printing-balance-only section#printSummarySection,
-      body.printing-balance-only section#printSummarySection.hidden {
+      body.printing-balance-only section#printSummarySection.hidden,
+      body[data-print-mode="balance"] #printSummarySection,
+      body[data-print-mode="balance"] section#printSummarySection,
+      body[data-print-mode="balance"] section#printSummarySection.hidden {
         display: flex !important;
         flex-direction: column !important;
         justify-content: center !important;
         visibility: visible !important;
+        opacity: 1 !important;
         margin: 0 auto !important;
         padding: 26px 24px !important;
         min-height: 248mm !important;
@@ -174,7 +184,8 @@
         break-inside: avoid !important;
         page-break-inside: avoid !important;
       }
-      body.printing-balance-only #printBilanHeader {
+      body.printing-balance-only #printBilanHeader,
+      body[data-print-mode="balance"] #printBilanHeader {
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
@@ -185,12 +196,14 @@
         color: #fffdf9 !important;
         margin-bottom: 24px !important;
       }
-      body.printing-balance-only #printBilanBrandGroup {
+      body.printing-balance-only #printBilanBrandGroup,
+      body[data-print-mode="balance"] #printBilanBrandGroup {
         display: flex !important;
         align-items: center !important;
         gap: 16px !important;
       }
-      body.printing-balance-only #printBilanLogo {
+      body.printing-balance-only #printBilanLogo,
+      body[data-print-mode="balance"] #printBilanLogo {
         display: block !important;
         width: 68px !important;
         height: 68px !important;
@@ -201,20 +214,23 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18) !important;
         flex-shrink: 0 !important;
       }
-      body.printing-balance-only #printBilanTitle {
+      body.printing-balance-only #printBilanTitle,
+      body[data-print-mode="balance"] #printBilanTitle {
         font-size: 20px !important;
         font-weight: 800 !important;
         letter-spacing: -0.01em !important;
         margin: 0 !important;
         color: #fffdf9 !important;
       }
-      body.printing-balance-only #printBilanSubtitle {
+      body.printing-balance-only #printBilanSubtitle,
+      body[data-print-mode="balance"] #printBilanSubtitle {
         display: block !important;
         font-size: 12px !important;
         color: #e6decb !important;
         margin-top: 3px !important;
       }
-      body.printing-balance-only #printBilanBadge {
+      body.printing-balance-only #printBilanBadge,
+      body[data-print-mode="balance"] #printBilanBadge {
         padding: 7px 14px !important;
         border-radius: 9999px !important;
         background-color: #f6f1e7 !important;
@@ -223,13 +239,15 @@
         font-weight: 800 !important;
         white-space: nowrap !important;
       }
-      body.printing-balance-only #printBilanKpis {
+      body.printing-balance-only #printBilanKpis,
+      body[data-print-mode="balance"] #printBilanKpis {
         display: grid !important;
         grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
         gap: 16px !important;
         margin-bottom: 24px !important;
       }
-      body.printing-balance-only .print-kpi-card {
+      body.printing-balance-only .print-kpi-card,
+      body[data-print-mode="balance"] .print-kpi-card {
         border: 1px solid #d9ccb2 !important;
         border-top: 4px solid #2d4727 !important;
         background-color: #fbf8f1 !important;
@@ -237,37 +255,44 @@
         padding: 24px 14px !important;
         text-align: center !important;
       }
-      body.printing-balance-only .print-kpi-label {
+      body.printing-balance-only .print-kpi-label,
+      body[data-print-mode="balance"] .print-kpi-label {
         font-size: 11.5px !important;
         font-weight: 700 !important;
         text-transform: uppercase !important;
         letter-spacing: 0.05em !important;
         color: #5b6358 !important;
       }
-      body.printing-balance-only .print-kpi-value {
+      body.printing-balance-only .print-kpi-value,
+      body[data-print-mode="balance"] .print-kpi-value {
         font-size: 25px !important;
         font-weight: 800 !important;
         color: #2d4727 !important;
         margin-top: 8px !important;
       }
-      body.printing-balance-only #printSummarySection .print-table-wrap {
+      body.printing-balance-only #printSummarySection .print-table-wrap,
+      body[data-print-mode="balance"] #printSummarySection .print-table-wrap {
         border-radius: 14px !important;
         border: 1px solid #d9ccb2 !important;
         background-color: #ffffff !important;
         margin-bottom: 24px !important;
       }
-      body.printing-balance-only #printSummarySection table {
+      body.printing-balance-only #printSummarySection table,
+      body[data-print-mode="balance"] #printSummarySection table {
         font-size: 15px !important;
       }
-      body.printing-balance-only #printSummarySection th {
+      body.printing-balance-only #printSummarySection th,
+      body[data-print-mode="balance"] #printSummarySection th {
         padding: 14px 14px !important;
         font-size: 12px !important;
         letter-spacing: 0.03em !important;
       }
-      body.printing-balance-only #printSummarySection td {
+      body.printing-balance-only #printSummarySection td,
+      body[data-print-mode="balance"] #printSummarySection td {
         padding: 22px 14px !important;
       }
-      body.printing-balance-only #printBilanFooter {
+      body.printing-balance-only #printBilanFooter,
+      body[data-print-mode="balance"] #printBilanFooter {
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
@@ -281,20 +306,30 @@
       body.printing-overtime-only header.app-header,
       body.printing-overtime-only #weeksContainer,
       body.printing-overtime-only #printSummarySection,
-      body.printing-overtime-only main > section:not(#printOvertimeSection) {
+      body.printing-overtime-only main > section:not(#printOvertimeSection),
+      body[data-print-mode="overtime"] header.app-header,
+      body[data-print-mode="overtime"] #weeksContainer,
+      body[data-print-mode="overtime"] #printSummarySection,
+      body[data-print-mode="overtime"] main > section:not(#printOvertimeSection) {
         display: none !important;
+        visibility: hidden !important;
       }
-      body.printing-overtime-only main {
+      body.printing-overtime-only main,
+      body[data-print-mode="overtime"] main {
         padding-top: 0 !important;
         padding-bottom: 0 !important;
       }
       body.printing-overtime-only #printOvertimeSection,
       body.printing-overtime-only section#printOvertimeSection,
-      body.printing-overtime-only section#printOvertimeSection.hidden {
+      body.printing-overtime-only section#printOvertimeSection.hidden,
+      body[data-print-mode="overtime"] #printOvertimeSection,
+      body[data-print-mode="overtime"] section#printOvertimeSection,
+      body[data-print-mode="overtime"] section#printOvertimeSection.hidden {
         display: flex !important;
         flex-direction: column !important;
         justify-content: center !important;
         visibility: visible !important;
+        opacity: 1 !important;
         margin: 0 auto !important;
         padding: 26px 24px !important;
         min-height: 248mm !important;
@@ -306,7 +341,8 @@
         break-inside: avoid !important;
         page-break-inside: avoid !important;
       }
-      body.printing-overtime-only #printOvertimeHeader {
+      body.printing-overtime-only #printOvertimeHeader,
+      body[data-print-mode="overtime"] #printOvertimeHeader {
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
@@ -317,12 +353,14 @@
         color: #fffdf9 !important;
         margin-bottom: 24px !important;
       }
-      body.printing-overtime-only #printOvertimeBrandGroup {
+      body.printing-overtime-only #printOvertimeBrandGroup,
+      body[data-print-mode="overtime"] #printOvertimeBrandGroup {
         display: flex !important;
         align-items: center !important;
         gap: 16px !important;
       }
-      body.printing-overtime-only #printOvertimeLogo {
+      body.printing-overtime-only #printOvertimeLogo,
+      body[data-print-mode="overtime"] #printOvertimeLogo {
         display: block !important;
         width: 68px !important;
         height: 68px !important;
@@ -333,20 +371,23 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18) !important;
         flex-shrink: 0 !important;
       }
-      body.printing-overtime-only #printOvertimeTitle {
+      body.printing-overtime-only #printOvertimeTitle,
+      body[data-print-mode="overtime"] #printOvertimeTitle {
         font-size: 20px !important;
         font-weight: 800 !important;
         letter-spacing: -0.01em !important;
         margin: 0 !important;
         color: #fffdf9 !important;
       }
-      body.printing-overtime-only #printOvertimeSubtitle {
+      body.printing-overtime-only #printOvertimeSubtitle,
+      body[data-print-mode="overtime"] #printOvertimeSubtitle {
         display: block !important;
         font-size: 12px !important;
         color: #e6decb !important;
         margin-top: 3px !important;
       }
-      body.printing-overtime-only #printOvertimeBadge {
+      body.printing-overtime-only #printOvertimeBadge,
+      body[data-print-mode="overtime"] #printOvertimeBadge {
         padding: 7px 14px !important;
         border-radius: 9999px !important;
         background-color: #f7e6dc !important;
@@ -355,13 +396,15 @@
         font-weight: 800 !important;
         white-space: nowrap !important;
       }
-      body.printing-overtime-only #printOvertimeKpis {
+      body.printing-overtime-only #printOvertimeKpis,
+      body[data-print-mode="overtime"] #printOvertimeKpis {
         display: grid !important;
         grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
         gap: 16px !important;
         margin-bottom: 24px !important;
       }
-      body.printing-overtime-only .print-ot-kpi-card {
+      body.printing-overtime-only .print-ot-kpi-card,
+      body[data-print-mode="overtime"] .print-ot-kpi-card {
         border: 1px solid #d9ccb2 !important;
         border-top: 4px solid #9a4e28 !important;
         background-color: #fbf8f1 !important;
@@ -369,37 +412,44 @@
         padding: 24px 14px !important;
         text-align: center !important;
       }
-      body.printing-overtime-only .print-ot-kpi-label {
+      body.printing-overtime-only .print-ot-kpi-label,
+      body[data-print-mode="overtime"] .print-ot-kpi-label {
         font-size: 11.5px !important;
         font-weight: 700 !important;
         text-transform: uppercase !important;
         letter-spacing: 0.05em !important;
         color: #5b6358 !important;
       }
-      body.printing-overtime-only .print-ot-kpi-value {
+      body.printing-overtime-only .print-ot-kpi-value,
+      body[data-print-mode="overtime"] .print-ot-kpi-value {
         font-size: 25px !important;
         font-weight: 800 !important;
         color: #9a4e28 !important;
         margin-top: 8px !important;
       }
-      body.printing-overtime-only #printOvertimeSection .print-table-wrap {
+      body.printing-overtime-only #printOvertimeSection .print-table-wrap,
+      body[data-print-mode="overtime"] #printOvertimeSection .print-table-wrap {
         border-radius: 14px !important;
         border: 1px solid #d9ccb2 !important;
         background-color: #ffffff !important;
         margin-bottom: 24px !important;
       }
-      body.printing-overtime-only #printOvertimeSection table {
+      body.printing-overtime-only #printOvertimeSection table,
+      body[data-print-mode="overtime"] #printOvertimeSection table {
         font-size: 15px !important;
       }
-      body.printing-overtime-only #printOvertimeSection th {
+      body.printing-overtime-only #printOvertimeSection th,
+      body[data-print-mode="overtime"] #printOvertimeSection th {
         padding: 14px 14px !important;
         font-size: 12px !important;
         letter-spacing: 0.03em !important;
       }
-      body.printing-overtime-only #printOvertimeSection td {
+      body.printing-overtime-only #printOvertimeSection td,
+      body[data-print-mode="overtime"] #printOvertimeSection td {
         padding: 22px 14px !important;
       }
-      body.printing-overtime-only #printOvertimeFooter {
+      body.printing-overtime-only #printOvertimeFooter,
+      body[data-print-mode="overtime"] #printOvertimeFooter {
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
@@ -746,7 +796,17 @@
             <h2 id="drawerBilanTitle" class="text-lg sm:text-xl font-extrabold text-[#232921]">Bilan Mensuel</h2>
             <p id="drawerBilanSubtitle" class="text-xs sm:text-sm text-[#5b6358]">Heures &amp; jours modifiables indépendamment par salarié</p>
           </div>
-          <button id="closeMonthlyBalanceBtn" type="button" class="px-3 py-1.5 rounded-xl bg-[#efe8d8] hover:bg-[#e3d7be] text-[#232921] font-bold text-sm cursor-pointer">✕</button>
+          <div class="flex items-center gap-1.5">
+            <button
+              id="resetManualMonthOverridesBtn"
+              type="button"
+              class="px-2.5 py-1.5 rounded-xl bg-[#efe8d8] hover:bg-[#e3d7be] text-[#232921] border border-[#d6c9ae] font-bold text-xs cursor-pointer"
+              title="Annuler les forçages mensuels directs et suivre les heures de semaine"
+            >
+              Auto-calcul
+            </button>
+            <button id="closeMonthlyBalanceBtn" type="button" class="px-3 py-1.5 rounded-xl bg-[#efe8d8] hover:bg-[#e3d7be] text-[#232921] font-bold text-sm cursor-pointer">✕</button>
+          </div>
         </div>
 
         <div class="flex items-center justify-between gap-2 flex-wrap">
@@ -799,7 +859,7 @@
         </div>
 
         <p class="text-xs text-[#5b6358] text-center leading-relaxed bg-[#fcfaf5] p-3 rounded-xl border border-[#e7decb]">
-          Astuce : cliquez directement sur <strong class="text-[#232921]">Jours</strong> ou <strong class="text-[#232921]">Total Heures</strong> (par semaine ou par mois) pour ajuster indépendamment chaque salarié.
+          Astuce : cliquez directement sur <strong class="text-[#232921]">Jours</strong> ou <strong class="text-[#232921]">Total Heures</strong> (par semaine ou par mois) pour ajuster indépendamment chaque salarié, ou cliquez sur <strong class="text-[#232921]">Auto-calcul</strong> pour revenir au calcul lié aux semaines.
         </p>
       </div>
 
@@ -1742,7 +1802,9 @@
       const selectedEmp = document.getElementById('bilanEmployeeSelect')?.value || 'ALL';
       const isSingleSelected = Boolean(selectedEmp && selectedEmp !== 'ALL');
 
-      document.title = `Planning ${monthLabel} ${activeYear} — Débarras Express 09`;
+      if (!isPrintSessionActive) {
+        document.title = `Planning ${monthLabel} ${activeYear} — Débarras Express 09`;
+      }
 
       const h1 = document.getElementById('mainHeaderTitle');
       if (h1) h1.textContent = `Planning ${monthLabel} ${activeYear}`;
@@ -2609,26 +2671,39 @@
         clearTimeout(afterPrintCleanupTimer);
         afterPrintCleanupTimer = null;
       }
-      renderWeeks();
+
+      const activeMode = currentPrintMode || document.body.getAttribute('data-print-mode') || 'all';
+      currentPrintMode = activeMode;
+      isPrintSessionActive = true;
+
       renderSummaryTable();
       renderOvertimeTable();
 
       document.body.classList.remove('printing-single-week', 'printing-balance-only', 'printing-overtime-only', 'single-emp-week');
-      document.body.removeAttribute('data-print-mode');
       document.querySelectorAll('.print-target-week').forEach((el) => el.classList.remove('print-target-week'));
       setDynamicPrintStyle('');
 
       const isSingleEmpVisible = appState.filter !== 'ALL';
       const empSuffix = isSingleEmpVisible ? ` — ${appState.filter}` : '';
 
-      if (currentPrintMode === 'overtime') {
+      const weeksEl = document.getElementById('weeksContainer');
+      const headerEl = document.querySelector('header.app-header');
+      const sumSec = document.getElementById('printSummarySection');
+      const otSec = document.getElementById('printOvertimeSection');
+
+      if (activeMode === 'overtime') {
         document.body.classList.add('printing-overtime-only');
         document.body.setAttribute('data-print-mode', 'overtime');
         const selectedOtEmp = document.getElementById('overtimeEmployeeSelect')?.value || 'ALL';
         const otSuffix = selectedOtEmp !== 'ALL' ? ` — ${selectedOtEmp}` : '';
         document.title = `Heures Supplémentaires${otSuffix} ${MONTH_NAMES[activeMonth]} ${activeYear} — Débarras Express 09`;
 
-        const otSec = document.getElementById('printOvertimeSection');
+        if (headerEl) headerEl.style.display = 'none';
+        if (weeksEl) weeksEl.style.display = 'none';
+        if (sumSec) {
+          sumSec.classList.add('hidden');
+          sumSec.style.display = 'none';
+        }
         if (otSec) {
           otSec.classList.remove('hidden');
           otSec.style.display = 'flex';
@@ -2640,6 +2715,7 @@
           #printSummarySection,
           main > section:not(#printOvertimeSection) {
             display: none !important;
+            visibility: hidden !important;
           }
           #printOvertimeSection,
           section#printOvertimeSection,
@@ -2648,6 +2724,7 @@
             flex-direction: column !important;
             justify-content: center !important;
             visibility: visible !important;
+            opacity: 1 !important;
             margin: 0 auto !important;
             padding: 26px 24px !important;
             min-height: 248mm !important;
@@ -2655,18 +2732,31 @@
             box-sizing: border-box !important;
           }
         `);
-      } else if (currentPrintMode === 'balance') {
+      } else if (activeMode === 'balance') {
         document.body.classList.add('printing-balance-only');
         document.body.setAttribute('data-print-mode', 'balance');
         const selectedEmp = document.getElementById('bilanEmployeeSelect')?.value || 'ALL';
         const balSuffix = selectedEmp !== 'ALL' ? ` — ${selectedEmp}` : '';
         document.title = `Bilan Heures${balSuffix} ${MONTH_NAMES[activeMonth]} ${activeYear} — Débarras Express 09`;
+
+        if (headerEl) headerEl.style.display = 'none';
+        if (weeksEl) weeksEl.style.display = 'none';
+        if (otSec) {
+          otSec.classList.add('hidden');
+          otSec.style.display = 'none';
+        }
+        if (sumSec) {
+          sumSec.classList.remove('hidden');
+          sumSec.style.display = 'flex';
+        }
+
         setDynamicPrintStyle(`
           header.app-header,
           #weeksContainer,
           #printOvertimeSection,
           main > section:not(#printSummarySection) {
             display: none !important;
+            visibility: hidden !important;
           }
           #printSummarySection,
           section#printSummarySection,
@@ -2675,6 +2765,7 @@
             flex-direction: column !important;
             justify-content: center !important;
             visibility: visible !important;
+            opacity: 1 !important;
             margin: 0 auto !important;
             padding: 26px 24px !important;
             min-height: 248mm !important;
@@ -2682,7 +2773,9 @@
             box-sizing: border-box !important;
           }
         `);
-      } else if (currentPrintMode === 'single-week' && typeof currentPrintWeekIdx === 'number') {
+      } else if (activeMode === 'single-week' && typeof currentPrintWeekIdx === 'number') {
+        document.body.setAttribute('data-print-mode', 'single-week');
+        renderWeeks();
         const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
         const wkCfg = weeksConfig[currentPrintWeekIdx];
         let targetEl = null;
@@ -2803,6 +2896,8 @@
           }
         `);
       } else {
+        document.body.setAttribute('data-print-mode', 'all');
+        renderWeeks();
         document.title = `Planning ${MONTH_NAMES[activeMonth]} ${activeYear}${empSuffix} — Débarras Express 09`;
         setDynamicPrintStyle(`
           #printSummarySection, #printOvertimeSection { display: none !important; }
@@ -2812,6 +2907,7 @@
 
     function preparePrintTextMirrors() {
       document.querySelectorAll('.print-cell-mirror').forEach((n) => n.remove());
+      if (currentPrintMode === 'balance' || currentPrintMode === 'overtime') return;
       const selector = (currentPrintMode === 'single-week' && document.querySelector('.print-target-week'))
         ? '.print-target-week textarea.planning-cell'
         : '#weeksContainer textarea.planning-cell';
@@ -2846,19 +2942,63 @@
       document.querySelectorAll('.print-cell-mirror').forEach((n) => n.remove());
     }
 
+    function restoreAfterPrintState() {
+      cleanupPrintTextMirrors();
+      currentPrintMode = 'all';
+      currentPrintWeekIdx = null;
+      isPrintSessionActive = false;
+      document.body.classList.remove('printing-single-week', 'printing-balance-only', 'printing-overtime-only', 'single-emp-week');
+      document.body.removeAttribute('data-print-mode');
+
+      const headerEl = document.querySelector('header.app-header');
+      if (headerEl) headerEl.style.display = '';
+
+      const weeksEl = document.getElementById('weeksContainer');
+      if (weeksEl) weeksEl.style.display = '';
+
+      const fw = document.querySelector('#weeksContainer .week-fullscreen-vertical');
+      if (fw) {
+        fw.style.position = '';
+        fw.style.height = '';
+        fw.style.overflow = '';
+        if (headerEl) {
+          fw.style.top = `${Math.max(56, Math.round(headerEl.getBoundingClientRect().bottom))}px`;
+        }
+      }
+
+      const sumSec = document.getElementById('printSummarySection');
+      if (sumSec) {
+        sumSec.classList.add('hidden');
+        sumSec.style.display = '';
+      }
+
+      const otSec = document.getElementById('printOvertimeSection');
+      if (otSec) {
+        otSec.classList.add('hidden');
+        otSec.style.display = '';
+      }
+
+      document.querySelectorAll('.print-target-week').forEach((el) => el.classList.remove('print-target-week'));
+      setDynamicPrintStyle('');
+      applyMonthLabels();
+    }
+
     function launchPrintJob(mode, weekIdx = null) {
+      if (afterPrintCleanupTimer) {
+        clearTimeout(afterPrintCleanupTimer);
+        afterPrintCleanupTimer = null;
+      }
       isPrintSessionActive = true;
       currentPrintMode = mode;
       currentPrintWeekIdx = weekIdx;
+      document.body.setAttribute('data-print-mode', mode);
       applyPrintClassesToDom();
-      cleanupPrintTextMirrors();
       preparePrintTextMirrors();
 
-      requestAnimationFrame(() => {
-        setTimeout(() => {
-          window.print();
-        }, 60);
-      });
+      setTimeout(() => {
+        applyPrintClassesToDom();
+        window.print();
+      }, 40);
     }
 
     function printSingleWeek(weekIdx) {
@@ -3065,6 +3205,18 @@
         }
       });
 
+      const resetManualMonthBtn = document.getElementById('resetManualMonthOverridesBtn');
+      if (resetManualMonthBtn) {
+        resetManualMonthBtn.addEventListener('click', () => {
+          appState.monthHourOverrides = {};
+          appState.monthDayOverrides = {};
+          saveState();
+          renderSummaryTable();
+          renderOvertimeTable();
+          showToast('Bilan repassé en calcul automatique depuis les semaines.');
+        });
+      }
+
       const overtimeBody = document.getElementById('overtimeTableBody');
       if (overtimeBody) {
         overtimeBody.addEventListener('focusin', (e) => {
@@ -3153,39 +3305,21 @@
       });
 
       window.addEventListener('beforeprint', () => {
+        if (!currentPrintMode || currentPrintMode === 'all') {
+          const attrMode = document.body.getAttribute('data-print-mode');
+          if (attrMode && attrMode !== 'all') {
+            currentPrintMode = attrMode;
+          }
+        }
         isPrintSessionActive = true;
         applyPrintClassesToDom();
-        cleanupPrintTextMirrors();
         preparePrintTextMirrors();
       });
 
       window.addEventListener('afterprint', () => {
         afterPrintCleanupTimer = setTimeout(() => {
-          cleanupPrintTextMirrors();
-          currentPrintMode = 'all';
-          currentPrintWeekIdx = null;
-          isPrintSessionActive = false;
-          document.body.classList.remove('printing-single-week', 'printing-balance-only', 'printing-overtime-only', 'single-emp-week');
-          document.body.removeAttribute('data-print-mode');
-          const fw = document.querySelector('#weeksContainer .week-fullscreen-vertical');
-          if (fw) {
-            fw.style.position = '';
-            fw.style.height = '';
-            fw.style.overflow = '';
-            const hdr = document.querySelector('header.app-header');
-            if (hdr) {
-              fw.style.top = `${Math.max(56, Math.round(hdr.getBoundingClientRect().bottom))}px`;
-            }
-          }
-          const otSec = document.getElementById('printOvertimeSection');
-          if (otSec) {
-            otSec.classList.add('hidden');
-            otSec.style.display = '';
-          }
-          document.querySelectorAll('.print-target-week').forEach((el) => el.classList.remove('print-target-week'));
-          setDynamicPrintStyle('');
-          applyMonthLabels();
-        }, 3500);
+          restoreAfterPrintState();
+        }, 4000);
       });
 
       document.getElementById('printBtn').addEventListener('click', () => {

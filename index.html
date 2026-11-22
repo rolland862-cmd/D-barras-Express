@@ -142,7 +142,7 @@
         display: none !important;
       }
 
-      /* Mode impression : BILAN SEUL — centré et proportionné sur A4 */
+      /* Mode impression : BILAN SEUL */
       body.printing-balance-only header.app-header,
       body.printing-balance-only #weeksContainer,
       body.printing-balance-only main > section:not(#printSummarySection) {
@@ -160,8 +160,8 @@
         justify-content: center !important;
         visibility: visible !important;
         margin: 0 auto !important;
-        padding: 28px 24px !important;
-        min-height: 256mm !important;
+        padding: 26px 24px !important;
+        min-height: 248mm !important;
         max-height: none !important;
         box-sizing: border-box !important;
         border: 1.5px solid #c8ba9d !important;
@@ -179,7 +179,7 @@
         border-radius: 16px !important;
         background-color: #2d4727 !important;
         color: #fffdf9 !important;
-        margin-bottom: 28px !important;
+        margin-bottom: 24px !important;
       }
       body.printing-balance-only #printBilanBrandGroup {
         display: flex !important;
@@ -223,14 +223,14 @@
         display: grid !important;
         grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
         gap: 16px !important;
-        margin-bottom: 28px !important;
+        margin-bottom: 24px !important;
       }
       body.printing-balance-only .print-kpi-card {
         border: 1px solid #d9ccb2 !important;
         border-top: 4px solid #2d4727 !important;
         background-color: #fbf8f1 !important;
         border-radius: 14px !important;
-        padding: 26px 14px !important;
+        padding: 24px 14px !important;
         text-align: center !important;
       }
       body.printing-balance-only .print-kpi-label {
@@ -241,7 +241,7 @@
         color: #5b6358 !important;
       }
       body.printing-balance-only .print-kpi-value {
-        font-size: 26px !important;
+        font-size: 25px !important;
         font-weight: 800 !important;
         color: #2d4727 !important;
         margin-top: 8px !important;
@@ -250,18 +250,18 @@
         border-radius: 14px !important;
         border: 1px solid #d9ccb2 !important;
         background-color: #ffffff !important;
-        margin-bottom: 28px !important;
+        margin-bottom: 24px !important;
       }
       body.printing-balance-only #printSummarySection table {
         font-size: 15px !important;
       }
       body.printing-balance-only #printSummarySection th {
-        padding: 15px 14px !important;
+        padding: 14px 14px !important;
         font-size: 12px !important;
         letter-spacing: 0.03em !important;
       }
       body.printing-balance-only #printSummarySection td {
-        padding: 24px 14px !important;
+        padding: 22px 14px !important;
       }
       body.printing-balance-only #printBilanFooter {
         display: flex !important;
@@ -273,7 +273,7 @@
         color: #5b6358 !important;
       }
 
-      /* Mode impression : UNE SEULE SEMAINE — centrée et proportionnée sur A4 */
+      /* Mode impression : UNE SEULE SEMAINE — centrée, cases compactes & habillage propre */
       .week-fullscreen-vertical {
         position: static !important;
         inset: auto !important;
@@ -302,10 +302,10 @@
         display: none !important;
       }
       body.printing-single-week .print-target-week {
-        padding: 24px 20px !important;
+        padding: 22px 20px !important;
         max-width: 100% !important;
-        margin: 0 !important;
-        min-height: 256mm !important;
+        margin: 0 auto !important;
+        min-height: 246mm !important;
         max-height: none !important;
         box-sizing: border-box !important;
         display: flex !important;
@@ -324,37 +324,88 @@
         display: none !important;
       }
       body.printing-single-week .print-target-week .overflow-x-auto {
-        margin-top: 16px !important;
+        margin-top: 14px !important;
         border-radius: 14px !important;
         background-color: #ffffff !important;
       }
       body.printing-single-week .print-target-week thead th {
-        padding-top: 13px !important;
-        padding-bottom: 13px !important;
-        font-size: 12.5px !important;
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+        font-size: 12px !important;
       }
       body.printing-single-week .print-target-week tbody td {
-        padding: 12px 4px !important;
-        font-size: 13px !important;
+        padding: 7px 4px !important;
+        font-size: 12px !important;
       }
       body.printing-single-week .print-target-week .print-cell-mirror {
-        min-height: 125px !important;
+        min-height: 58px !important;
         height: auto !important;
-        font-size: 12px !important;
-        line-height: 1.35 !important;
-        padding: 8px 4px !important;
+        font-size: 11.5px !important;
+        line-height: 1.32 !important;
+        padding: 7px 4px !important;
       }
       body.printing-single-week.single-emp-week .print-target-week .print-cell-mirror {
-        min-height: 290px !important;
-        font-size: 12.5px !important;
-        line-height: 1.4 !important;
-        padding: 12px 4px !important;
+        min-height: 82px !important;
+        font-size: 12px !important;
+        line-height: 1.35 !important;
+        padding: 9px 4px !important;
+      }
+      body.printing-single-week .print-target-week .print-week-decor {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 14px !important;
+        margin-top: 22px !important;
+      }
+      body.printing-single-week .print-target-week .print-decor-panel {
+        border: 1px solid #dfd5c0 !important;
+        border-radius: 14px !important;
+        background-color: #fbf8f1 !important;
+        padding: 16px 18px !important;
+      }
+      body.printing-single-week .print-target-week .print-decor-title {
+        font-size: 11px !important;
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        color: #2d4727 !important;
+        margin-bottom: 10px !important;
+      }
+      body.printing-single-week .print-target-week .print-legend-list {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 8px 12px !important;
+        font-size: 11.5px !important;
+        color: #3c433a !important;
+      }
+      body.printing-single-week .print-target-week .print-legend-item {
+        display: flex !important;
+        align-items: center !important;
+        gap: 7px !important;
+      }
+      body.printing-single-week .print-target-week .print-swatch {
+        width: 14px !important;
+        height: 14px !important;
+        border-radius: 4px !important;
+        border: 1px solid #b7ccb1 !important;
+        flex-shrink: 0 !important;
+      }
+      body.printing-single-week .print-target-week .print-week-summary-line {
+        display: flex !important;
+        justify-content: space-between !important;
+        padding: 6px 0 !important;
+        border-bottom: 1px solid #ece3d1 !important;
+        font-size: 12px !important;
+        color: #232921 !important;
+      }
+      body.printing-single-week .print-target-week .print-week-summary-line:last-child {
+        border-bottom: none !important;
+        padding-bottom: 0 !important;
       }
       body.printing-single-week .print-target-week .print-week-note {
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
-        margin-top: 22px !important;
+        margin-top: 18px !important;
         padding-top: 12px !important;
         border-top: 1px solid #dfd5c0 !important;
         font-size: 11.5px !important;
@@ -1524,11 +1575,52 @@
         tableWrapper.appendChild(table);
         card.appendChild(tableWrapper);
 
+        const weekDecorBlock = document.createElement('div');
+        weekDecorBlock.className = 'hidden print-week-decor';
+        const summaryLinesHtml = visibleEmployees.map((emp) => {
+          const st = computeWeekEmployeeStats(emp, weekDays, index);
+          return `
+            <div class="print-week-summary-line">
+              <strong>${emp}</strong>
+              <span>${st.workedDays} j · <strong>${formatHours(st.hours)}</strong></span>
+            </div>
+          `;
+        }).join('');
+
+        weekDecorBlock.innerHTML = `
+          <div class="print-decor-panel">
+            <div class="print-decor-title">Légende &amp; repères</div>
+            <div class="print-legend-list">
+              <div class="print-legend-item">
+                <span class="print-swatch" style="background-color:#e6f0e3;border-color:#b7ccb1;"></span>
+                <span>Jour travaillé (${formatHours(appState.baseHours)})</span>
+              </div>
+              <div class="print-legend-item">
+                <span class="print-swatch" style="background-color:#efe8d8;border-color:#d3c7ae;"></span>
+                <span><strong>R</strong> — Repos</span>
+              </div>
+              <div class="print-legend-item">
+                <span class="print-swatch" style="background-color:#f7e6dc;border-color:#e0b89f;"></span>
+                <span><strong>CP</strong> — Congés payés</span>
+              </div>
+              <div class="print-legend-item">
+                <span class="print-swatch" style="background-color:#f8e5e0;border-color:#e2b4a8;"></span>
+                <span>Jour férié</span>
+              </div>
+            </div>
+          </div>
+          <div class="print-decor-panel">
+            <div class="print-decor-title">Récapitulatif semaine ${weekCfg.weekNumber}</div>
+            <div>${summaryLinesHtml}</div>
+          </div>
+        `;
+        card.appendChild(weekDecorBlock);
+
         const weekPrintNote = document.createElement('div');
         weekPrintNote.className = 'hidden print-week-note';
         weekPrintNote.innerHTML = `
           <span>Débarras Express 09 · Semaine ${weekCfg.weekNumber} (${MONTH_NAMES[activeMonth]} ${activeYear})</span>
-          <span>R : Repos · CP : Congés payés · Base : ${formatHours(appState.baseHours)} / j</span>
+          <span>Période : ${fmt(firstDate)} – ${fmt(lastDate)}</span>
         `;
         card.appendChild(weekPrintNote);
 
@@ -1899,8 +1991,8 @@
             justify-content: center !important;
             visibility: visible !important;
             margin: 0 auto !important;
-            padding: 28px 24px !important;
-            min-height: 256mm !important;
+            padding: 26px 24px !important;
+            min-height: 248mm !important;
             max-height: none !important;
             box-sizing: border-box !important;
           }
@@ -1959,7 +2051,7 @@
         const lineCount = Math.max(1, val.split('\n').length);
         let minH = lineCount > 1 ? Math.max(46, lineCount * 13 + 8) : 34;
         if (isSingleWeekPrint) {
-          minH = isSingleEmpWeek ? 290 : Math.max(125, lineCount * 16 + 14);
+          minH = isSingleEmpWeek ? 82 : Math.max(58, lineCount * 15 + 10);
         }
         const cleanClasses = ta.className
           .replace(/planning-cell/g, '')

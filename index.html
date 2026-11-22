@@ -142,7 +142,7 @@
         display: none !important;
       }
 
-      /* Mode impression : BILAN SEUL */
+      /* Mode impression : BILAN SEUL — centré et proportionné sur A4 */
       body.printing-balance-only header.app-header,
       body.printing-balance-only #weeksContainer,
       body.printing-balance-only main > section:not(#printSummarySection) {
@@ -155,12 +155,13 @@
       body.printing-balance-only #printSummarySection,
       body.printing-balance-only section#printSummarySection,
       body.printing-balance-only section#printSummarySection.hidden {
-        display: block !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
         visibility: visible !important;
         margin: 0 auto !important;
-        padding: 22px 24px !important;
-        height: auto !important;
-        min-height: 0 !important;
+        padding: 28px 24px !important;
+        min-height: 256mm !important;
         max-height: none !important;
         box-sizing: border-box !important;
         border: 1.5px solid #c8ba9d !important;
@@ -174,11 +175,11 @@
         align-items: center !important;
         justify-content: space-between !important;
         gap: 16px !important;
-        padding: 16px 20px !important;
+        padding: 18px 20px !important;
         border-radius: 16px !important;
         background-color: #2d4727 !important;
         color: #fffdf9 !important;
-        margin-bottom: 22px !important;
+        margin-bottom: 28px !important;
       }
       body.printing-balance-only #printBilanBrandGroup {
         display: flex !important;
@@ -187,8 +188,8 @@
       }
       body.printing-balance-only #printBilanLogo {
         display: block !important;
-        width: 64px !important;
-        height: 64px !important;
+        width: 68px !important;
+        height: 68px !important;
         border-radius: 9999px !important;
         object-fit: cover !important;
         background-color: #f6f1e7 !important;
@@ -197,7 +198,7 @@
         flex-shrink: 0 !important;
       }
       body.printing-balance-only #printBilanTitle {
-        font-size: 19px !important;
+        font-size: 20px !important;
         font-weight: 800 !important;
         letter-spacing: -0.01em !important;
         margin: 0 !important;
@@ -210,69 +211,69 @@
         margin-top: 3px !important;
       }
       body.printing-balance-only #printBilanBadge {
-        padding: 6px 12px !important;
+        padding: 7px 14px !important;
         border-radius: 9999px !important;
         background-color: #f6f1e7 !important;
         color: #2d4727 !important;
-        font-size: 11.5px !important;
+        font-size: 12px !important;
         font-weight: 800 !important;
         white-space: nowrap !important;
       }
       body.printing-balance-only #printBilanKpis {
         display: grid !important;
         grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-        gap: 14px !important;
-        margin-bottom: 22px !important;
+        gap: 16px !important;
+        margin-bottom: 28px !important;
       }
       body.printing-balance-only .print-kpi-card {
         border: 1px solid #d9ccb2 !important;
-        border-top: 3px solid #2d4727 !important;
+        border-top: 4px solid #2d4727 !important;
         background-color: #fbf8f1 !important;
         border-radius: 14px !important;
-        padding: 18px 12px !important;
+        padding: 26px 14px !important;
         text-align: center !important;
       }
       body.printing-balance-only .print-kpi-label {
-        font-size: 11px !important;
+        font-size: 11.5px !important;
         font-weight: 700 !important;
         text-transform: uppercase !important;
         letter-spacing: 0.05em !important;
         color: #5b6358 !important;
       }
       body.printing-balance-only .print-kpi-value {
-        font-size: 23px !important;
+        font-size: 26px !important;
         font-weight: 800 !important;
         color: #2d4727 !important;
-        margin-top: 6px !important;
+        margin-top: 8px !important;
       }
       body.printing-balance-only #printSummarySection .print-table-wrap {
         border-radius: 14px !important;
         border: 1px solid #d9ccb2 !important;
         background-color: #ffffff !important;
-        margin-bottom: 18px !important;
+        margin-bottom: 28px !important;
       }
       body.printing-balance-only #printSummarySection table {
-        font-size: 14px !important;
+        font-size: 15px !important;
       }
       body.printing-balance-only #printSummarySection th {
-        padding: 12px 12px !important;
-        font-size: 11.5px !important;
+        padding: 15px 14px !important;
+        font-size: 12px !important;
         letter-spacing: 0.03em !important;
       }
       body.printing-balance-only #printSummarySection td {
-        padding: 18px 12px !important;
+        padding: 24px 14px !important;
       }
       body.printing-balance-only #printBilanFooter {
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
-        padding-top: 12px !important;
+        padding-top: 14px !important;
         border-top: 1px solid #dfd5c0 !important;
-        font-size: 11px !important;
+        font-size: 11.5px !important;
         color: #5b6358 !important;
       }
 
-      /* Mode impression : UNE SEULE SEMAINE */
+      /* Mode impression : UNE SEULE SEMAINE — centrée et proportionnée sur A4 */
       .week-fullscreen-vertical {
         position: static !important;
         inset: auto !important;
@@ -301,14 +302,15 @@
         display: none !important;
       }
       body.printing-single-week .print-target-week {
-        padding: 18px 20px !important;
+        padding: 24px 20px !important;
         max-width: 100% !important;
-        margin: 6px 0 0 0 !important;
-        height: auto !important;
-        min-height: 0 !important;
+        margin: 0 !important;
+        min-height: 256mm !important;
         max-height: none !important;
         box-sizing: border-box !important;
-        display: block !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
         border: 1.5px solid #c8ba9d !important;
         border-radius: 18px !important;
         background-color: #fffdf9 !important;
@@ -322,40 +324,40 @@
         display: none !important;
       }
       body.printing-single-week .print-target-week .overflow-x-auto {
-        margin-top: 12px !important;
+        margin-top: 16px !important;
         border-radius: 14px !important;
         background-color: #ffffff !important;
       }
       body.printing-single-week .print-target-week thead th {
-        padding-top: 11px !important;
-        padding-bottom: 11px !important;
-        font-size: 12px !important;
-      }
-      body.printing-single-week .print-target-week tbody td {
-        padding: 9px 5px !important;
+        padding-top: 13px !important;
+        padding-bottom: 13px !important;
         font-size: 12.5px !important;
       }
+      body.printing-single-week .print-target-week tbody td {
+        padding: 12px 4px !important;
+        font-size: 13px !important;
+      }
       body.printing-single-week .print-target-week .print-cell-mirror {
-        min-height: 92px !important;
+        min-height: 125px !important;
         height: auto !important;
         font-size: 12px !important;
         line-height: 1.35 !important;
-        padding: 8px 5px !important;
+        padding: 8px 4px !important;
       }
       body.printing-single-week.single-emp-week .print-target-week .print-cell-mirror {
-        min-height: 185px !important;
-        font-size: 13.5px !important;
+        min-height: 290px !important;
+        font-size: 12.5px !important;
         line-height: 1.4 !important;
-        padding: 12px 8px !important;
+        padding: 12px 4px !important;
       }
       body.printing-single-week .print-target-week .print-week-note {
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
-        margin-top: 16px !important;
-        padding-top: 10px !important;
+        margin-top: 22px !important;
+        padding-top: 12px !important;
         border-top: 1px solid #dfd5c0 !important;
-        font-size: 11px !important;
+        font-size: 11.5px !important;
         color: #5b6358 !important;
       }
       .week-fullscreen-vertical .sm\:hidden {
@@ -384,12 +386,12 @@
         border-radius: 10px !important;
         border-width: 1px !important;
         white-space: pre-wrap !important;
-        overflow-wrap: break-word !important;
-        word-break: break-word !important;
+        overflow-wrap: normal !important;
+        word-break: normal !important;
         hyphens: none !important;
         font-size: 11px !important;
         line-height: 1.3 !important;
-        padding: 5px 4px !important;
+        padding: 5px 3px !important;
       }
 
       input.hours-edit-input,
@@ -1892,12 +1894,13 @@
           #printSummarySection,
           section#printSummarySection,
           section#printSummarySection.hidden {
-            display: block !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
             visibility: visible !important;
             margin: 0 auto !important;
-            padding: 22px 24px !important;
-            height: auto !important;
-            min-height: 0 !important;
+            padding: 28px 24px !important;
+            min-height: 256mm !important;
             max-height: none !important;
             box-sizing: border-box !important;
           }
@@ -1956,7 +1959,7 @@
         const lineCount = Math.max(1, val.split('\n').length);
         let minH = lineCount > 1 ? Math.max(46, lineCount * 13 + 8) : 34;
         if (isSingleWeekPrint) {
-          minH = isSingleEmpWeek ? 185 : Math.max(92, lineCount * 15 + 14);
+          minH = isSingleEmpWeek ? 290 : Math.max(125, lineCount * 16 + 14);
         }
         const cleanClasses = ta.className
           .replace(/planning-cell/g, '')

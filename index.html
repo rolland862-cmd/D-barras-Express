@@ -1116,13 +1116,66 @@
         card.appendChild(tableWrapper);
 
         if (isFocusedWeek) {
+          const isSingleEmployee = visibleEmployees.length === 1;
           const mobileVerticalBox = document.createElement('div');
-          mobileVerticalBox.className = 'sm:hidden space-y-2.5 mt-2 flex-1';
+          mobileVerticalBox.className = isSingleEmployee
+            ? 'sm:hidden space-y-1.5 mt-2 flex-1'
+            : 'sm:hidden space-y-2.5 mt-2 flex-1';
 
           const todayKey = formatDateKey(new Date());
 
           weekDays.forEach((d) => {
             const isToday = d.dateKey === todayKey;
+            const dateBadge = d.isOtherMonth
+              ? `${d.dayOfMonth}/${String(d.dateObj.getMonth() + 1).padStart(2, '0')}`
+              : `${d.dayOfMonth}`;
+
+            if (isSingleEmployee) {
+              const employee = visibleEmployees[0];
+              const dayRow = document.createElement('div');
+              dayRow.className = isToday
+                ? 'rounded-xl border-2 border-[#2d4727] bg-[#eef6eb] px-3 py-2 flex items-center justify-between gap-3'
+                : (d.isHoliday
+                  ? 'rounded-xl border border-[#e2b4a8] bg-[#fdf3f0] px-3 py-2 flex items-center justify-between gap-3'
+                  : 'rounded-xl border border-[#dfd5c0] bg-[#fcfaf5] px-3 py-2 flex items-center justify-between gap-3');
+
+              const leftDay = document.createElement('div');
+              leftDay.className = 'flex items-center gap-2 min-w-0';
+              leftDay.innerHTML = `
+                <span class="text-sm font-extrabold text-[#232921] whitespace-nowrap">${d.dayLabel} ${dateBadge} ${MONTH_SHORT[d.dateObj.getMonth()]}</span>
+                ${isToday ? '<span class="px-1.5 py-0.5 rounded bg-[#2d4727] text-[#fffdf9] text-[10px] font-bold whitespace-nowrap">Aujourd’hui</span>' : ''}
+                ${d.isHoliday ? '<span class="px-1.5 py-0.5 rounded bg-[#f8e5e0] text-[#8c3827] text-[10px] font-bold whitespace-nowrap">Férié</span>' : ''}
+              `;
+
+              const code = getCellCode(employee, d.dateObj);
+              const visual = getCellAppearance(code);
+              const defaultCode = getDefaultCellCode(d.dateObj);
+              const customVal = getRawOverrideForDate(employee, d.dateObj);
+
+              const inp = document.createElement('textarea');
+              inp.rows = 1;
+              inp.className = `planning-cell !w-28 !min-w-[108px] !min-h-[38px] text-sm py-1.5 px-2.5 rounded-lg border transition outline-none focus:ring-2 focus:ring-[#2d4727] shrink-0 ${visual.classes}`;
+              inp.value = customVal !== undefined ? customVal : (defaultCode === 'R' ? 'R' : '');
+              inp.placeholder = '·';
+              inp.spellcheck = false;
+              inp.setAttribute(
+                'aria-label',
+                `${employee}, ${d.dayLabel} ${d.dayOfMonth} ${MONTH_NAMES[d.dateObj.getMonth()].toLowerCase()} ${d.dateObj.getFullYear()}`
+              );
+              inp.dataset.employee = employee;
+              inp.dataset.dateKey = d.dateKey;
+              inp.dataset.weekIndex = index;
+
+              dayRow.appendChild(leftDay);
+              dayRow.appendChild(inp);
+              requestAnimationFrame(() => {
+                inp.style.height = 'auto';
+                inp.style.height = `${Math.max(38, inp.scrollHeight)}px`;
+              });
+              mobileVerticalBox.appendChild(dayRow);
+              return;
+            }
+
             const dayCard = document.createElement('div');
             dayCard.className = isToday
               ? 'rounded-xl border-2 border-[#2d4727] bg-[#eef6eb] p-2.5'
@@ -1132,9 +1185,6 @@
 
             const dayHeader = document.createElement('div');
             dayHeader.className = 'flex items-center justify-between mb-2';
-            const dateBadge = d.isOtherMonth
-              ? `${d.dayOfMonth}/${String(d.dateObj.getMonth() + 1).padStart(2, '0')}`
-              : `${d.dayOfMonth}`;
             dayHeader.innerHTML = `
               <span class="text-sm font-extrabold text-[#232921]">${d.dayLabel} ${dateBadge} ${MONTH_SHORT[d.dateObj.getMonth()]}</span>
               <span class="text-xs font-semibold ${isToday ? 'text-[#2d4727]' : (d.isHoliday ? 'text-[#8c3827]' : 'text-[#5b6358]')}">${isToday ? 'Aujourd’hui' : (d.isHoliday ? 'Férié' : '')}</span>
@@ -1182,7 +1232,9 @@
           });
 
           const totalsBox = document.createElement('div');
-          totalsBox.className = 'rounded-xl border border-[#dfd5c0] bg-[#f3ece0] p-3 mt-3 space-y-2';
+          totalsBox.className = isSingleEmployee
+            ? 'rounded-xl border border-[#dfd5c0] bg-[#f3ece0] p-2.5 mt-2 space-y-1.5'
+            : 'rounded-xl border border-[#dfd5c0] bg-[#f3ece0] p-3 mt-3 space-y-2';
           const totTitle = document.createElement('div');
           totTitle.className = 'text-xs font-bold uppercase tracking-wide text-[#4c5449]';
           totTitle.textContent = `Totaux Semaine ${weekCfg.weekNumber}`;
@@ -1351,8 +1403,9 @@
 
         const effectiveCode = getCellCode(employee, dateObj);
         const visual = getCellAppearance(effectiveCode);
-        inp.className = `planning-cell rounded-lg border transition outline-none focus:ring-2 focus:ring-[#2d4727] ${visual.classes}`;
-        autoFitCell(inp);
+        inp.className = inp.className.replace(/bg-\[#[^\]]+\]|hover:bg-\[#[^\]]+\]|text-\[#[^\]]+\]|border-\[#[^\]]+\]|font-semibold|font-bold/g, '').trim() + ' ' + visual.classes;
+        inp.style.height = 'auto';
+        inp.style.height = `${Math.max(38, inp.scrollHeight)}px`;
 
         const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
         const weekCfg = weeksConfig[weekIndex];

@@ -151,7 +151,7 @@
         display: none !important;
       }
 
-      /* Mode impression : BILAN SEUL (style carte encadrée fidèle à l'image) */
+      /* Mode impression : BILAN SEUL — centré verticalement et horizontalement */
       body.printing-balance-only header.app-header,
       body.printing-balance-only #weeksContainer,
       body.printing-balance-only #printOvertimeSection,
@@ -169,14 +169,19 @@
       body[data-print-mode="balance"] #printSummarySection,
       body[data-print-mode="balance"] section#printSummarySection,
       body[data-print-mode="balance"] section#printSummarySection.hidden {
-        display: block !important;
+        position: fixed !important;
+        inset: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
         visibility: visible !important;
         opacity: 1 !important;
-        margin: 12px auto 0 !important;
-        padding: 16px 18px !important;
+        margin: auto !important;
+        padding: 18px 20px !important;
+        width: calc(100% - 12mm) !important;
         max-width: 100% !important;
         height: auto !important;
-        min-height: 0 !important;
+        max-height: calc(100% - 12mm) !important;
         box-sizing: border-box !important;
         border: 1.5px solid #d5c8ae !important;
         border-radius: 14px !important;
@@ -190,7 +195,7 @@
         align-items: center !important;
         justify-content: space-between !important;
         gap: 12px !important;
-        padding: 12px 16px !important;
+        padding: 13px 16px !important;
         border-radius: 12px !important;
         background-color: #2d4727 !important;
         color: #fffdf9 !important;
@@ -205,8 +210,8 @@
       body.printing-balance-only #printBilanLogo,
       body[data-print-mode="balance"] #printBilanLogo {
         display: block !important;
-        width: 44px !important;
-        height: 44px !important;
+        width: 46px !important;
+        height: 46px !important;
         border-radius: 9999px !important;
         object-fit: cover !important;
         background-color: #f6f1e7 !important;
@@ -215,7 +220,7 @@
       }
       body.printing-balance-only #printBilanTitle,
       body[data-print-mode="balance"] #printBilanTitle {
-        font-size: 16px !important;
+        font-size: 16.5px !important;
         font-weight: 800 !important;
         margin: 0 !important;
         color: #fffdf9 !important;
@@ -249,7 +254,7 @@
         border: 1px solid #dfd5c0 !important;
         background-color: #fffdf9 !important;
         border-radius: 12px !important;
-        padding: 12px 10px !important;
+        padding: 13px 10px !important;
         text-align: center !important;
       }
       body.printing-balance-only .print-kpi-label,
@@ -262,7 +267,7 @@
       }
       body.printing-balance-only .print-kpi-value,
       body[data-print-mode="balance"] .print-kpi-value {
-        font-size: 19px !important;
+        font-size: 20px !important;
         font-weight: 800 !important;
         color: #232921 !important;
         margin-top: 4px !important;
@@ -276,29 +281,29 @@
       }
       body.printing-balance-only #printSummarySection table,
       body[data-print-mode="balance"] #printSummarySection table {
-        font-size: 12px !important;
+        font-size: 12.5px !important;
       }
       body.printing-balance-only #printSummarySection th,
       body[data-print-mode="balance"] #printSummarySection th {
-        padding: 8px 10px !important;
+        padding: 9px 12px !important;
         font-size: 10.5px !important;
       }
       body.printing-balance-only #printSummarySection td,
       body[data-print-mode="balance"] #printSummarySection td {
-        padding: 9px 10px !important;
+        padding: 10px 12px !important;
       }
       body.printing-balance-only #printBilanFooter,
       body[data-print-mode="balance"] #printBilanFooter {
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
-        padding-top: 8px !important;
+        padding-top: 9px !important;
         border-top: 1px solid #dfd5c0 !important;
         font-size: 10.5px !important;
         color: #5b6358 !important;
       }
 
-      /* Mode impression : HEURES SUPPLEMENTAIRES SEULES (style carte encadrée fidèle à l'image) */
+      /* Mode impression : HEURES SUPPLEMENTAIRES SEULES — centré verticalement et horizontalement */
       body.printing-overtime-only header.app-header,
       body.printing-overtime-only #weeksContainer,
       body.printing-overtime-only #printSummarySection,
@@ -316,14 +321,19 @@
       body[data-print-mode="overtime"] #printOvertimeSection,
       body[data-print-mode="overtime"] section#printOvertimeSection,
       body[data-print-mode="overtime"] section#printOvertimeSection.hidden {
-        display: block !important;
+        position: fixed !important;
+        inset: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
         visibility: visible !important;
         opacity: 1 !important;
-        margin: 12px auto 0 !important;
-        padding: 16px 18px !important;
+        margin: auto !important;
+        padding: 18px 20px !important;
+        width: calc(100% - 12mm) !important;
         max-width: 100% !important;
         height: auto !important;
-        min-height: 0 !important;
+        max-height: calc(100% - 12mm) !important;
         box-sizing: border-box !important;
         border: 1.5px solid #d5c8ae !important;
         border-radius: 14px !important;
@@ -337,7 +347,7 @@
         align-items: center !important;
         justify-content: space-between !important;
         gap: 12px !important;
-        padding: 12px 16px !important;
+        padding: 13px 16px !important;
         border-radius: 12px !important;
         background-color: #2d4727 !important;
         color: #fffdf9 !important;
@@ -352,8 +362,8 @@
       body.printing-overtime-only #printOvertimeLogo,
       body[data-print-mode="overtime"] #printOvertimeLogo {
         display: block !important;
-        width: 44px !important;
-        height: 44px !important;
+        width: 46px !important;
+        height: 46px !important;
         border-radius: 9999px !important;
         object-fit: cover !important;
         background-color: #f6f1e7 !important;
@@ -362,7 +372,7 @@
       }
       body.printing-overtime-only #printOvertimeTitle,
       body[data-print-mode="overtime"] #printOvertimeTitle {
-        font-size: 16px !important;
+        font-size: 16.5px !important;
         font-weight: 800 !important;
         margin: 0 !important;
         color: #fffdf9 !important;
@@ -396,7 +406,7 @@
         border: 1px solid #dfd5c0 !important;
         background-color: #fffdf9 !important;
         border-radius: 12px !important;
-        padding: 12px 10px !important;
+        padding: 13px 10px !important;
         text-align: center !important;
       }
       body.printing-overtime-only .print-ot-kpi-label,
@@ -409,7 +419,7 @@
       }
       body.printing-overtime-only .print-ot-kpi-value,
       body[data-print-mode="overtime"] .print-ot-kpi-value {
-        font-size: 19px !important;
+        font-size: 20px !important;
         font-weight: 800 !important;
         color: #9a4e28 !important;
         margin-top: 4px !important;
@@ -423,23 +433,23 @@
       }
       body.printing-overtime-only #printOvertimeSection table,
       body[data-print-mode="overtime"] #printOvertimeSection table {
-        font-size: 12px !important;
+        font-size: 12.5px !important;
       }
       body.printing-overtime-only #printOvertimeSection th,
       body[data-print-mode="overtime"] #printOvertimeSection th {
-        padding: 8px 10px !important;
+        padding: 9px 12px !important;
         font-size: 10.5px !important;
       }
       body.printing-overtime-only #printOvertimeSection td,
       body[data-print-mode="overtime"] #printOvertimeSection td {
-        padding: 9px 10px !important;
+        padding: 10px 12px !important;
       }
       body.printing-overtime-only #printOvertimeFooter,
       body[data-print-mode="overtime"] #printOvertimeFooter {
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
-        padding-top: 8px !important;
+        padding-top: 9px !important;
         border-top: 1px solid #dfd5c0 !important;
         font-size: 10.5px !important;
         color: #5b6358 !important;
@@ -2780,7 +2790,7 @@
         }
         if (otSec) {
           otSec.classList.remove('hidden');
-          otSec.style.display = 'block';
+          otSec.style.display = 'flex';
         }
 
         setDynamicPrintStyle(`
@@ -2794,13 +2804,19 @@
           #printOvertimeSection,
           section#printOvertimeSection,
           section#printOvertimeSection.hidden {
-            display: block !important;
+            position: fixed !important;
+            inset: 0 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
             visibility: visible !important;
             opacity: 1 !important;
-            margin: 12px auto 0 !important;
-            padding: 16px 18px !important;
+            margin: auto !important;
+            padding: 18px 20px !important;
+            width: calc(100% - 12mm) !important;
+            max-width: 100% !important;
             height: auto !important;
-            min-height: 0 !important;
+            max-height: calc(100% - 12mm) !important;
             box-sizing: border-box !important;
           }
         `);
@@ -2819,7 +2835,7 @@
         }
         if (sumSec) {
           sumSec.classList.remove('hidden');
-          sumSec.style.display = 'block';
+          sumSec.style.display = 'flex';
         }
 
         setDynamicPrintStyle(`
@@ -2833,13 +2849,19 @@
           #printSummarySection,
           section#printSummarySection,
           section#printSummarySection.hidden {
-            display: block !important;
+            position: fixed !important;
+            inset: 0 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
             visibility: visible !important;
             opacity: 1 !important;
-            margin: 12px auto 0 !important;
-            padding: 16px 18px !important;
+            margin: auto !important;
+            padding: 18px 20px !important;
+            width: calc(100% - 12mm) !important;
+            max-width: 100% !important;
             height: auto !important;
-            min-height: 0 !important;
+            max-height: calc(100% - 12mm) !important;
             box-sizing: border-box !important;
           }
         `);

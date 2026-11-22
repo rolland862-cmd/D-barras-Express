@@ -64,7 +64,7 @@
         overflow: visible !important;
         background-color: #ffffff !important;
         color: var(--ink-main) !important;
-        font-size: 11px;
+        font-size: 10.5px;
         padding-bottom: 0 !important;
         margin: 0 !important;
       }
@@ -74,7 +74,8 @@
         color: #fffdf9 !important;
         display: block !important;
         box-shadow: none !important;
-        border-radius: 12px !important;
+        border-radius: 10px !important;
+        margin-bottom: 6px !important;
       }
       #openMonthlyBalanceMenuBtn,
       #openOvertimeMenuBtn,
@@ -87,15 +88,13 @@
       }
       main {
         max-width: 100% !important;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
       }
       #weeksContainer {
         display: flex !important;
         flex-direction: column !important;
-        gap: 6px !important;
+        gap: 5px !important;
       }
       #weeksContainer > div {
         padding: 6px 8px !important;
@@ -110,11 +109,11 @@
         border-collapse: collapse !important;
       }
       #weeksContainer th {
-        padding-top: 4px !important;
-        padding-bottom: 4px !important;
+        padding-top: 3px !important;
+        padding-bottom: 3px !important;
         min-width: 0 !important;
-        font-size: 10.5px !important;
-        line-height: 1.2 !important;
+        font-size: 10px !important;
+        line-height: 1.15 !important;
       }
       #weeksContainer td {
         padding: 2px !important;
@@ -123,19 +122,19 @@
       #weeksContainer th:first-child {
         position: static !important;
         width: 72px !important;
-        padding: 4px 5px !important;
+        padding: 3px 5px !important;
         min-width: 0 !important;
-        font-size: 11px !important;
+        font-size: 10.5px !important;
       }
       #weeksContainer th:nth-last-child(2),
       #weeksContainer td:nth-last-child(2) {
-        width: 46px !important;
-        font-size: 11px !important;
+        width: 44px !important;
+        font-size: 10.5px !important;
       }
       #weeksContainer th:last-child,
       #weeksContainer td:last-child {
-        width: 60px !important;
-        font-size: 11px !important;
+        width: 58px !important;
+        font-size: 10.5px !important;
       }
       .today-col-highlight {
         box-shadow: none !important;
@@ -157,28 +156,22 @@
         display: none !important;
         visibility: hidden !important;
       }
-      body.printing-balance-only main,
-      body[data-print-mode="balance"] main {
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
-      }
       body.printing-balance-only #printSummarySection,
       body.printing-balance-only section#printSummarySection,
       body.printing-balance-only section#printSummarySection.hidden,
       body[data-print-mode="balance"] #printSummarySection,
       body[data-print-mode="balance"] section#printSummarySection,
       body[data-print-mode="balance"] section#printSummarySection.hidden {
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: center !important;
+        display: block !important;
         visibility: visible !important;
         opacity: 1 !important;
         margin: 0 auto !important;
-        padding: 24px 22px !important;
-        min-height: 242mm !important;
+        padding: 12px 14px !important;
+        height: auto !important;
+        min-height: 0 !important;
         box-sizing: border-box !important;
         border: 1.5px solid #c8ba9d !important;
-        border-radius: 18px !important;
+        border-radius: 14px !important;
         background-color: #fffdf9 !important;
         break-inside: avoid !important;
         page-break-inside: avoid !important;
@@ -188,33 +181,33 @@
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
-        gap: 16px !important;
-        padding: 16px 20px !important;
-        border-radius: 16px !important;
+        gap: 12px !important;
+        padding: 10px 14px !important;
+        border-radius: 12px !important;
         background-color: #2d4727 !important;
         color: #fffdf9 !important;
-        margin-bottom: 20px !important;
+        margin-bottom: 10px !important;
       }
       body.printing-balance-only #printBilanBrandGroup,
       body[data-print-mode="balance"] #printBilanBrandGroup {
         display: flex !important;
         align-items: center !important;
-        gap: 16px !important;
+        gap: 12px !important;
       }
       body.printing-balance-only #printBilanLogo,
       body[data-print-mode="balance"] #printBilanLogo {
         display: block !important;
-        width: 64px !important;
-        height: 64px !important;
+        width: 44px !important;
+        height: 44px !important;
         border-radius: 9999px !important;
         object-fit: cover !important;
         background-color: #f6f1e7 !important;
-        border: 3px solid #e5d8be !important;
+        border: 2px solid #e5d8be !important;
         flex-shrink: 0 !important;
       }
       body.printing-balance-only #printBilanTitle,
       body[data-print-mode="balance"] #printBilanTitle {
-        font-size: 19px !important;
+        font-size: 15px !important;
         font-weight: 800 !important;
         margin: 0 !important;
         color: #fffdf9 !important;
@@ -222,17 +215,17 @@
       body.printing-balance-only #printBilanSubtitle,
       body[data-print-mode="balance"] #printBilanSubtitle {
         display: block !important;
-        font-size: 12px !important;
+        font-size: 10.5px !important;
         color: #e6decb !important;
-        margin-top: 3px !important;
+        margin-top: 2px !important;
       }
       body.printing-balance-only #printBilanBadge,
       body[data-print-mode="balance"] #printBilanBadge {
-        padding: 7px 14px !important;
+        padding: 4px 10px !important;
         border-radius: 9999px !important;
         background-color: #f6f1e7 !important;
         color: #2d4727 !important;
-        font-size: 12px !important;
+        font-size: 11px !important;
         font-weight: 800 !important;
         white-space: nowrap !important;
       }
@@ -240,61 +233,61 @@
       body[data-print-mode="balance"] #printBilanKpis {
         display: grid !important;
         grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-        gap: 14px !important;
-        margin-bottom: 20px !important;
+        gap: 8px !important;
+        margin-bottom: 10px !important;
       }
       body.printing-balance-only .print-kpi-card,
       body[data-print-mode="balance"] .print-kpi-card {
         border: 1px solid #d9ccb2 !important;
-        border-top: 4px solid #2d4727 !important;
+        border-top: 3px solid #2d4727 !important;
         background-color: #fbf8f1 !important;
-        border-radius: 14px !important;
-        padding: 20px 12px !important;
+        border-radius: 10px !important;
+        padding: 10px 8px !important;
         text-align: center !important;
       }
       body.printing-balance-only .print-kpi-label,
       body[data-print-mode="balance"] .print-kpi-label {
-        font-size: 11px !important;
+        font-size: 10px !important;
         font-weight: 700 !important;
         text-transform: uppercase !important;
-        letter-spacing: 0.05em !important;
+        letter-spacing: 0.04em !important;
         color: #5b6358 !important;
       }
       body.printing-balance-only .print-kpi-value,
       body[data-print-mode="balance"] .print-kpi-value {
-        font-size: 24px !important;
+        font-size: 18px !important;
         font-weight: 800 !important;
         color: #2d4727 !important;
-        margin-top: 6px !important;
+        margin-top: 3px !important;
       }
       body.printing-balance-only #printSummarySection .print-table-wrap,
       body[data-print-mode="balance"] #printSummarySection .print-table-wrap {
-        border-radius: 14px !important;
+        border-radius: 10px !important;
         border: 1px solid #d9ccb2 !important;
         background-color: #ffffff !important;
-        margin-bottom: 20px !important;
+        margin-bottom: 10px !important;
       }
       body.printing-balance-only #printSummarySection table,
       body[data-print-mode="balance"] #printSummarySection table {
-        font-size: 14px !important;
+        font-size: 12px !important;
       }
       body.printing-balance-only #printSummarySection th,
       body[data-print-mode="balance"] #printSummarySection th {
-        padding: 12px 12px !important;
-        font-size: 11.5px !important;
+        padding: 8px 10px !important;
+        font-size: 10.5px !important;
       }
       body.printing-balance-only #printSummarySection td,
       body[data-print-mode="balance"] #printSummarySection td {
-        padding: 18px 12px !important;
+        padding: 9px 10px !important;
       }
       body.printing-balance-only #printBilanFooter,
       body[data-print-mode="balance"] #printBilanFooter {
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
-        padding-top: 12px !important;
+        padding-top: 8px !important;
         border-top: 1px solid #dfd5c0 !important;
-        font-size: 11px !important;
+        font-size: 10px !important;
         color: #5b6358 !important;
       }
 
@@ -310,28 +303,22 @@
         display: none !important;
         visibility: hidden !important;
       }
-      body.printing-overtime-only main,
-      body[data-print-mode="overtime"] main {
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
-      }
       body.printing-overtime-only #printOvertimeSection,
       body.printing-overtime-only section#printOvertimeSection,
       body.printing-overtime-only section#printOvertimeSection.hidden,
       body[data-print-mode="overtime"] #printOvertimeSection,
       body[data-print-mode="overtime"] section#printOvertimeSection,
       body[data-print-mode="overtime"] section#printOvertimeSection.hidden {
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: center !important;
+        display: block !important;
         visibility: visible !important;
         opacity: 1 !important;
         margin: 0 auto !important;
-        padding: 24px 22px !important;
-        min-height: 242mm !important;
+        padding: 12px 14px !important;
+        height: auto !important;
+        min-height: 0 !important;
         box-sizing: border-box !important;
         border: 1.5px solid #c8ba9d !important;
-        border-radius: 18px !important;
+        border-radius: 14px !important;
         background-color: #fffdf9 !important;
         break-inside: avoid !important;
         page-break-inside: avoid !important;
@@ -341,33 +328,33 @@
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
-        gap: 16px !important;
-        padding: 16px 20px !important;
-        border-radius: 16px !important;
+        gap: 12px !important;
+        padding: 10px 14px !important;
+        border-radius: 12px !important;
         background-color: #2d4727 !important;
         color: #fffdf9 !important;
-        margin-bottom: 20px !important;
+        margin-bottom: 10px !important;
       }
       body.printing-overtime-only #printOvertimeBrandGroup,
       body[data-print-mode="overtime"] #printOvertimeBrandGroup {
         display: flex !important;
         align-items: center !important;
-        gap: 16px !important;
+        gap: 12px !important;
       }
       body.printing-overtime-only #printOvertimeLogo,
       body[data-print-mode="overtime"] #printOvertimeLogo {
         display: block !important;
-        width: 64px !important;
-        height: 64px !important;
+        width: 44px !important;
+        height: 44px !important;
         border-radius: 9999px !important;
         object-fit: cover !important;
         background-color: #f6f1e7 !important;
-        border: 3px solid #e5d8be !important;
+        border: 2px solid #e5d8be !important;
         flex-shrink: 0 !important;
       }
       body.printing-overtime-only #printOvertimeTitle,
       body[data-print-mode="overtime"] #printOvertimeTitle {
-        font-size: 19px !important;
+        font-size: 15px !important;
         font-weight: 800 !important;
         margin: 0 !important;
         color: #fffdf9 !important;
@@ -375,17 +362,17 @@
       body.printing-overtime-only #printOvertimeSubtitle,
       body[data-print-mode="overtime"] #printOvertimeSubtitle {
         display: block !important;
-        font-size: 12px !important;
+        font-size: 10.5px !important;
         color: #e6decb !important;
-        margin-top: 3px !important;
+        margin-top: 2px !important;
       }
       body.printing-overtime-only #printOvertimeBadge,
       body[data-print-mode="overtime"] #printOvertimeBadge {
-        padding: 7px 14px !important;
+        padding: 4px 10px !important;
         border-radius: 9999px !important;
         background-color: #f7e6dc !important;
         color: #9a4e28 !important;
-        font-size: 12px !important;
+        font-size: 11px !important;
         font-weight: 800 !important;
         white-space: nowrap !important;
       }
@@ -393,65 +380,65 @@
       body[data-print-mode="overtime"] #printOvertimeKpis {
         display: grid !important;
         grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-        gap: 14px !important;
-        margin-bottom: 20px !important;
+        gap: 8px !important;
+        margin-bottom: 10px !important;
       }
       body.printing-overtime-only .print-ot-kpi-card,
       body[data-print-mode="overtime"] .print-ot-kpi-card {
         border: 1px solid #d9ccb2 !important;
-        border-top: 4px solid #9a4e28 !important;
+        border-top: 3px solid #9a4e28 !important;
         background-color: #fbf8f1 !important;
-        border-radius: 14px !important;
-        padding: 20px 12px !important;
+        border-radius: 10px !important;
+        padding: 10px 8px !important;
         text-align: center !important;
       }
       body.printing-overtime-only .print-ot-kpi-label,
       body[data-print-mode="overtime"] .print-ot-kpi-label {
-        font-size: 11px !important;
+        font-size: 10px !important;
         font-weight: 700 !important;
         text-transform: uppercase !important;
-        letter-spacing: 0.05em !important;
+        letter-spacing: 0.04em !important;
         color: #5b6358 !important;
       }
       body.printing-overtime-only .print-ot-kpi-value,
       body[data-print-mode="overtime"] .print-ot-kpi-value {
-        font-size: 24px !important;
+        font-size: 18px !important;
         font-weight: 800 !important;
         color: #9a4e28 !important;
-        margin-top: 6px !important;
+        margin-top: 3px !important;
       }
       body.printing-overtime-only #printOvertimeSection .print-table-wrap,
       body[data-print-mode="overtime"] #printOvertimeSection .print-table-wrap {
-        border-radius: 14px !important;
+        border-radius: 10px !important;
         border: 1px solid #d9ccb2 !important;
         background-color: #ffffff !important;
-        margin-bottom: 20px !important;
+        margin-bottom: 10px !important;
       }
       body.printing-overtime-only #printOvertimeSection table,
       body[data-print-mode="overtime"] #printOvertimeSection table {
-        font-size: 14px !important;
+        font-size: 12px !important;
       }
       body.printing-overtime-only #printOvertimeSection th,
       body[data-print-mode="overtime"] #printOvertimeSection th {
-        padding: 12px 12px !important;
-        font-size: 11.5px !important;
+        padding: 8px 10px !important;
+        font-size: 10.5px !important;
       }
       body.printing-overtime-only #printOvertimeSection td,
       body[data-print-mode="overtime"] #printOvertimeSection td {
-        padding: 18px 12px !important;
+        padding: 9px 10px !important;
       }
       body.printing-overtime-only #printOvertimeFooter,
       body[data-print-mode="overtime"] #printOvertimeFooter {
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
-        padding-top: 12px !important;
+        padding-top: 8px !important;
         border-top: 1px solid #dfd5c0 !important;
-        font-size: 11px !important;
+        font-size: 10px !important;
         color: #5b6358 !important;
       }
 
-      /* Mode impression : UNE SEULE SEMAINE — CONTENU COMPLET SUR 1 PAGE A4 */
+      /* Mode impression : UNE SEULE SEMAINE — COMPACT & DENSE SUR 1 PAGE */
       .week-fullscreen-vertical {
         position: static !important;
         inset: auto !important;
@@ -493,21 +480,19 @@
       }
       body.printing-single-week .print-target-week,
       body.printing-single-week .print-target-week > div {
-        padding: 12px 14px !important;
+        padding: 8px 10px !important;
         max-width: 100% !important;
         width: 100% !important;
         margin: 0 auto !important;
-        min-height: 236mm !important;
         height: auto !important;
+        min-height: 0 !important;
         overflow: visible !important;
         box-sizing: border-box !important;
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: space-between !important;
+        display: block !important;
         visibility: visible !important;
         opacity: 1 !important;
         border: 1.5px solid #c8ba9d !important;
-        border-radius: 16px !important;
+        border-radius: 12px !important;
         background-color: #fffdf9 !important;
         break-inside: avoid !important;
         page-break-inside: avoid !important;
@@ -515,102 +500,156 @@
       body.printing-single-week .print-target-week .open-week-btn .text-\[11px\],
       body.printing-single-week .print-target-week .back-to-month-btn,
       body.printing-single-week .print-target-week .print-week-btn,
-      body.printing-single-week .print-target-week .print-hide-hint,
-      body.printing-single-week .print-target-week .print-week-decor,
-      body.printing-single-week .print-target-week .print-week-note {
+      body.printing-single-week .print-target-week .print-hide-hint {
         display: none !important;
       }
       body.printing-single-week .print-target-week .sm\:hidden {
         display: flex !important;
         flex-direction: column !important;
-        justify-content: space-between !important;
         visibility: visible !important;
         opacity: 1 !important;
         height: auto !important;
         overflow: visible !important;
-        margin-top: 6px !important;
-        gap: 6px !important;
+        margin-top: 4px !important;
+        gap: 3px !important;
       }
       body.printing-single-week .print-target-week .sm\:hidden > div:not(:last-child) {
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
-        padding: 8px 12px !important;
-        border-radius: 10px !important;
+        padding: 4px 8px !important;
+        border-radius: 7px !important;
         visibility: visible !important;
         opacity: 1 !important;
         break-inside: avoid !important;
         page-break-inside: avoid !important;
       }
       body.printing-single-week .print-target-week .sm\:hidden > div:not(:last-child) span {
-        font-size: 12.5px !important;
-        line-height: 1.25 !important;
+        font-size: 10.5px !important;
+        line-height: 1.15 !important;
       }
       body.printing-single-week .print-target-week .sm\:hidden > div:last-child {
         display: block !important;
-        margin-top: 6px !important;
-        padding: 10px 12px !important;
-        border-radius: 10px !important;
+        margin-top: 4px !important;
+        padding: 6px 8px !important;
+        border-radius: 8px !important;
         visibility: visible !important;
         opacity: 1 !important;
         break-inside: avoid !important;
         page-break-inside: avoid !important;
       }
       body.printing-single-week .print-target-week .sm\:hidden > div:last-child > div:not(:first-child) {
-        padding: 8px 12px !important;
+        padding: 4px 8px !important;
       }
       body.printing-single-week .print-target-week .overflow-x-auto {
-        margin-top: 6px !important;
-        border-radius: 12px !important;
+        margin-top: 4px !important;
+        border-radius: 9px !important;
         background-color: #ffffff !important;
         overflow: visible !important;
       }
       body.printing-single-week .print-target-week thead th {
-        padding-top: 8px !important;
-        padding-bottom: 8px !important;
-        font-size: 11px !important;
+        padding-top: 4px !important;
+        padding-bottom: 4px !important;
+        font-size: 9.5px !important;
       }
       body.printing-single-week .print-target-week tbody td {
-        padding: 6px 4px !important;
-        font-size: 11px !important;
+        padding: 3px !important;
+        font-size: 9.5px !important;
       }
       body.printing-single-week .print-target-week .print-cell-mirror {
         display: flex !important;
         visibility: visible !important;
         opacity: 1 !important;
-        min-height: 36px !important;
+        min-height: 22px !important;
         height: auto !important;
-        font-size: 11px !important;
-        line-height: 1.2 !important;
-        padding: 4px 6px !important;
-        border-radius: 7px !important;
+        font-size: 9.5px !important;
+        line-height: 1.15 !important;
+        padding: 2px 4px !important;
+        border-radius: 6px !important;
       }
       body.printing-single-week .print-target-week .sm\:hidden .print-cell-mirror {
-        width: 108px !important;
-        min-width: 108px !important;
-        min-height: 34px !important;
+        width: 78px !important;
+        min-width: 78px !important;
+        min-height: 22px !important;
         height: auto !important;
         flex-shrink: 0 !important;
       }
+      body.printing-single-week .print-target-week .print-week-decor {
+        display: grid !important;
+        grid-template-columns: 1.15fr 0.85fr !important;
+        gap: 6px !important;
+        margin-top: 5px !important;
+      }
+      body.printing-single-week .print-target-week .print-decor-panel {
+        border: 1px solid #dfd5c0 !important;
+        background-color: #fcfaf5 !important;
+        border-radius: 8px !important;
+        padding: 5px 8px !important;
+      }
+      body.printing-single-week .print-target-week .print-decor-title {
+        font-size: 8.5px !important;
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.04em !important;
+        color: #4c5449 !important;
+        margin-bottom: 3px !important;
+      }
+      body.printing-single-week .print-target-week .print-legend-list {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 2px 6px !important;
+        font-size: 8.5px !important;
+        color: #3c433a !important;
+      }
+      body.printing-single-week .print-target-week .print-legend-item {
+        display: flex !important;
+        align-items: center !important;
+        gap: 4px !important;
+      }
+      body.printing-single-week .print-target-week .print-swatch {
+        width: 9px !important;
+        height: 9px !important;
+        border-radius: 2px !important;
+        border: 1px solid #b7ccb1 !important;
+        flex-shrink: 0 !important;
+      }
+      body.printing-single-week .print-target-week .print-week-summary-line {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        font-size: 9px !important;
+        padding: 1px 0 !important;
+        color: #232921 !important;
+      }
+      body.printing-single-week .print-target-week .print-week-note {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        margin-top: 4px !important;
+        padding-top: 3px !important;
+        border-top: 1px solid #dfd5c0 !important;
+        font-size: 8.5px !important;
+        color: #5b6358 !important;
+      }
 
-      /* Mode impression : PLANNING COMPLET (TOUTES LES SEMAINES) SUR 1 PAGE */
+      /* Mode impression : PLANNING COMPLET (TOUTES LES SEMAINES) COMPACT */
       body[data-print-mode="all"] #weeksContainer {
         display: flex !important;
         flex-direction: column !important;
-        gap: 5px !important;
+        gap: 4px !important;
       }
       body[data-print-mode="all"] #weeksContainer > div {
-        padding: 6px 8px !important;
+        padding: 4px 6px !important;
       }
       body[data-print-mode="all"] #weeksContainer .overflow-x-auto {
         overflow: visible !important;
       }
       body[data-print-mode="all"] #weeksContainer .print-cell-mirror {
-        min-height: 24px !important;
+        min-height: 20px !important;
         height: auto !important;
-        font-size: 9.5px !important;
-        line-height: 1.15 !important;
-        padding: 2px 4px !important;
+        font-size: 9px !important;
+        line-height: 1.1 !important;
+        padding: 2px 3px !important;
       }
 
       .print-break-avoid {
@@ -628,15 +667,15 @@
         text-align: center !important;
         width: 100% !important;
         box-sizing: border-box !important;
-        border-radius: 8px !important;
+        border-radius: 6px !important;
         border-width: 1px !important;
         white-space: pre-wrap !important;
         overflow-wrap: normal !important;
         word-break: normal !important;
         hyphens: none !important;
-        font-size: 10.5px !important;
-        line-height: 1.2 !important;
-        padding: 3px !important;
+        font-size: 9.5px !important;
+        line-height: 1.15 !important;
+        padding: 2px !important;
       }
 
       input.hours-edit-input,
@@ -647,17 +686,17 @@
         box-shadow: none !important;
         width: auto !important;
         min-width: 0 !important;
-        font-size: 10.5px !important;
-        padding: 1px 4px !important;
+        font-size: 9.5px !important;
+        padding: 1px 3px !important;
         height: auto !important;
       }
       #printSummarySection,
       #printOvertimeSection {
-        font-size: 12px !important;
+        font-size: 11px !important;
       }
       #printSummarySection table,
       #printOvertimeSection table {
-        font-size: 12px !important;
+        font-size: 11px !important;
       }
       .shadow-sm, .shadow-md, .shadow-lg, .shadow-xl {
         box-shadow: none !important;
@@ -2718,7 +2757,7 @@
         }
         if (otSec) {
           otSec.classList.remove('hidden');
-          otSec.style.display = 'flex';
+          otSec.style.display = 'block';
         }
 
         setDynamicPrintStyle(`
@@ -2732,14 +2771,13 @@
           #printOvertimeSection,
           section#printOvertimeSection,
           section#printOvertimeSection.hidden {
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: center !important;
+            display: block !important;
             visibility: visible !important;
             opacity: 1 !important;
             margin: 0 auto !important;
-            padding: 24px 22px !important;
-            min-height: 242mm !important;
+            padding: 12px 14px !important;
+            height: auto !important;
+            min-height: 0 !important;
             box-sizing: border-box !important;
           }
         `);
@@ -2758,7 +2796,7 @@
         }
         if (sumSec) {
           sumSec.classList.remove('hidden');
-          sumSec.style.display = 'flex';
+          sumSec.style.display = 'block';
         }
 
         setDynamicPrintStyle(`
@@ -2772,14 +2810,13 @@
           #printSummarySection,
           section#printSummarySection,
           section#printSummarySection.hidden {
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: center !important;
+            display: block !important;
             visibility: visible !important;
             opacity: 1 !important;
             margin: 0 auto !important;
-            padding: 24px 22px !important;
-            min-height: 242mm !important;
+            padding: 12px 14px !important;
+            height: auto !important;
+            min-height: 0 !important;
             box-sizing: border-box !important;
           }
         `);
@@ -2846,69 +2883,62 @@
           #weeksContainer > div.week-fullscreen-vertical > div:not(.print-target-week) { display: none !important; }
           .print-target-week,
           .print-target-week > div {
-            padding: 12px 14px !important;
-            min-height: 236mm !important;
+            padding: 8px 10px !important;
             height: auto !important;
+            min-height: 0 !important;
             overflow: visible !important;
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: space-between !important;
+            display: block !important;
             visibility: visible !important;
             opacity: 1 !important;
             break-inside: avoid !important;
             page-break-inside: avoid !important;
           }
-          .print-target-week .print-week-decor,
-          .print-target-week .print-week-note {
-            display: none !important;
-          }
           .print-target-week .sm\\:hidden {
             display: flex !important;
             flex-direction: column !important;
-            justify-content: space-between !important;
             visibility: visible !important;
             opacity: 1 !important;
             height: auto !important;
             overflow: visible !important;
-            margin-top: 6px !important;
-            gap: 6px !important;
+            margin-top: 4px !important;
+            gap: 3px !important;
           }
           .print-target-week .sm\\:hidden > div:not(:last-child) {
             display: flex !important;
             align-items: center !important;
             justify-content: space-between !important;
-            padding: 8px 12px !important;
-            border-radius: 10px !important;
+            padding: 4px 8px !important;
+            border-radius: 7px !important;
             visibility: visible !important;
             opacity: 1 !important;
           }
           .print-target-week .sm\\:hidden > div:not(:last-child) span {
-            font-size: 12.5px !important;
-            line-height: 1.25 !important;
+            font-size: 10.5px !important;
+            line-height: 1.15 !important;
           }
           .print-target-week .sm\\:hidden > div:last-child {
             display: block !important;
-            margin-top: 6px !important;
-            padding: 10px 12px !important;
-            border-radius: 10px !important;
+            margin-top: 4px !important;
+            padding: 6px 8px !important;
+            border-radius: 8px !important;
             visibility: visible !important;
             opacity: 1 !important;
           }
           .print-target-week .sm\\:hidden > div:last-child > div:not(:first-child) {
-            padding: 8px 12px !important;
+            padding: 4px 8px !important;
           }
           .print-target-week .print-cell-mirror {
             display: flex !important;
             visibility: visible !important;
             opacity: 1 !important;
-            width: 108px !important;
-            min-width: 108px !important;
-            min-height: 34px !important;
+            width: 78px !important;
+            min-width: 78px !important;
+            min-height: 22px !important;
             height: auto !important;
-            font-size: 11px !important;
-            line-height: 1.2 !important;
-            padding: 4px 6px !important;
-            border-radius: 7px !important;
+            font-size: 9.5px !important;
+            line-height: 1.15 !important;
+            padding: 2px 4px !important;
+            border-radius: 6px !important;
           }
         `);
       } else {
@@ -2921,17 +2951,17 @@
           #weeksContainer {
             display: flex !important;
             flex-direction: column !important;
-            gap: 5px !important;
+            gap: 4px !important;
           }
           #weeksContainer > div {
-            padding: 6px 8px !important;
+            padding: 4px 6px !important;
           }
           #weeksContainer .print-cell-mirror {
-            min-height: 24px !important;
+            min-height: 20px !important;
             height: auto !important;
-            font-size: 9.5px !important;
-            line-height: 1.15 !important;
-            padding: 2px 4px !important;
+            font-size: 9px !important;
+            line-height: 1.1 !important;
+            padding: 2px 3px !important;
           }
         `);
       }
@@ -2951,8 +2981,8 @@
         const val = (ta.value || '').trim();
         const lineCount = Math.max(1, val.split('\n').length);
         const minH = isSingleWeekPrint
-          ? Math.max(32, lineCount * 14 + 8)
-          : Math.max(24, lineCount * 12 + 6);
+          ? Math.max(22, lineCount * 11 + 4)
+          : Math.max(20, lineCount * 10 + 4);
         const cleanClasses = ta.className
           .replace(/planning-cell/g, '')
           .replace(/min-h-\[[^\]]+\]/g, '')

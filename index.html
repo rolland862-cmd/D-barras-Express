@@ -52,17 +52,20 @@
     @media print {
       @page {
         size: A4 portrait;
-        margin: 10mm;
+        margin: 8mm;
       }
       * {
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
       }
-      body {
+      html, body {
+        height: auto !important;
+        min-height: 0 !important;
         background-color: #ffffff !important;
         color: var(--ink-main) !important;
         font-size: 11.5px;
         padding-bottom: 0 !important;
+        margin: 0 !important;
       }
       header.app-header {
         position: static !important;
@@ -70,6 +73,7 @@
         color: #fffdf9 !important;
         display: block !important;
         box-shadow: none !important;
+        border-radius: 10px !important;
       }
       #openMonthlyBalanceMenuBtn,
       #monthlyBalanceDrawer,
@@ -82,8 +86,8 @@
         max-width: 100% !important;
         padding-left: 0 !important;
         padding-right: 0 !important;
-        padding-top: 6px !important;
-        padding-bottom: 4px !important;
+        padding-top: 8px !important;
+        padding-bottom: 0 !important;
       }
       #weeksContainer {
         display: flex !important;
@@ -138,7 +142,7 @@
         display: none !important;
       }
 
-      /* Mode impression : BILAN SEUL (mise en page aérée et équilibrée sur 1 page A4) */
+      /* Mode impression : BILAN SEUL (1 seule page propre avec logo) */
       body.printing-balance-only header.app-header,
       body.printing-balance-only #weeksContainer,
       body.printing-balance-only main > section:not(#printSummarySection) {
@@ -151,17 +155,16 @@
       body.printing-balance-only #printSummarySection,
       body.printing-balance-only section#printSummarySection,
       body.printing-balance-only section#printSummarySection.hidden {
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: space-between !important;
+        display: block !important;
         visibility: visible !important;
-        margin-top: 0 !important;
-        padding: 22px 24px !important;
-        min-height: 255mm !important;
-        max-height: 272mm !important;
+        margin: 0 !important;
+        padding: 18px 20px !important;
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
         box-sizing: border-box !important;
         border: 1.5px solid #cfc2a8 !important;
-        border-radius: 16px !important;
+        border-radius: 14px !important;
         background-color: #fffdf9 !important;
         break-inside: avoid !important;
         page-break-inside: avoid !important;
@@ -171,75 +174,90 @@
         align-items: center !important;
         justify-content: space-between !important;
         gap: 12px !important;
-        padding: 14px 18px !important;
+        padding: 12px 16px !important;
         border-radius: 12px !important;
         background-color: #2d4727 !important;
         color: #fffdf9 !important;
-        margin-bottom: 18px !important;
+        margin-bottom: 16px !important;
+      }
+      body.printing-balance-only #printBilanBrandGroup {
+        display: flex !important;
+        align-items: center !important;
+        gap: 12px !important;
+      }
+      body.printing-balance-only #printBilanLogo {
+        display: block !important;
+        width: 44px !important;
+        height: 44px !important;
+        border-radius: 9999px !important;
+        object-fit: cover !important;
+        background-color: #f6f1e7 !important;
+        border: 2px solid #e5d8be !important;
+        flex-shrink: 0 !important;
       }
       body.printing-balance-only #printBilanTitle {
-        font-size: 19px !important;
+        font-size: 17px !important;
         font-weight: 800 !important;
         margin: 0 !important;
         color: #fffdf9 !important;
       }
       body.printing-balance-only #printBilanSubtitle {
         display: block !important;
-        font-size: 12px !important;
+        font-size: 11.5px !important;
         color: #e6decb !important;
         margin-top: 2px !important;
       }
       body.printing-balance-only #printBilanKpis {
         display: grid !important;
         grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-        gap: 12px !important;
-        margin-bottom: 20px !important;
+        gap: 10px !important;
+        margin-bottom: 18px !important;
       }
       body.printing-balance-only .print-kpi-card {
         border: 1px solid #dfd5c0 !important;
         background-color: #f8f4eb !important;
         border-radius: 12px !important;
-        padding: 14px 12px !important;
+        padding: 14px 10px !important;
         text-align: center !important;
       }
       body.printing-balance-only .print-kpi-label {
-        font-size: 11px !important;
+        font-size: 10.5px !important;
         font-weight: 700 !important;
         text-transform: uppercase !important;
         letter-spacing: 0.04em !important;
         color: #5b6358 !important;
       }
       body.printing-balance-only .print-kpi-value {
-        font-size: 22px !important;
+        font-size: 20px !important;
         font-weight: 800 !important;
         color: #2d4727 !important;
         margin-top: 4px !important;
       }
       body.printing-balance-only #printSummarySection .print-table-wrap {
         border-radius: 12px !important;
-        margin-bottom: 18px !important;
+        margin-bottom: 16px !important;
       }
       body.printing-balance-only #printSummarySection table {
-        font-size: 14px !important;
+        font-size: 13.5px !important;
       }
       body.printing-balance-only #printSummarySection th {
-        padding: 12px 10px !important;
-        font-size: 12px !important;
+        padding: 10px 10px !important;
+        font-size: 11.5px !important;
       }
       body.printing-balance-only #printSummarySection td {
-        padding: 16px 10px !important;
+        padding: 14px 10px !important;
       }
       body.printing-balance-only #printBilanFooter {
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
-        padding-top: 14px !important;
+        padding-top: 12px !important;
         border-top: 1px solid #e7decb !important;
-        font-size: 11.5px !important;
+        font-size: 11px !important;
         color: #5b6358 !important;
       }
 
-      /* Mode impression : UNE SEULE SEMAINE (remplit proprement la page A4 sans déborder sur page 2) */
+      /* Mode impression : UNE SEULE SEMAINE (1 seule page, sans page vide ajoutée) */
       .week-fullscreen-vertical {
         position: static !important;
         inset: auto !important;
@@ -268,15 +286,14 @@
         display: none !important;
       }
       body.printing-single-week .print-target-week {
-        padding: 16px 18px !important;
+        padding: 14px 16px !important;
         max-width: 100% !important;
-        margin: 0 !important;
-        min-height: 252mm !important;
-        max-height: 270mm !important;
+        margin: 8px 0 0 0 !important;
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
         box-sizing: border-box !important;
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: space-between !important;
+        display: block !important;
         border: 1.5px solid #cfc2a8 !important;
         border-radius: 14px !important;
         background-color: #fffdf9 !important;
@@ -290,44 +307,36 @@
         display: none !important;
       }
       body.printing-single-week .print-target-week .overflow-x-auto {
-        flex: 1 1 auto !important;
-        display: flex !important;
-        flex-direction: column !important;
         margin-top: 8px !important;
         border-radius: 12px !important;
       }
-      body.printing-single-week .print-target-week table {
-        height: 100% !important;
-      }
       body.printing-single-week .print-target-week thead th {
-        padding-top: 10px !important;
-        padding-bottom: 10px !important;
-        font-size: 12px !important;
+        padding-top: 8px !important;
+        padding-bottom: 8px !important;
+        font-size: 11.5px !important;
       }
       body.printing-single-week .print-target-week tbody td {
-        padding: 6px 5px !important;
-        font-size: 12.5px !important;
+        padding: 5px 4px !important;
+        font-size: 12px !important;
       }
       body.printing-single-week .print-target-week .print-cell-mirror {
-        min-height: 68px !important;
-        height: 100% !important;
-        font-size: 12px !important;
-        line-height: 1.35 !important;
-        padding: 8px 6px !important;
-      }
-      body.printing-single-week.single-emp-week .print-target-week tbody tr {
-        height: 145px !important;
+        min-height: 62px !important;
+        height: auto !important;
+        font-size: 11.5px !important;
+        line-height: 1.3 !important;
+        padding: 6px 4px !important;
       }
       body.printing-single-week.single-emp-week .print-target-week .print-cell-mirror {
-        min-height: 126px !important;
-        font-size: 13.5px !important;
+        min-height: 118px !important;
+        font-size: 13px !important;
+        padding: 10px 6px !important;
       }
       body.printing-single-week .print-target-week .print-week-note {
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
-        margin-top: 14px !important;
-        padding-top: 10px !important;
+        margin-top: 12px !important;
+        padding-top: 8px !important;
         border-top: 1px solid #e7decb !important;
         font-size: 11px !important;
         color: #5b6358 !important;
@@ -712,9 +721,18 @@
 
     <section id="printSummarySection" class="hidden print:block bg-[#fffdf9] rounded-xl p-3 border border-[#dfd5c0] mt-3 print-break-avoid" aria-label="Bilan mensuel par salarié">
       <div id="printBilanHeader" class="hidden">
-        <div>
-          <h2 id="printBilanTitle" class="text-sm font-bold text-[#232921]">Bilan Mensuel</h2>
-          <p id="printBilanSubtitle" class="hidden">Débarras Express 09 — Récapitulatif des heures effectuées</p>
+        <div id="printBilanBrandGroup">
+          <img
+            id="printBilanLogo"
+            src="./icons/logo-debarras-09.png"
+            alt="Logo Débarras Express 09"
+            class="hidden"
+            onerror="if (!this.dataset.fb1) { this.dataset.fb1 = '1'; this.src = './ic%C3%B4nes/logo-debarras-09.png'; } else if (!this.dataset.fb2) { this.dataset.fb2 = '1'; this.src = './icônes/logo-debarras-09.png'; } else { this.style.display = 'none'; }"
+          />
+          <div>
+            <h2 id="printBilanTitle" class="text-sm font-bold text-[#232921]">Bilan Mensuel</h2>
+            <p id="printBilanSubtitle" class="hidden">Débarras Express 09 — Récapitulatif des heures effectuées</p>
+          </div>
         </div>
         <span id="printBilanBadge" class="px-3 py-1 rounded-full bg-[#e4eee0] text-[#2d4727] text-xs font-extrabold">A4</span>
       </div>
@@ -1858,14 +1876,13 @@
           #printSummarySection,
           section#printSummarySection,
           section#printSummarySection.hidden {
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: space-between !important;
+            display: block !important;
             visibility: visible !important;
             margin: 0 !important;
-            padding: 22px 24px !important;
-            min-height: 255mm !important;
-            max-height: 272mm !important;
+            padding: 18px 20px !important;
+            height: auto !important;
+            min-height: 0 !important;
+            max-height: none !important;
             box-sizing: border-box !important;
           }
         `);
@@ -1898,7 +1915,7 @@
           #weeksContainer > div:not(.print-target-week) { display: none !important; }
           #weeksContainer > div.week-fullscreen-vertical > div:not(.print-target-week) { display: none !important; }
           .week-fullscreen-vertical .sm\\:hidden { display: none !important; }
-          .week-fullscreen-vertical .overflow-x-auto { display: flex !important; overflow: visible !important; }
+          .week-fullscreen-vertical .overflow-x-auto { display: block !important; overflow: visible !important; }
         `);
       } else {
         applyMonthLabels();
@@ -1921,9 +1938,9 @@
         if (!td || td.querySelector('.print-cell-mirror')) return;
         const val = (ta.value || '').trim();
         const lineCount = Math.max(1, val.split('\n').length);
-        let minH = lineCount > 1 ? Math.max(48, lineCount * 13 + 8) : 34;
+        let minH = lineCount > 1 ? Math.max(46, lineCount * 13 + 8) : 34;
         if (isSingleWeekPrint) {
-          minH = isSingleEmpWeek ? 124 : Math.max(66, lineCount * 15 + 14);
+          minH = isSingleEmpWeek ? 114 : Math.max(60, lineCount * 14 + 12);
         }
         const cleanClasses = ta.className
           .replace(/planning-cell/g, '')

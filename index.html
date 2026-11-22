@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-  <meta name="theme-color" content="#0f172a" />
+  <meta name="theme-color" content="#2d4727" />
   <link rel="manifest" href="./manifest.json" />
-  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="./ic%C3%B4nes/logo-debarras-09.png" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Planning" />
-  <title>Planning Mensuel — Pierre, Damien & David</title>
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Débarras Express 09" />
+  <title>Planning Mensuel — Débarras Express 09</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
 
@@ -18,10 +18,23 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
   <style>
+    :root {
+      --bg-cream: #f6f1e7;
+      --surface-card: #fffdf9;
+      --surface-muted: #efe8d8;
+      --border-warm: #dfd5c0;
+      --ink-main: #232921;
+      --ink-muted: #5b6358;
+      --brand-green: #2d4727;
+      --brand-green-hover: #22371e;
+      --brand-terracotta: #b5633b;
+      --brand-terracotta-soft: #f7e6dc;
+    }
+
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background-color: #f1f5f9;
-      color: #0f172a;
+      background-color: var(--bg-cream);
+      color: var(--ink-main);
       -webkit-tap-highlight-color: transparent;
     }
 
@@ -73,7 +86,7 @@
     }
     input.hours-edit-input:focus {
       background-color: #ffffff;
-      box-shadow: 0 0 0 2px #10b981;
+      box-shadow: 0 0 0 2px var(--brand-green);
     }
 
     @keyframes fadeIn {
@@ -85,41 +98,49 @@
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col bg-slate-100 text-slate-900">
+<body class="min-h-screen flex flex-col bg-[#f6f1e7] text-[#232921]">
 
-  <!-- En-tête principal -->
-  <header class="sticky top-0 z-30 bg-slate-900 text-white shadow-md no-print">
-    <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
-      <div class="min-w-0">
-        <div class="flex items-center gap-2">
-          <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
-          <h1 id="mainHeaderTitle" class="text-lg sm:text-xl font-bold tracking-tight">
-            Planning Mensuel
-          </h1>
+  <!-- En-tête principal avec logo Débarras Express 09 -->
+  <header class="sticky top-0 z-30 bg-[#2d4727] text-[#fffdf9] shadow-md border-b border-[#46663e] no-print">
+    <div class="max-w-4xl mx-auto px-4 py-2.5 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3 min-w-0">
+        <img
+          id="brandLogoImg"
+          src="./ic%C3%B4nes/logo-debarras-09.png"
+          alt="Logo Débarras Express 09"
+          class="w-11 h-11 sm:w-12 sm:h-12 rounded-full object-cover bg-[#f6f1e7] border-2 border-[#e5d8be] shrink-0 shadow-sm"
+          onerror="if (!this.dataset.fb) { this.dataset.fb = '1'; this.src = './icônes/logo-debarras-09.png'; } else { this.style.display = 'none'; }"
+        />
+        <div class="min-w-0">
+          <div class="flex items-center gap-2">
+            <h1 id="mainHeaderTitle" class="text-base sm:text-xl font-bold tracking-tight truncate">
+              Planning Mensuel
+            </h1>
+          </div>
+          <p id="headerSubtitle" class="text-xs sm:text-sm text-[#e6decb] truncate">
+            Débarras Express 09 · Pierre, Damien & David — Base 7 h / jour
+          </p>
         </div>
-        <p id="headerSubtitle" class="text-xs sm:text-sm text-slate-300">
-          Pierre · Damien · David — Base 7 h / jour travaillé
-        </p>
       </div>
     </div>
   </header>
 
   <!-- Notification toast -->
-  <div id="toastBanner" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-md bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl border border-slate-700 text-sm font-medium flex items-center justify-between gap-3 animate-fade-in no-print">
+  <div id="toastBanner" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-md bg-[#2d4727] text-[#fffdf9] px-4 py-3 rounded-2xl shadow-xl border border-[#618258] text-sm font-medium flex items-center justify-between gap-3 animate-fade-in no-print">
     <span id="toastMessage">Action effectuée.</span>
-    <button id="closeToastBtn" type="button" class="text-slate-400 hover:text-white font-bold px-1.5">✕</button>
+    <button id="closeToastBtn" type="button" class="text-[#dce4d8] hover:text-white font-bold px-1.5">✕</button>
   </div>
 
   <!-- Contenu principal -->
   <main class="flex-1 w-full max-w-4xl mx-auto px-3 sm:px-5 py-4 space-y-5">
 
     <!-- Barre de navigation des mois -->
-    <section class="bg-white rounded-2xl p-3.5 sm:p-4 shadow-sm border border-slate-200 no-print" aria-label="Navigation par mois">
+    <section class="bg-[#fffdf9] rounded-2xl p-3.5 sm:p-4 shadow-sm border border-[#dfd5c0] no-print" aria-label="Navigation par mois">
       <div class="flex items-center justify-between gap-2">
         <button
           id="prevMonthBtn"
           type="button"
-          class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-800 text-xs sm:text-sm font-bold transition flex items-center gap-1"
+          class="px-3 py-2 rounded-xl bg-[#efe8d8] hover:bg-[#e3d7be] active:scale-95 text-[#232921] text-xs sm:text-sm font-bold transition flex items-center gap-1 border border-[#d6c9ae]"
           aria-label="Mois précédent"
         >
           <span>◀</span>
@@ -127,13 +148,13 @@
         </button>
 
         <div class="text-center flex flex-col items-center">
-          <span id="currentMonthDisplay" class="text-base sm:text-lg font-extrabold text-slate-900 capitalize">
+          <span id="currentMonthDisplay" class="text-base sm:text-lg font-extrabold text-[#232921] capitalize">
             Novembre 2026
           </span>
           <button
             id="todayMonthBtn"
             type="button"
-            class="hidden mt-0.5 px-2.5 py-0.5 rounded-full bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-xs font-semibold transition"
+            class="hidden mt-0.5 px-2.5 py-0.5 rounded-full bg-[#e4eee0] hover:bg-[#d3e4cc] text-[#2d4727] text-xs font-semibold transition"
           >
             Revenir au mois actuel
           </button>
@@ -142,7 +163,7 @@
         <button
           id="nextMonthBtn"
           type="button"
-          class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-800 text-xs sm:text-sm font-bold transition flex items-center gap-1"
+          class="px-3 py-2 rounded-xl bg-[#efe8d8] hover:bg-[#e3d7be] active:scale-95 text-[#232921] text-xs sm:text-sm font-bold transition flex items-center gap-1 border border-[#d6c9ae]"
           aria-label="Mois suivant"
         >
           <span>Suivant</span>
@@ -152,19 +173,19 @@
     </section>
 
     <!-- Barre d'outils : filtre salarié, base horaire modifiable, impression, réinitialisation -->
-    <section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 space-y-3.5 no-print">
+    <section class="bg-[#fffdf9] rounded-2xl p-4 shadow-sm border border-[#dfd5c0] space-y-3.5 no-print">
       <div class="flex flex-wrap items-center justify-between gap-2.5">
         <div class="flex items-center gap-1.5 flex-wrap" role="group" aria-label="Filtrer par salarié">
-          <button type="button" data-filter="ALL" class="filter-btn px-3.5 py-2 rounded-xl text-sm font-semibold bg-slate-900 text-white transition">
+          <button type="button" data-filter="ALL" class="filter-btn px-3.5 py-2 rounded-xl text-sm font-semibold bg-[#2d4727] text-[#fffdf9] transition">
             Tous (3)
           </button>
-          <button type="button" data-filter="Pierre" class="filter-btn px-3.5 py-2 rounded-xl text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+          <button type="button" data-filter="Pierre" class="filter-btn px-3.5 py-2 rounded-xl text-sm font-semibold bg-[#efe8d8] text-[#232921] hover:bg-[#e3d7be] transition">
             Pierre
           </button>
-          <button type="button" data-filter="Damien" class="filter-btn px-3.5 py-2 rounded-xl text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+          <button type="button" data-filter="Damien" class="filter-btn px-3.5 py-2 rounded-xl text-sm font-semibold bg-[#efe8d8] text-[#232921] hover:bg-[#e3d7be] transition">
             Damien
           </button>
-          <button type="button" data-filter="David" class="filter-btn px-3.5 py-2 rounded-xl text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+          <button type="button" data-filter="David" class="filter-btn px-3.5 py-2 rounded-xl text-sm font-semibold bg-[#efe8d8] text-[#232921] hover:bg-[#e3d7be] transition">
             David
           </button>
         </div>
@@ -173,22 +194,22 @@
           <button
             id="printBtn"
             type="button"
-            class="px-3.5 py-2 rounded-xl text-sm font-semibold bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 transition"
+            class="px-3.5 py-2 rounded-xl text-sm font-semibold bg-[#e6efe3] text-[#2d4727] hover:bg-[#d6e4d1] border border-[#b9cfb2] transition"
           >
             Imprimer
           </button>
           <button
             id="resetBtn"
             type="button"
-            class="px-3.5 py-2 rounded-xl text-sm font-semibold bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 transition"
+            class="px-3.5 py-2 rounded-xl text-sm font-semibold bg-[#f7e6dc] text-[#9a4e28] hover:bg-[#efd3c2] border border-[#e0b89f] transition"
           >
             Réinitialiser
           </button>
         </div>
       </div>
 
-      <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-100">
-        <label for="baseHoursInput" class="text-sm font-semibold text-slate-700 flex items-center gap-2">
+      <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-[#ece3d1]">
+        <label for="baseHoursInput" class="text-sm font-semibold text-[#232921] flex items-center gap-2">
           <span>Base par défaut (jour travaillé) :</span>
         </label>
         <div class="flex items-center gap-1.5">
@@ -199,35 +220,35 @@
             min="0"
             max="24"
             value="7"
-            class="w-20 px-2.5 py-1.5 rounded-xl border border-slate-300 text-center text-sm font-bold text-slate-900 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
+            class="w-20 px-2.5 py-1.5 rounded-xl border border-[#cfc2a8] bg-[#fffdf9] text-center text-sm font-bold text-[#232921] focus:ring-2 focus:ring-[#2d4727] focus:border-[#2d4727] outline-none"
           />
-          <span class="text-sm font-semibold text-slate-600">h / jour</span>
+          <span class="text-sm font-semibold text-[#5b6358]">h / jour</span>
         </div>
       </div>
 
-      <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
-        Touchez une case pour écrire librement : saisissez un nombre d'heures (<strong class="text-slate-800">8</strong>, <strong class="text-slate-800">8,5 h</strong>, <strong class="text-slate-800">8h-16h</strong>), <strong class="text-slate-800">R</strong> (repos) ou <strong class="text-slate-800">CP</strong> (congés). Toutes les cases de la semaine (débuts de semaine, vendredis et changements de mois) restent actives et modifiables.
+      <p class="text-xs sm:text-sm text-[#5b6358] leading-relaxed">
+        Touchez une case pour écrire librement : saisissez un nombre d'heures (<strong class="text-[#232921]">8</strong>, <strong class="text-[#232921]">8,5 h</strong>, <strong class="text-[#232921]">8h-16h</strong>), <strong class="text-[#232921]">R</strong> (repos) ou <strong class="text-[#9a4e28]">CP</strong> (congés). Toutes les cases de la semaine (débuts de semaine, vendredis et changements de mois) restent actives et modifiables.
       </p>
     </section>
 
     <section id="weeksContainer" class="space-y-4" aria-label="Planning semaine par semaine">
     </section>
 
-    <section class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 print-break-avoid" aria-label="Bilan mensuel par salarié">
+    <section class="bg-[#fffdf9] rounded-2xl p-4 sm:p-5 shadow-sm border border-[#dfd5c0] print-break-avoid" aria-label="Bilan mensuel par salarié">
       <div class="flex items-center justify-between gap-2 mb-3">
         <div>
-          <h2 id="bilanMonthTitle" class="text-base sm:text-lg font-bold text-slate-900">Bilan Mensuel</h2>
-          <p id="bilanSubtitle" class="text-xs sm:text-sm text-slate-500">Calcul automatique (heures modifiables)</p>
+          <h2 id="bilanMonthTitle" class="text-base sm:text-lg font-bold text-[#232921]">Bilan Mensuel</h2>
+          <p id="bilanSubtitle" class="text-xs sm:text-sm text-[#5b6358]">Calcul automatique (heures modifiables)</p>
         </div>
-        <span id="daysInMonthBadge" class="px-3 py-1 rounded-full text-xs sm:text-sm font-semibold bg-emerald-100 text-emerald-800">
+        <span id="daysInMonthBadge" class="px-3 py-1 rounded-full text-xs sm:text-sm font-semibold bg-[#e4eee0] text-[#2d4727]">
           30 jours
         </span>
       </div>
 
-      <div class="overflow-x-auto rounded-xl border border-slate-200">
+      <div class="overflow-x-auto rounded-xl border border-[#dfd5c0]">
         <table class="w-full text-left border-collapse">
           <thead>
-            <tr class="bg-slate-50 border-b border-slate-200 text-[11px] sm:text-xs font-semibold text-slate-600 uppercase tracking-wide">
+            <tr class="bg-[#f3ece0] border-b border-[#dfd5c0] text-[11px] sm:text-xs font-semibold text-[#4c5449] uppercase tracking-wide">
               <th class="py-3 px-2.5">Salarié</th>
               <th class="py-3 px-1.5 text-center">Jours</th>
               <th class="py-3 px-1.5 text-center">Repos</th>
@@ -235,7 +256,7 @@
               <th class="py-3 px-2.5 text-right whitespace-nowrap">Total Heures</th>
             </tr>
           </thead>
-          <tbody id="summaryTableBody" class="divide-y divide-slate-200 text-sm">
+          <tbody id="summaryTableBody" class="divide-y divide-[#e7decb] text-sm">
           </tbody>
         </table>
       </div>
@@ -244,16 +265,16 @@
   </main>
 
   <!-- Modale de confirmation -->
-  <div id="infoModal" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4 no-print" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl border border-slate-200 space-y-4 animate-fade-in">
+  <div id="infoModal" class="hidden fixed inset-0 z-50 bg-[#1a2418]/60 backdrop-blur-xs flex items-center justify-center p-4 no-print" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="bg-[#fffdf9] rounded-2xl max-w-md w-full p-5 shadow-2xl border border-[#dfd5c0] space-y-4 animate-fade-in">
       <div class="flex items-center justify-between">
-        <h3 id="modalTitle" class="text-lg font-bold text-slate-900">Confirmation</h3>
-        <button id="closeModalBtn" type="button" class="text-slate-400 hover:text-slate-700 font-bold text-lg px-2 py-1 rounded-lg">✕</button>
+        <h3 id="modalTitle" class="text-lg font-bold text-[#232921]">Confirmation</h3>
+        <button id="closeModalBtn" type="button" class="text-[#5b6358] hover:text-[#232921] font-bold text-lg px-2 py-1 rounded-lg">✕</button>
       </div>
-      <div id="modalContent" class="text-sm text-slate-600 space-y-2.5 leading-relaxed">
+      <div id="modalContent" class="text-sm text-[#4c5449] space-y-2.5 leading-relaxed">
       </div>
       <div class="flex justify-end pt-1">
-        <button id="confirmModalBtn" type="button" class="px-4 py-2 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800 transition">
+        <button id="confirmModalBtn" type="button" class="px-4 py-2 rounded-xl bg-[#2d4727] text-[#fffdf9] text-sm font-semibold hover:bg-[#22371e] transition">
           Compris
         </button>
       </div>
@@ -278,7 +299,6 @@
     let appState = {
       filter: 'ALL',
       baseHours: DEFAULT_BASE_HOURS,
-      // Clé par date exacte "YYYY-MM-DD" : overrides[employee]["2026-11-30"] = texte saisi
       overrides: {},
       weekHourOverrides: {},
       monthHourOverrides: {}
@@ -420,9 +440,6 @@
       return 'WORK';
     }
 
-    /**
-     * Lit la valeur saisie pour une date exacte (supporte aussi l'ancien format numérique par jour du mois).
-     */
     function getRawOverrideForDate(employee, dateObj) {
       const empMap = appState.overrides?.[employee];
       if (!empMap || typeof empMap !== 'object') return undefined;
@@ -523,19 +540,19 @@
 
       switch (code) {
         case 'WORK':
-          return { classes: 'bg-emerald-100 hover:bg-emerald-200 text-emerald-950 border-emerald-300' };
+          return { classes: 'bg-[#e6f0e3] hover:bg-[#d7e6d2] text-[#232e20] border-[#b7ccb1]' };
         case 'HOLIDAY':
         case 'F':
         case 'FERIE':
-          return { classes: 'bg-rose-100 hover:bg-rose-200 text-rose-900 border-rose-300 font-semibold' };
+          return { classes: 'bg-[#f8e5e0] hover:bg-[#f2d3cb] text-[#8c3827] border-[#e2b4a8] font-semibold' };
         case 'R':
-          return { classes: 'bg-slate-200 hover:bg-slate-300 text-slate-800 border-slate-300 font-bold' };
+          return { classes: 'bg-[#efe8d8] hover:bg-[#e3d9c3] text-[#4c5449] border-[#d3c7ae] font-bold' };
         case 'CP':
-          return { classes: 'bg-amber-100 hover:bg-amber-200 text-amber-900 border-amber-300 font-bold' };
+          return { classes: 'bg-[#f7e6dc] hover:bg-[#efd3c2] text-[#9a4e28] border-[#e0b89f] font-bold' };
         case '':
-          return { classes: 'bg-white text-slate-400 border-slate-200' };
+          return { classes: 'bg-[#fffdf9] text-[#7a8277] border-[#dfd5c0]' };
         default:
-          return { classes: 'bg-emerald-50 text-slate-900 border-emerald-400 font-semibold' };
+          return { classes: 'bg-[#f1f6ee] text-[#232921] border-[#4f7346] font-semibold' };
       }
     }
 
@@ -545,9 +562,6 @@
       inp.style.height = `${targetHeight}px`;
     }
 
-    /**
-     * Génère les 7 jours de la semaine (lundi → dimanche). Tous les jours sont actifs (non grisés).
-     */
     function buildWeekDays(weekCfg) {
       const days = [];
       for (let i = 0; i < 7; i++) {
@@ -642,8 +656,8 @@
         const val = btn.getAttribute('data-filter');
         const active = val === appState.filter;
         btn.className = active
-          ? 'filter-btn px-3.5 py-2 rounded-xl text-sm font-semibold bg-slate-900 text-white transition'
-          : 'filter-btn px-3.5 py-2 rounded-xl text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition';
+          ? 'filter-btn px-3.5 py-2 rounded-xl text-sm font-semibold bg-[#2d4727] text-[#fffdf9] transition'
+          : 'filter-btn px-3.5 py-2 rounded-xl text-sm font-semibold bg-[#efe8d8] text-[#232921] hover:bg-[#e3d7be] transition';
       });
     }
 
@@ -652,7 +666,7 @@
       const daysInMonth = getDaysInMonth(activeYear, activeMonth);
       const isCurrentSystemMonth = (activeYear === systemYear && activeMonth === systemMonth);
 
-      document.title = `Planning ${monthLabel} ${activeYear} — Pierre, Damien & David`;
+      document.title = `Planning ${monthLabel} ${activeYear} — Débarras Express 09`;
 
       const h1 = document.getElementById('mainHeaderTitle');
       if (h1) h1.textContent = `Planning ${monthLabel} ${activeYear}`;
@@ -693,7 +707,7 @@
       if (baseInput) baseInput.value = appState.baseHours;
 
       const sub = document.getElementById('headerSubtitle');
-      if (sub) sub.textContent = `Pierre · Damien · David — Base ${formatHours(appState.baseHours)} / jour travaillé`;
+      if (sub) sub.textContent = `Débarras Express 09 · Pierre, Damien & David — Base ${formatHours(appState.baseHours)} / jour`;
 
       updateFilterButtons();
       renderWeeks();
@@ -714,7 +728,7 @@
         const weekDays = buildWeekDays(weekCfg);
 
         const card = document.createElement('div');
-        card.className = 'bg-white rounded-2xl p-3.5 sm:p-4 shadow-sm border border-slate-200 print-break-avoid';
+        card.className = 'bg-[#fffdf9] rounded-2xl p-3.5 sm:p-4 shadow-sm border border-[#dfd5c0] print-break-avoid';
 
         const firstDate = weekDays[0]?.dateObj;
         const lastDate = weekDays[6]?.dateObj;
@@ -724,55 +738,55 @@
         headerDiv.className = 'flex items-center justify-between gap-2 mb-3';
         headerDiv.innerHTML = `
           <div class="flex items-center gap-2">
-            <span class="px-3 py-1 rounded-lg bg-slate-900 text-white text-xs sm:text-sm font-bold">
+            <span class="px-3 py-1 rounded-lg bg-[#2d4727] text-[#fffdf9] text-xs sm:text-sm font-bold">
               Semaine ${weekCfg.weekNumber}
             </span>
-            <span class="text-xs sm:text-sm font-medium text-slate-600">
+            <span class="text-xs sm:text-sm font-medium text-[#4c5449]">
               ${fmt(firstDate)} – ${fmt(lastDate)}
             </span>
           </div>
-          <span class="text-xs text-slate-500 hidden sm:inline">Base ${formatHours(appState.baseHours)} / jour</span>
+          <span class="text-xs text-[#5b6358] hidden sm:inline">Base ${formatHours(appState.baseHours)} / jour</span>
         `;
         card.appendChild(headerDiv);
 
         const tableWrapper = document.createElement('div');
-        tableWrapper.className = 'overflow-x-auto rounded-xl border border-slate-200';
+        tableWrapper.className = 'overflow-x-auto rounded-xl border border-[#dfd5c0]';
 
         const table = document.createElement('table');
         table.className = 'w-full border-collapse text-center';
 
         const thead = document.createElement('thead');
         const headRow = document.createElement('tr');
-        headRow.className = 'bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-600';
+        headRow.className = 'bg-[#f3ece0] border-b border-[#dfd5c0] text-xs font-semibold text-[#4c5449]';
 
         const thName = document.createElement('th');
-        thName.className = 'py-2.5 px-3 text-left sticky left-0 bg-slate-50 z-10 border-r border-slate-200 min-w-[84px] sm:min-w-[100px] text-sm';
+        thName.className = 'py-2.5 px-3 text-left sticky left-0 bg-[#f3ece0] z-10 border-r border-[#dfd5c0] min-w-[84px] sm:min-w-[100px] text-sm';
         thName.textContent = 'Salarié';
         headRow.appendChild(thName);
 
         weekDays.forEach((d) => {
           const th = document.createElement('th');
-          th.className = 'py-2 px-1 border-r border-slate-200 min-w-[82px] sm:min-w-[92px]';
+          th.className = 'py-2 px-1 border-r border-[#dfd5c0] min-w-[82px] sm:min-w-[92px]';
           const dateBadge = d.isOtherMonth
             ? `${d.dayOfMonth}/${String(d.dateObj.getMonth() + 1).padStart(2, '0')}`
             : `${d.dayOfMonth}`;
 
           if (d.isHoliday) {
-            th.classList.add('bg-rose-100', 'text-rose-800');
+            th.classList.add('bg-[#f8e5e0]', 'text-[#8c3827]');
             th.innerHTML = `<div class="text-xs font-bold">${d.dayLabel}</div><div class="text-sm font-extrabold">${dateBadge}</div>`;
           } else {
-            th.innerHTML = `<div class="text-xs">${d.dayLabel}</div><div class="text-sm font-bold text-slate-800">${dateBadge}</div>`;
+            th.innerHTML = `<div class="text-xs">${d.dayLabel}</div><div class="text-sm font-bold text-[#232921]">${dateBadge}</div>`;
           }
           headRow.appendChild(th);
         });
 
         const thDays = document.createElement('th');
-        thDays.className = 'py-2.5 px-2 border-r border-slate-200 text-xs text-slate-700 min-w-[54px]';
+        thDays.className = 'py-2.5 px-2 border-r border-[#dfd5c0] text-xs text-[#232921] min-w-[54px]';
         thDays.textContent = 'Jours';
         headRow.appendChild(thDays);
 
         const thHours = document.createElement('th');
-        thHours.className = 'py-2.5 px-2 text-xs text-slate-700 min-w-[70px]';
+        thHours.className = 'py-2.5 px-2 text-xs text-[#232921] min-w-[70px]';
         thHours.textContent = 'Heures';
         headRow.appendChild(thHours);
 
@@ -780,20 +794,20 @@
         table.appendChild(thead);
 
         const tbody = document.createElement('tbody');
-        tbody.className = 'divide-y divide-slate-200';
+        tbody.className = 'divide-y divide-[#e7decb]';
 
         visibleEmployees.forEach((employee) => {
           const tr = document.createElement('tr');
-          tr.className = 'bg-white';
+          tr.className = 'bg-[#fffdf9]';
 
           const tdName = document.createElement('td');
-          tdName.className = 'py-2.5 px-3 text-left text-sm sm:text-base font-bold text-slate-900 sticky left-0 bg-white z-10 border-r border-slate-200';
+          tdName.className = 'py-2.5 px-3 text-left text-sm sm:text-base font-bold text-[#232921] sticky left-0 bg-[#fffdf9] z-10 border-r border-[#dfd5c0]';
           tdName.textContent = employee;
           tr.appendChild(tdName);
 
           weekDays.forEach((d) => {
             const td = document.createElement('td');
-            td.className = 'p-1 border-r border-slate-200 align-middle';
+            td.className = 'p-1 border-r border-[#dfd5c0] align-middle';
 
             const code = getCellCode(employee, d.dateObj);
             const visual = getCellAppearance(code);
@@ -802,7 +816,7 @@
 
             const inp = document.createElement('textarea');
             inp.rows = 1;
-            inp.className = `planning-cell rounded-lg border transition outline-none focus:ring-2 focus:ring-slate-500 ${visual.classes}`;
+            inp.className = `planning-cell rounded-lg border transition outline-none focus:ring-2 focus:ring-[#2d4727] ${visual.classes}`;
             inp.value = customVal !== undefined ? customVal : (defaultCode === 'R' ? 'R' : '');
             inp.placeholder = '·';
             inp.spellcheck = false;
@@ -823,16 +837,16 @@
           const weekStats = computeWeekEmployeeStats(employee, weekDays, index);
 
           const tdDays = document.createElement('td');
-          tdDays.className = 'py-2 px-2 border-r border-slate-200 text-sm font-bold text-slate-800 whitespace-nowrap';
+          tdDays.className = 'py-2 px-2 border-r border-[#dfd5c0] text-sm font-bold text-[#232921] whitespace-nowrap';
           tdDays.textContent = `${weekStats.workedDays} j`;
           tr.appendChild(tdDays);
 
           const tdHours = document.createElement('td');
-          tdHours.className = 'py-1.5 px-1.5 text-sm font-bold text-emerald-700 whitespace-nowrap';
+          tdHours.className = 'py-1.5 px-1.5 text-sm font-bold text-[#2d4727] whitespace-nowrap';
           const weekHourInput = document.createElement('input');
           weekHourInput.type = 'text';
           weekHourInput.inputMode = 'decimal';
-          weekHourInput.className = `hours-edit-input text-sm ${weekStats.isManual ? 'text-blue-700 underline decoration-dotted' : 'text-emerald-700'}`;
+          weekHourInput.className = `hours-edit-input text-sm ${weekStats.isManual ? 'text-[#9a4e28] underline decoration-dotted' : 'text-[#2d4727]'}`;
           weekHourInput.value = formatHours(weekStats.hours);
           weekHourInput.title = 'Cliquez pour modifier manuellement le total d’heures de la semaine';
           weekHourInput.dataset.employee = employee;
@@ -868,13 +882,13 @@
 
         const isHighlighted = appState.filter === employee;
         const tr = document.createElement('tr');
-        tr.className = isHighlighted ? 'bg-emerald-50/70 font-medium' : 'bg-white';
+        tr.className = isHighlighted ? 'bg-[#eef5eb] font-medium' : 'bg-[#fffdf9]';
 
         tr.innerHTML = `
-          <td class="py-3 px-2.5 font-bold text-slate-900 text-sm">${employee}</td>
-          <td class="py-3 px-1.5 text-center font-semibold text-emerald-700 text-sm whitespace-nowrap">${stats.workedDays} j</td>
-          <td class="py-3 px-1.5 text-center text-slate-700 text-sm whitespace-nowrap">${stats.restDays}</td>
-          <td class="py-3 px-1.5 text-center text-amber-800 text-sm whitespace-nowrap">${stats.ptoDays}</td>
+          <td class="py-3 px-2.5 font-bold text-[#232921] text-sm">${employee}</td>
+          <td class="py-3 px-1.5 text-center font-semibold text-[#2d4727] text-sm whitespace-nowrap">${stats.workedDays} j</td>
+          <td class="py-3 px-1.5 text-center text-[#4c5449] text-sm whitespace-nowrap">${stats.restDays}</td>
+          <td class="py-3 px-1.5 text-center text-[#9a4e28] text-sm whitespace-nowrap">${stats.ptoDays}</td>
           <td class="py-2 px-2 text-right whitespace-nowrap">
             <input
               type="text"
@@ -882,7 +896,7 @@
               data-month-employee="${employee}"
               value="${formatHours(stats.totalHours)}"
               title="Cliquez pour modifier manuellement le total mensuel"
-              class="month-hours-input text-right font-extrabold text-sm w-20 sm:w-24 px-1.5 py-1 rounded-lg bg-transparent focus:bg-white focus:ring-2 focus:ring-emerald-500 outline-none ${stats.isManual ? 'text-blue-700 underline decoration-dotted' : 'text-slate-900'}"
+              class="month-hours-input text-right font-extrabold text-sm w-20 sm:w-24 px-1.5 py-1 rounded-lg bg-transparent focus:bg-white focus:ring-2 focus:ring-[#2d4727] outline-none ${stats.isManual ? 'text-[#9a4e28] underline decoration-dotted' : 'text-[#232921]'}"
             />
           </td>
         `;
@@ -890,13 +904,13 @@
       });
 
       const totalRow = document.createElement('tr');
-      totalRow.className = 'bg-slate-900 text-white font-bold text-sm';
+      totalRow.className = 'bg-[#2d4727] text-[#fffdf9] font-bold text-sm';
       totalRow.innerHTML = `
         <td class="py-3 px-2.5">Total équipe</td>
-        <td class="py-3 px-1.5 text-center text-emerald-300 whitespace-nowrap">${sumWorked} j</td>
-        <td class="py-3 px-1.5 text-center text-slate-200 whitespace-nowrap">${sumRest}</td>
-        <td class="py-3 px-1.5 text-center text-amber-300 whitespace-nowrap">${sumPto}</td>
-        <td id="teamTotalHoursCell" class="py-3 px-2.5 text-right text-emerald-300 whitespace-nowrap">${formatHours(sumHours)}</td>
+        <td class="py-3 px-1.5 text-center text-[#d7ead1] whitespace-nowrap">${sumWorked} j</td>
+        <td class="py-3 px-1.5 text-center text-[#ece4d3] whitespace-nowrap">${sumRest}</td>
+        <td class="py-3 px-1.5 text-center text-[#f7d0b8] whitespace-nowrap">${sumPto}</td>
+        <td id="teamTotalHoursCell" class="py-3 px-2.5 text-right text-[#d7ead1] whitespace-nowrap">${formatHours(sumHours)}</td>
       `;
       tbody.appendChild(totalRow);
     }
@@ -968,7 +982,7 @@
 
         const effectiveCode = getCellCode(employee, dateObj);
         const visual = getCellAppearance(effectiveCode);
-        inp.className = `planning-cell rounded-lg border transition outline-none focus:ring-2 focus:ring-slate-500 ${visual.classes}`;
+        inp.className = `planning-cell rounded-lg border transition outline-none focus:ring-2 focus:ring-[#2d4727] ${visual.classes}`;
         autoFitCell(inp);
 
         const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
@@ -984,7 +998,7 @@
               const hrInp = cells[cells.length - 1].querySelector('input.hours-edit-input');
               if (hrInp) {
                 hrInp.value = formatHours(stats.hours);
-                hrInp.className = 'hours-edit-input text-sm text-emerald-700';
+                hrInp.className = 'hours-edit-input text-sm text-[#2d4727]';
               }
             }
           }
@@ -1024,7 +1038,7 @@
         const weekDays = buildWeekDays(weekCfg);
         const stats = computeWeekEmployeeStats(employee, weekDays, weekIndex);
         hrInp.value = formatHours(stats.hours);
-        hrInp.className = `hours-edit-input text-sm ${stats.isManual ? 'text-blue-700 underline decoration-dotted' : 'text-emerald-700'}`;
+        hrInp.className = `hours-edit-input text-sm ${stats.isManual ? 'text-[#9a4e28] underline decoration-dotted' : 'text-[#2d4727]'}`;
 
         renderSummaryTable();
         saveState();

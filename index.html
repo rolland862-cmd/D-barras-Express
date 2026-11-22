@@ -206,7 +206,7 @@
       </div>
 
       <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
-        Touchez une case pour écrire librement : saisissez un nombre d'heures (<strong class="text-slate-800">8</strong>, <strong class="text-slate-800">8,5 h</strong>, <strong class="text-slate-800">8h-16h</strong>), <strong class="text-slate-800">R</strong> (repos) ou <strong class="text-slate-800">CP</strong> (congés). Vous pouvez aussi cliquer directement sur les totaux d'heures pour les modifier à la main.
+        Touchez une case pour écrire librement : saisissez un nombre d'heures (<strong class="text-slate-800">8</strong>, <strong class="text-slate-800">8,5 h</strong>, <strong class="text-slate-800">8h-16h</strong>), <strong class="text-slate-800">R</strong> (repos) ou <strong class="text-slate-800">CP</strong> (congés). Toutes les cases de la semaine (débuts de semaine, vendredis et changements de mois) restent actives et modifiables.
       </p>
     </section>
 
@@ -278,21 +278,32 @@
     let appState = {
       filter: 'ALL',
       baseHours: DEFAULT_BASE_HOURS,
+      // Clé par date exacte "YYYY-MM-DD" : overrides[employee]["2026-11-30"] = texte saisi
       overrides: {},
       weekHourOverrides: {},
       monthHourOverrides: {}
     };
 
+    const holidaysCache = new Map();
+
     function getStorageKey(year, month) {
-      return `planning_${year}_${String(month + 1).padStart(2, '0')}_libre_v3`;
+      return `planning_${year}_${String(month + 1).padStart(2, '0')}_libre_v4`;
     }
 
     function getLegacyStorageKeys(year, month) {
       const mStr = String(month + 1).padStart(2, '0');
       return [
+        `planning_${year}_${mStr}_libre_v3`,
         `planning_${year}_${mStr}_libre_v2`,
         `planning_${year}_${mStr}_libre_v1`
       ];
+    }
+
+    function formatDateKey(dateObj) {
+      const y = dateObj.getFullYear();
+      const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const d = String(dateObj.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
     }
 
     function getDaysInMonth(year, month) {
@@ -318,6 +329,9 @@
     }
 
     function getFrenchHolidays(year) {
+      if (holidaysCache.has(year)) {
+        return holidaysCache.get(year);
+      }
       const easter = computeEaster(year);
       const addDays = (date, n) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + n);
 
@@ -329,6 +343,7 @@
       [addDays(easter, 1), addDays(easter, 39), addDays(easter, 50)].forEach((d) => {
         set.add(`${d.getMonth() + 1}-${d.getDate()}`);
       });
+      holidaysCache.set(year, set);
       return set;
     }
 
@@ -354,10 +369,7 @@
       let cursor = new Date(firstMonday);
       let guard = 0;
       while (guard < 20) {
-        const weekEnd = new Date(cursor);
-        weekEnd.setDate(cursor.getDate() + 6);
-        const overlapsMonth = weekEnd >= firstOfMonth && cursor <= new Date(year, month, daysInMonth);
-        if (!overlapsMonth) break;
+        if (cursor > new Date(year, month, daysInMonth)) break;
         weeks.push({
           weekNumber: getIsoWeekNumber(cursor),
           startDate: new Date(cursor)
@@ -401,19 +413,40 @@
       return fallbackHours;
     }
 
-    function getDefaultCellCode(dayOfMonth, dateObj) {
+    function getDefaultCellCode(dateObj) {
       if (isHolidayDate(dateObj)) return 'HOLIDAY';
       const jsDay = dateObj.getDay();
       if (jsDay === 0 || jsDay === 6) return 'R';
       return 'WORK';
     }
 
-    function getCellCode(employee, dayOfMonth, dateObj) {
-      const custom = appState.overrides?.[employee]?.[dayOfMonth];
+    /**
+     * Lit la valeur saisie pour une date exacte (supporte aussi l'ancien format numérique par jour du mois).
+     */
+    function getRawOverrideForDate(employee, dateObj) {
+      const empMap = appState.overrides?.[employee];
+      if (!empMap || typeof empMap !== 'object') return undefined;
+
+      const dateKey = formatDateKey(dateObj);
+      if (typeof empMap[dateKey] === 'string' && empMap[dateKey].trim() !== '') {
+        return empMap[dateKey].trim();
+      }
+
+      if (dateObj.getFullYear() === activeYear && dateObj.getMonth() === activeMonth) {
+        const dayNum = String(dateObj.getDate());
+        if (typeof empMap[dayNum] === 'string' && empMap[dayNum].trim() !== '') {
+          return empMap[dayNum].trim();
+        }
+      }
+      return undefined;
+    }
+
+    function getCellCode(employee, dateObj) {
+      const custom = getRawOverrideForDate(employee, dateObj);
       if (typeof custom === 'string' && custom.trim() !== '') {
         return custom.trim();
       }
-      return getDefaultCellCode(dayOfMonth, dateObj);
+      return getDefaultCellCode(dateObj);
     }
 
     function loadStateForMonth(year, month) {
@@ -512,18 +545,20 @@
       inp.style.height = `${targetHeight}px`;
     }
 
-    function buildWeekDays(weekCfg, year, month) {
+    /**
+     * Génère les 7 jours de la semaine (lundi → dimanche). Tous les jours sont actifs (non grisés).
+     */
+    function buildWeekDays(weekCfg) {
       const days = [];
       for (let i = 0; i < 7; i++) {
         const d = new Date(weekCfg.startDate.getFullYear(), weekCfg.startDate.getMonth(), weekCfg.startDate.getDate() + i);
-        const inCurrentMonth = d.getMonth() === month && d.getFullYear() === year;
-        const dayOfMonth = d.getDate();
         days.push({
           dateObj: d,
-          inCurrentMonth,
-          dayOfMonth,
+          dateKey: formatDateKey(d),
+          dayOfMonth: d.getDate(),
           dayLabel: DAY_LABELS[i],
-          isHoliday: inCurrentMonth && isHolidayDate(d)
+          isHoliday: isHolidayDate(d),
+          isOtherMonth: d.getMonth() !== activeMonth || d.getFullYear() !== activeYear
         });
       }
       return days;
@@ -534,8 +569,7 @@
       let autoHours = 0;
 
       for (const dayInfo of weekDays) {
-        if (!dayInfo.inCurrentMonth) continue;
-        const rawCode = getCellCode(employee, dayInfo.dayOfMonth, dayInfo.dateObj);
+        const rawCode = getCellCode(employee, dayInfo.dateObj);
         const code = String(rawCode).trim().toUpperCase();
 
         if (code === 'R' || code === 'CP' || code === 'HOLIDAY' || code === 'F' || code === 'FERIE' || code === '') {
@@ -568,10 +602,11 @@
       let restDays = 0;
       let ptoDays = 0;
       let holidayDays = 0;
+      let autoMonthHours = 0;
 
       for (let day = 1; day <= daysInMonth; day++) {
         const dateObj = new Date(activeYear, activeMonth, day);
-        const rawCode = getCellCode(employee, day, dateObj);
+        const rawCode = getCellCode(employee, dateObj);
         const code = String(rawCode).trim().toUpperCase();
 
         if (code === 'R') {
@@ -582,16 +617,12 @@
           holidayDays += 1;
         } else {
           const h = code === 'WORK' ? appState.baseHours : parseHoursFromText(rawCode, appState.baseHours);
-          if (h > 0) workedDays += 1;
+          if (h > 0) {
+            workedDays += 1;
+            autoMonthHours += h;
+          }
         }
       }
-
-      const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
-      let sumWeeksHours = 0;
-      weeksConfig.forEach((weekCfg, wIdx) => {
-        const wDays = buildWeekDays(weekCfg, activeYear, activeMonth);
-        sumWeeksHours += computeWeekEmployeeStats(employee, wDays, wIdx).hours;
-      });
 
       const manualMonthHours = appState.monthHourOverrides?.[employee];
       const hasManualMonth = typeof manualMonthHours === 'number' && !isNaN(manualMonthHours);
@@ -601,7 +632,7 @@
         restDays,
         ptoDays,
         holidayDays,
-        totalHours: hasManualMonth ? manualMonthHours : sumWeeksHours,
+        totalHours: hasManualMonth ? manualMonthHours : autoMonthHours,
         isManual: hasManualMonth
       };
     }
@@ -673,7 +704,6 @@
       const container = document.getElementById('weeksContainer');
       container.innerHTML = '';
 
-      const monthLabel = MONTH_NAMES[activeMonth];
       const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
 
       const visibleEmployees = appState.filter === 'ALL'
@@ -681,16 +711,13 @@
         : EMPLOYEES.filter((name) => name === appState.filter);
 
       weeksConfig.forEach((weekCfg, index) => {
-        const weekDays = buildWeekDays(weekCfg, activeYear, activeMonth);
-        const hasCurrentMonthDay = weekDays.some((d) => d.inCurrentMonth);
-        if (!hasCurrentMonthDay) return;
+        const weekDays = buildWeekDays(weekCfg);
 
         const card = document.createElement('div');
         card.className = 'bg-white rounded-2xl p-3.5 sm:p-4 shadow-sm border border-slate-200 print-break-avoid';
 
-        const monthDaysInWeek = weekDays.filter((d) => d.inCurrentMonth);
-        const firstDate = monthDaysInWeek[0]?.dateObj;
-        const lastDate = monthDaysInWeek[monthDaysInWeek.length - 1]?.dateObj;
+        const firstDate = weekDays[0]?.dateObj;
+        const lastDate = weekDays[6]?.dateObj;
         const fmt = (d) => d ? `${d.getDate()} ${MONTH_SHORT[d.getMonth()]}` : '';
 
         const headerDiv = document.createElement('div');
@@ -726,14 +753,15 @@
         weekDays.forEach((d) => {
           const th = document.createElement('th');
           th.className = 'py-2 px-1 border-r border-slate-200 min-w-[82px] sm:min-w-[92px]';
-          if (!d.inCurrentMonth) {
-            th.classList.add('bg-slate-100/70', 'text-slate-300');
-            th.innerHTML = `<div class="text-xs">${d.dayLabel}</div><div class="text-xs">${d.dayOfMonth}</div>`;
-          } else if (d.isHoliday) {
+          const dateBadge = d.isOtherMonth
+            ? `${d.dayOfMonth}/${String(d.dateObj.getMonth() + 1).padStart(2, '0')}`
+            : `${d.dayOfMonth}`;
+
+          if (d.isHoliday) {
             th.classList.add('bg-rose-100', 'text-rose-800');
-            th.innerHTML = `<div class="text-xs font-bold">${d.dayLabel}</div><div class="text-sm font-extrabold">${d.dayOfMonth}</div>`;
+            th.innerHTML = `<div class="text-xs font-bold">${d.dayLabel}</div><div class="text-sm font-extrabold">${dateBadge}</div>`;
           } else {
-            th.innerHTML = `<div class="text-xs">${d.dayLabel}</div><div class="text-sm font-bold text-slate-800">${d.dayOfMonth}</div>`;
+            th.innerHTML = `<div class="text-xs">${d.dayLabel}</div><div class="text-sm font-bold text-slate-800">${dateBadge}</div>`;
           }
           headRow.appendChild(th);
         });
@@ -767,32 +795,27 @@
             const td = document.createElement('td');
             td.className = 'p-1 border-r border-slate-200 align-middle';
 
-            if (!d.inCurrentMonth) {
-              td.innerHTML = `<div class="w-full min-h-[46px] rounded-lg bg-slate-100/80 border border-slate-200/70"></div>`;
-            } else {
-              const code = getCellCode(employee, d.dayOfMonth, d.dateObj);
-              const visual = getCellAppearance(code);
-              const defaultCode = getDefaultCellCode(d.dayOfMonth, d.dateObj);
+            const code = getCellCode(employee, d.dateObj);
+            const visual = getCellAppearance(code);
+            const defaultCode = getDefaultCellCode(d.dateObj);
+            const customVal = getRawOverrideForDate(employee, d.dateObj);
 
-              const inp = document.createElement('textarea');
-              inp.rows = 1;
-              inp.className = `planning-cell rounded-lg border transition outline-none focus:ring-2 focus:ring-slate-500 ${visual.classes}`;
-              const isOverridden = typeof appState.overrides?.[employee]?.[d.dayOfMonth] === 'string'
-                && appState.overrides[employee][d.dayOfMonth].trim() !== '';
-              inp.value = isOverridden ? getCellCode(employee, d.dayOfMonth, d.dateObj) : (defaultCode === 'R' ? 'R' : '');
-              inp.placeholder = '·';
-              inp.spellcheck = false;
-              inp.setAttribute(
-                'aria-label',
-                `${employee}, ${d.dayLabel} ${d.dayOfMonth} ${monthLabel.toLowerCase()} ${activeYear}`
-              );
-              inp.dataset.employee = employee;
-              inp.dataset.day = d.dayOfMonth;
-              inp.dataset.weekIndex = index;
+            const inp = document.createElement('textarea');
+            inp.rows = 1;
+            inp.className = `planning-cell rounded-lg border transition outline-none focus:ring-2 focus:ring-slate-500 ${visual.classes}`;
+            inp.value = customVal !== undefined ? customVal : (defaultCode === 'R' ? 'R' : '');
+            inp.placeholder = '·';
+            inp.spellcheck = false;
+            inp.setAttribute(
+              'aria-label',
+              `${employee}, ${d.dayLabel} ${d.dayOfMonth} ${MONTH_NAMES[d.dateObj.getMonth()].toLowerCase()} ${d.dateObj.getFullYear()}`
+            );
+            inp.dataset.employee = employee;
+            inp.dataset.dateKey = d.dateKey;
+            inp.dataset.weekIndex = index;
 
-              td.appendChild(inp);
-              requestAnimationFrame(() => autoFitCell(inp));
-            }
+            td.appendChild(inp);
+            requestAnimationFrame(() => autoFitCell(inp));
 
             tr.appendChild(td);
           });
@@ -922,25 +945,28 @@
         if (!inp.classList || !inp.classList.contains('planning-cell')) return;
 
         const employee = inp.dataset.employee;
-        const day = parseInt(inp.dataset.day, 10);
+        const dateKey = inp.dataset.dateKey;
         const weekIndex = parseInt(inp.dataset.weekIndex, 10);
-        if (!employee || isNaN(day)) return;
+        if (!employee || !dateKey) return;
+
+        const parts = dateKey.split('-').map((n) => parseInt(n, 10));
+        const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
 
         if (!appState.overrides[employee]) {
           appState.overrides[employee] = {};
         }
         const val = inp.value.trim();
         if (val === '') {
-          delete appState.overrides[employee][day];
+          delete appState.overrides[employee][dateKey];
         } else {
-          appState.overrides[employee][day] = val;
+          appState.overrides[employee][dateKey] = val;
         }
 
         if (appState.weekHourOverrides[employee]) {
           delete appState.weekHourOverrides[employee][weekIndex];
         }
 
-        const effectiveCode = getCellCode(employee, day, new Date(activeYear, activeMonth, day));
+        const effectiveCode = getCellCode(employee, dateObj);
         const visual = getCellAppearance(effectiveCode);
         inp.className = `planning-cell rounded-lg border transition outline-none focus:ring-2 focus:ring-slate-500 ${visual.classes}`;
         autoFitCell(inp);
@@ -948,7 +974,7 @@
         const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
         const weekCfg = weeksConfig[weekIndex];
         if (weekCfg) {
-          const weekDays = buildWeekDays(weekCfg, activeYear, activeMonth);
+          const weekDays = buildWeekDays(weekCfg);
           const stats = computeWeekEmployeeStats(employee, weekDays, weekIndex);
           const tr = inp.closest('tr');
           if (tr) {
@@ -995,7 +1021,7 @@
 
         const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
         const weekCfg = weeksConfig[weekIndex];
-        const weekDays = buildWeekDays(weekCfg, activeYear, activeMonth);
+        const weekDays = buildWeekDays(weekCfg);
         const stats = computeWeekEmployeeStats(employee, weekDays, weekIndex);
         hrInp.value = formatHours(stats.hours);
         hrInp.className = `hours-edit-input text-sm ${stats.isManual ? 'text-blue-700 underline decoration-dotted' : 'text-emerald-700'}`;

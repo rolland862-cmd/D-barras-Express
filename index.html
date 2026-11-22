@@ -837,7 +837,7 @@
             </h1>
           </div>
           <p id="headerSubtitle" class="text-[11px] sm:text-sm text-[#e6decb] truncate">
-            Débarras Express 09 · Pierre, Damien & David
+            Débarras Express 09 · Pierre, Damien & Tiffany
           </p>
         </div>
       </div>
@@ -912,7 +912,7 @@
             <option value="ALL">Tous les salariés</option>
             <option value="Pierre">Pierre</option>
             <option value="Damien">Damien</option>
-            <option value="David">David</option>
+            <option value="Tiffany">Tiffany</option>
           </select>
 
           <span id="daysInMonthBadge" class="px-3 py-1 rounded-full text-xs sm:text-sm font-semibold bg-[#e4eee0] text-[#2d4727]">
@@ -966,7 +966,7 @@
           <div>
             <span class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#f7e6dc] text-[#9a4e28] mb-1">Menu Heures Supp.</span>
             <h2 id="drawerOvertimeTitle" class="text-lg sm:text-xl font-extrabold text-[#232921]">Heures Supplémentaires</h2>
-            <p id="drawerOvertimeSubtitle" class="text-xs sm:text-sm text-[#5b6358]">Suivi dédié pour Pierre, Damien &amp; David</p>
+            <p id="drawerOvertimeSubtitle" class="text-xs sm:text-sm text-[#5b6358]">Suivi dédié pour Pierre, Damien &amp; Tiffany</p>
           </div>
           <button id="closeOvertimeBtn" type="button" class="px-3 py-1.5 rounded-xl bg-[#efe8d8] hover:bg-[#e3d7be] text-[#232921] font-bold text-sm cursor-pointer">✕</button>
         </div>
@@ -1015,7 +1015,7 @@
             <option value="ALL">Tous les salariés (3)</option>
             <option value="Pierre">Pierre</option>
             <option value="Damien">Damien</option>
-            <option value="David">David</option>
+            <option value="Tiffany">Tiffany</option>
           </select>
 
           <span id="totalOvertimePill" class="px-3 py-1 rounded-full text-xs sm:text-sm font-extrabold bg-[#f7e6dc] text-[#9a4e28]">
@@ -1114,8 +1114,8 @@
           <button type="button" data-filter="Damien" class="filter-btn px-3.5 py-2 rounded-xl text-sm font-semibold bg-[#efe8d8] text-[#232921] hover:bg-[#e3d7be] transition">
             Damien
           </button>
-          <button type="button" data-filter="David" class="filter-btn px-3.5 py-2 rounded-xl text-sm font-semibold bg-[#efe8d8] text-[#232921] hover:bg-[#e3d7be] transition">
-            David
+          <button type="button" data-filter="Tiffany" class="filter-btn px-3.5 py-2 rounded-xl text-sm font-semibold bg-[#efe8d8] text-[#232921] hover:bg-[#e3d7be] transition">
+            Tiffany
           </button>
         </div>
 
@@ -1204,11 +1204,11 @@
           </div>
 
           <div class="flex items-center justify-between gap-1.5 bg-[#fcfaf5] border border-[#dfd5c0] rounded-xl px-2.5 py-1.5">
-            <label for="baseHoursDavid" class="text-xs sm:text-sm font-bold text-[#232921] truncate">David</label>
+            <label for="baseHoursTiffany" class="text-xs sm:text-sm font-bold text-[#232921] truncate">Tiffany</label>
             <div class="flex items-center gap-1">
               <input
-                id="baseHoursDavid"
-                data-emp-base="David"
+                id="baseHoursTiffany"
+                data-emp-base="Tiffany"
                 type="number"
                 step="0.25"
                 min="0"
@@ -1361,7 +1361,7 @@
   <script>
     const DEFAULT_BASE_HOURS = 7;
     const DEFAULT_OVERTIME_THRESHOLD = 151.67;
-    const EMPLOYEES = ['Pierre', 'Damien', 'David'];
+    const EMPLOYEES = ['Pierre', 'Damien', 'Tiffany'];
 
     const MONTH_NAMES = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
     const MONTH_SHORT = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
@@ -1384,7 +1384,7 @@
       return {
         Pierre: baseVal,
         Damien: baseVal,
-        David: baseVal
+        Tiffany: baseVal
       };
     }
 
@@ -1997,7 +1997,7 @@
 
       const sub = document.getElementById('headerSubtitle');
       if (sub) {
-        sub.textContent = `Débarras Express 09 · Pierre (${formatHours(getEmployeeBaseHours('Pierre'))}), Damien (${formatHours(getEmployeeBaseHours('Damien'))}), David (${formatHours(getEmployeeBaseHours('David'))})`;
+        sub.textContent = `Débarras Express 09 · Pierre (${formatHours(getEmployeeBaseHours('Pierre'))}), Damien (${formatHours(getEmployeeBaseHours('Damien'))}), Tiffany (${formatHours(getEmployeeBaseHours('Tiffany'))})`;
       }
 
       updateFilterButtons();

@@ -273,7 +273,7 @@
         color: #5b6358 !important;
       }
 
-      /* Mode impression : UNE SEULE SEMAINE — descendue vers le centre, cases compactes, légende & récapitulatif empilés */
+      /* Mode impression : UNE SEULE SEMAINE */
       .week-fullscreen-vertical {
         position: static !important;
         inset: auto !important;
@@ -881,6 +881,7 @@
     let currentPrintMode = 'all';
     let currentPrintWeekIdx = null;
     let afterPrintCleanupTimer = null;
+    let isPrintSessionActive = false;
 
     let appState = {
       filter: 'ALL',
@@ -1929,6 +1930,7 @@
     }
 
     function checkRealTimeMonthChange() {
+      if (isPrintSessionActive) return;
       const freshNow = new Date();
       const freshYear = freshNow.getFullYear();
       const freshMonth = freshNow.getMonth();
@@ -1966,17 +1968,21 @@
         clearTimeout(afterPrintCleanupTimer);
         afterPrintCleanupTimer = null;
       }
+      renderWeeks();
+      renderSummaryTable();
+
       document.body.classList.remove('printing-single-week', 'printing-balance-only', 'single-emp-week');
       document.querySelectorAll('.print-target-week').forEach((el) => el.classList.remove('print-target-week'));
       setDynamicPrintStyle('');
 
+      const isSingleEmpVisible = appState.filter !== 'ALL';
+      const empSuffix = isSingleEmpVisible ? ` — ${appState.filter}` : '';
+
       if (currentPrintMode === 'balance') {
-        renderSummaryTable();
-        applyMonthLabels();
         document.body.classList.add('printing-balance-only');
         const selectedEmp = document.getElementById('bilanEmployeeSelect')?.value || 'ALL';
-        const empSuffix = selectedEmp !== 'ALL' ? ` — ${selectedEmp}` : '';
-        document.title = `Bilan Heures${empSuffix} ${MONTH_NAMES[activeMonth]} ${activeYear} — Débarras Express 09`;
+        const balSuffix = selectedEmp !== 'ALL' ? ` — ${selectedEmp}` : '';
+        document.title = `Bilan Heures${balSuffix} ${MONTH_NAMES[activeMonth]} ${activeYear} — Débarras Express 09`;
         setDynamicPrintStyle(`
           header.app-header,
           #weeksContainer,
@@ -2000,7 +2006,6 @@
       } else if (currentPrintMode === 'single-week' && typeof currentPrintWeekIdx === 'number') {
         const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
         const wkCfg = weeksConfig[currentPrintWeekIdx];
-        const isSingleEmpVisible = appState.filter !== 'ALL';
         let targetEl = null;
         if (focusedWeekIndex !== null && focusedWeekIndex === currentPrintWeekIdx) {
           const fwWrapper = document.querySelector('#weeksContainer .week-fullscreen-vertical');
@@ -2018,7 +2023,7 @@
           }
         }
         if (wkCfg) {
-          document.title = `Semaine ${wkCfg.weekNumber} — ${MONTH_NAMES[activeMonth]} ${activeYear} — Débarras Express 09`;
+          document.title = `Semaine ${wkCfg.weekNumber}${empSuffix} — ${MONTH_NAMES[activeMonth]} ${activeYear} — Débarras Express 09`;
         }
         setDynamicPrintStyle(`
           #printSummarySection { display: none !important; }
@@ -2029,7 +2034,7 @@
           .week-fullscreen-vertical .overflow-x-auto { display: block !important; overflow: visible !important; }
         `);
       } else {
-        applyMonthLabels();
+        document.title = `Planning ${MONTH_NAMES[activeMonth]} ${activeYear}${empSuffix} — Débarras Express 09`;
         setDynamicPrintStyle(`
           #printSummarySection { display: none !important; }
         `);
@@ -2072,13 +2077,18 @@
       document.querySelectorAll('.print-cell-mirror').forEach((n) => n.remove());
     }
 
-    function printSingleWeek(weekIdx) {
-      currentPrintMode = 'single-week';
+    function launchPrintJob(mode, weekIdx = null) {
+      isPrintSessionActive = true;
+      currentPrintMode = mode;
       currentPrintWeekIdx = weekIdx;
       applyPrintClassesToDom();
       cleanupPrintTextMirrors();
       preparePrintTextMirrors();
       window.print();
+    }
+
+    function printSingleWeek(weekIdx) {
+      launchPrintJob('single-week', weekIdx);
     }
 
     function bindEvents() {
@@ -2247,6 +2257,7 @@
       });
 
       window.addEventListener('beforeprint', () => {
+        isPrintSessionActive = true;
         applyPrintClassesToDom();
         cleanupPrintTextMirrors();
         preparePrintTextMirrors();
@@ -2257,11 +2268,12 @@
           cleanupPrintTextMirrors();
           currentPrintMode = 'all';
           currentPrintWeekIdx = null;
+          isPrintSessionActive = false;
           document.body.classList.remove('printing-single-week', 'printing-balance-only', 'single-emp-week');
           document.querySelectorAll('.print-target-week').forEach((el) => el.classList.remove('print-target-week'));
           setDynamicPrintStyle('');
           applyMonthLabels();
-        }, 1200);
+        }, 3500);
       });
 
       document.getElementById('printBtn').addEventListener('click', () => {
@@ -2269,12 +2281,7 @@
           printSingleWeek(focusedWeekIndex);
           return;
         }
-        currentPrintMode = 'all';
-        currentPrintWeekIdx = null;
-        applyPrintClassesToDom();
-        cleanupPrintTextMirrors();
-        preparePrintTextMirrors();
-        window.print();
+        launchPrintJob('all', null);
       });
 
       weeksContainer.addEventListener('click', (e) => {
@@ -2351,14 +2358,9 @@
       }
 
       function triggerPdfExport() {
-        currentPrintMode = 'all';
-        currentPrintWeekIdx = null;
-        applyPrintClassesToDom();
-        cleanupPrintTextMirrors();
-        preparePrintTextMirrors();
-        showToast('Ouverture de l’aperçu PDF : choisissez « Enregistrer en PDF » ou « Imprimer ».');
+        showToast('Ouverture de l’aperçu PDF : choisissez « Enregistrer au format PDF ».');
         setTimeout(() => {
-          window.print();
+          launchPrintJob('all', null);
         }, 180);
       }
 
@@ -2573,10 +2575,7 @@
       if (drawerPrintBtn) {
         drawerPrintBtn.addEventListener('click', () => {
           setMonthlyDrawerOpen(false);
-          currentPrintMode = 'balance';
-          currentPrintWeekIdx = null;
-          applyPrintClassesToDom();
-          window.print();
+          launchPrintJob('balance', null);
         });
       }
       document.addEventListener('keydown', (e) => {

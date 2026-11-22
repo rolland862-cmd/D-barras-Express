@@ -1015,6 +1015,8 @@
       const monthLabel = MONTH_NAMES[activeMonth];
       const daysInMonth = getDaysInMonth(activeYear, activeMonth);
       const isCurrentSystemMonth = (activeYear === systemYear && activeMonth === systemMonth);
+      const selectedEmp = document.getElementById('bilanEmployeeSelect')?.value || 'ALL';
+      const isSingleSelected = Boolean(selectedEmp && selectedEmp !== 'ALL');
 
       document.title = `Planning ${monthLabel} ${activeYear} — Débarras Express 09`;
 
@@ -1039,7 +1041,11 @@
       const bilanTitle = document.getElementById('drawerBilanTitle');
       if (bilanTitle) bilanTitle.textContent = `Bilan Mensuel — ${monthLabel} ${activeYear}`;
       const printBilanTitle = document.getElementById('printBilanTitle');
-      if (printBilanTitle) printBilanTitle.textContent = `Bilan Mensuel — ${monthLabel} ${activeYear}`;
+      if (printBilanTitle) {
+        printBilanTitle.textContent = isSingleSelected
+          ? `Bilan Mensuel — ${selectedEmp} — ${monthLabel} ${activeYear}`
+          : `Bilan Mensuel — ${monthLabel} ${activeYear}`;
+      }
 
       const metaTitle = document.querySelector('meta[name="apple-mobile-web-app-title"]');
       if (metaTitle) metaTitle.setAttribute('content', `Planning ${monthLabel} ${activeYear}`);
@@ -1501,27 +1507,22 @@
 
       const selectEl = document.getElementById('bilanEmployeeSelect');
       const selectedEmp = selectEl ? selectEl.value : 'ALL';
+      const isSingleSelected = Boolean(selectedEmp && selectedEmp !== 'ALL');
 
-      let sumWorked = 0;
-      let sumRest = 0;
-      let sumPto = 0;
       let sumHours = 0;
 
-      const listToShow = (selectedEmp && selectedEmp !== 'ALL')
+      const listToShow = isSingleSelected
         ? EMPLOYEES.filter((e) => e === selectedEmp)
         : EMPLOYEES;
 
       EMPLOYEES.forEach((employee) => {
         const stats = computeEmployeeStats(employee);
-        sumWorked += stats.workedDays;
-        sumRest += stats.restDays;
-        sumPto += stats.ptoDays;
         sumHours += stats.totalHours;
       });
 
       const spotlight = document.getElementById('selectedEmployeeSpotlight');
       if (spotlight) {
-        if (selectedEmp && selectedEmp !== 'ALL') {
+        if (isSingleSelected) {
           const st = computeEmployeeStats(selectedEmp);
           document.getElementById('spotlightTitle').textContent = `Heures mensuelles — ${selectedEmp}`;
           document.getElementById('spotlightHours').textContent = formatHours(st.totalHours);
@@ -1566,7 +1567,7 @@
       const totalRow = document.createElement('tr');
       totalRow.className = 'bg-[#2d4727] text-[#fffdf9] font-bold text-sm';
       totalRow.innerHTML = `
-        <td class="py-3 px-2.5 text-center">${selectedEmp && selectedEmp !== 'ALL' ? `Total ${selectedEmp}` : 'Total équipe'}</td>
+        <td class="py-3 px-2.5 text-center">${isSingleSelected ? `Total ${selectedEmp}` : 'Total équipe'}</td>
         <td class="py-3 px-1.5 text-center text-[#d7ead1] whitespace-nowrap">${shownWorked} j</td>
         <td class="py-3 px-1.5 text-center text-[#ece4d3] whitespace-nowrap">${shownRest}</td>
         <td class="py-3 px-1.5 text-center text-[#f7d0b8] whitespace-nowrap">${shownPto}</td>
@@ -1577,10 +1578,19 @@
       const badgeHours = document.getElementById('headerTotalHoursBadge');
       if (badgeHours) badgeHours.textContent = formatHours(sumHours);
 
+      const printBilanTitle = document.getElementById('printBilanTitle');
+      if (printBilanTitle) {
+        const monthLabel = MONTH_NAMES[activeMonth];
+        printBilanTitle.textContent = isSingleSelected
+          ? `Bilan Mensuel — ${selectedEmp} — ${monthLabel} ${activeYear}`
+          : `Bilan Mensuel — ${monthLabel} ${activeYear}`;
+      }
+
       const printTbody = document.getElementById('printSummaryTableBody');
       if (printTbody) {
         printTbody.innerHTML = '';
-        EMPLOYEES.forEach((employee) => {
+
+        listToShow.forEach((employee) => {
           const stats = computeEmployeeStats(employee);
           const ptr = document.createElement('tr');
           ptr.innerHTML = `
@@ -1592,14 +1602,15 @@
           `;
           printTbody.appendChild(ptr);
         });
+
         const ptot = document.createElement('tr');
         ptot.className = 'bg-[#2d4727] text-[#fffdf9] font-bold';
         ptot.innerHTML = `
-          <td class="py-1.5 px-2">Total équipe</td>
-          <td class="py-1.5 px-1.5 text-center">${sumWorked} j</td>
-          <td class="py-1.5 px-1.5 text-center">${sumRest}</td>
-          <td class="py-1.5 px-1.5 text-center">${sumPto}</td>
-          <td class="py-1.5 px-2 text-right">${formatHours(sumHours)}</td>
+          <td class="py-1.5 px-2">${isSingleSelected ? `Total ${selectedEmp}` : 'Total équipe'}</td>
+          <td class="py-1.5 px-1.5 text-center">${shownWorked} j</td>
+          <td class="py-1.5 px-1.5 text-center">${shownRest}</td>
+          <td class="py-1.5 px-1.5 text-center">${shownPto}</td>
+          <td class="py-1.5 px-2 text-right">${formatHours(shownHours)}</td>
         `;
         printTbody.appendChild(ptot);
       }
@@ -1651,7 +1662,9 @@
         renderSummaryTable();
         applyMonthLabels();
         document.body.classList.add('printing-balance-only');
-        document.title = `Bilan Heures ${MONTH_NAMES[activeMonth]} ${activeYear} — Débarras Express 09`;
+        const selectedEmp = document.getElementById('bilanEmployeeSelect')?.value || 'ALL';
+        const empSuffix = selectedEmp !== 'ALL' ? ` — ${selectedEmp}` : '';
+        document.title = `Bilan Heures${empSuffix} ${MONTH_NAMES[activeMonth]} ${activeYear} — Débarras Express 09`;
         setDynamicPrintStyle(`
           header.app-header,
           #weeksContainer,
@@ -2106,10 +2119,20 @@
 
       document.getElementById('copySummaryBtn').addEventListener('click', () => {
         const monthLabel = MONTH_NAMES[activeMonth];
-        const lines = [`Bilan ${monthLabel} ${activeYear} — Débarras Express 09`];
+        const selectedEmp = document.getElementById('bilanEmployeeSelect')?.value || 'ALL';
+        const isSingleSelected = selectedEmp !== 'ALL';
+        const targetEmployees = isSingleSelected
+          ? EMPLOYEES.filter((e) => e === selectedEmp)
+          : EMPLOYEES;
+
+        const lines = [
+          isSingleSelected
+            ? `Bilan ${selectedEmp} — ${monthLabel} ${activeYear} — Débarras Express 09`
+            : `Bilan ${monthLabel} ${activeYear} — Débarras Express 09`
+        ];
         let totJ = 0, totR = 0, totCP = 0, totH = 0;
 
-        EMPLOYEES.forEach((emp) => {
+        targetEmployees.forEach((emp) => {
           const st = computeEmployeeStats(emp);
           totJ += st.workedDays;
           totR += st.restDays;
@@ -2117,7 +2140,10 @@
           totH += st.totalHours;
           lines.push(`• ${emp} : ${st.workedDays} j travaillés | ${st.restDays} R | ${st.ptoDays} CP | ${formatHours(st.totalHours)}`);
         });
-        lines.push(`Total équipe : ${totJ} j | ${totR} R | ${totCP} CP | ${formatHours(totH)}`);
+
+        if (!isSingleSelected) {
+          lines.push(`Total équipe : ${totJ} j | ${totR} R | ${totCP} CP | ${formatHours(totH)}`);
+        }
         const textOut = lines.join('\n');
 
         if (navigator.clipboard && navigator.clipboard.writeText) {

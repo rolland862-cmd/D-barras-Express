@@ -2,12 +2,12 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
   <meta name="theme-color" content="#2d4727" />
   <link rel="manifest" href="./manifest.json" />
   <link rel="apple-touch-icon" href="./icons/logo-debarras-09.png" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Débarras Express 09" />
   <title>Planning Mensuel — Débarras Express 09</title>
 
@@ -31,11 +31,22 @@
       --brand-terracotta-soft: #f7e6dc;
     }
 
+    html, body {
+      background-color: var(--bg-cream);
+      overscroll-behavior-y: none;
+    }
+
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background-color: var(--bg-cream);
       color: var(--ink-main);
       -webkit-tap-highlight-color: transparent;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    header.app-header {
+      padding-top: env(safe-area-inset-top, 0px);
+      background-color: var(--brand-green);
     }
 
     @media print {
@@ -101,7 +112,7 @@
 <body class="min-h-screen flex flex-col bg-[#f6f1e7] text-[#232921]">
 
   <!-- En-tête principal avec logo Débarras Express 09 -->
-  <header class="sticky top-0 z-30 bg-[#2d4727] text-[#fffdf9] shadow-md border-b border-[#46663e] no-print">
+  <header class="app-header sticky top-0 z-30 bg-[#2d4727] text-[#fffdf9] shadow-md border-b border-[#46663e] no-print">
     <div class="max-w-4xl mx-auto px-4 py-2.5 flex items-center justify-between gap-3">
       <div class="flex items-center gap-3 min-w-0">
         <img
@@ -172,7 +183,7 @@
       </div>
     </section>
 
-    <!-- Barre d'outils : filtre salarié, base horaire modifiable, impression, réinitialisation -->
+    <!-- Barre d'outils : filtre salarié, base horaire modifiable, sauvegarde, impression, réinitialisation -->
     <section class="bg-[#fffdf9] rounded-2xl p-4 shadow-sm border border-[#dfd5c0] space-y-3.5 no-print">
       <div class="flex flex-wrap items-center justify-between gap-2.5">
         <div class="flex items-center gap-1.5 flex-wrap" role="group" aria-label="Filtrer par salarié">
@@ -190,7 +201,24 @@
           </button>
         </div>
 
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 flex-wrap">
+          <button
+            id="exportBtn"
+            type="button"
+            class="px-3.5 py-2 rounded-xl text-sm font-semibold bg-[#efe8d8] text-[#232921] hover:bg-[#e3d7be] border border-[#d6c9ae] transition"
+            title="Télécharger une sauvegarde JSON de ce mois"
+          >
+            Exporter
+          </button>
+          <button
+            id="importBtn"
+            type="button"
+            class="px-3.5 py-2 rounded-xl text-sm font-semibold bg-[#efe8d8] text-[#232921] hover:bg-[#e3d7be] border border-[#d6c9ae] transition"
+            title="Restaurer une sauvegarde JSON"
+          >
+            Importer
+          </button>
+          <input id="importFileInput" type="file" accept=".json,application/json" class="hidden" />
           <button
             id="printBtn"
             type="button"
@@ -1136,6 +1164,75 @@
       });
       document.getElementById('closeToastBtn').addEventListener('click', () => {
         document.getElementById('toastBanner').classList.add('hidden');
+      });
+
+      function exportCurrentMonthBackup() {
+        const payload = {
+          app: 'DebarrasExpress09Planning',
+          version: 1,
+          exportedAt: new Date().toISOString(),
+          year: activeYear,
+          month: activeMonth + 1,
+          state: {
+            filter: appState.filter,
+            baseHours: appState.baseHours,
+            overrides: appState.overrides,
+            weekHourOverrides: appState.weekHourOverrides,
+            monthHourOverrides: appState.monthHourOverrides
+          }
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const mStr = String(activeMonth + 1).padStart(2, '0');
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `planning-debarras-09-${activeYear}-${mStr}.json`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        showToast(`Sauvegarde exportée (${MONTH_NAMES[activeMonth]} ${activeYear}).`);
+      }
+
+      document.getElementById('exportBtn').addEventListener('click', exportCurrentMonthBackup);
+
+      const importFileInput = document.getElementById('importFileInput');
+      document.getElementById('importBtn').addEventListener('click', () => {
+        importFileInput.value = '';
+        importFileInput.click();
+      });
+
+      importFileInput.addEventListener('change', (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            const parsed = JSON.parse(String(reader.result || ''));
+            const st = parsed?.state && typeof parsed.state === 'object' ? parsed.state : parsed;
+            if (!st || typeof st !== 'object') {
+              showToast('Fichier de sauvegarde invalide.');
+              return;
+            }
+            if (typeof parsed.year === 'number' && typeof parsed.month === 'number' && parsed.month >= 1 && parsed.month <= 12) {
+              activeYear = parsed.year;
+              activeMonth = parsed.month - 1;
+            }
+            appState = {
+              filter: typeof st.filter === 'string' ? st.filter : appState.filter,
+              baseHours: typeof st.baseHours === 'number' && !isNaN(st.baseHours) ? st.baseHours : DEFAULT_BASE_HOURS,
+              overrides: st.overrides && typeof st.overrides === 'object' ? st.overrides : {},
+              weekHourOverrides: st.weekHourOverrides && typeof st.weekHourOverrides === 'object' ? st.weekHourOverrides : {},
+              monthHourOverrides: st.monthHourOverrides && typeof st.monthHourOverrides === 'object' ? st.monthHourOverrides : {}
+            };
+            saveState();
+            renderAll();
+            showToast(`Sauvegarde restaurée (${MONTH_NAMES[activeMonth]} ${activeYear}).`);
+          } catch (err) {
+            showToast('Impossible de lire le fichier JSON.');
+          }
+        };
+        reader.readAsText(file);
       });
 
       setInterval(checkRealTimeMonthChange, 30000);

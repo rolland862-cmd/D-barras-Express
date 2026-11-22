@@ -84,13 +84,13 @@
 </head>
 <body class="min-h-screen flex flex-col bg-slate-100 text-slate-900">
 
-  <!-- En-tête principal sans bouton Installer -->
+  <!-- En-tête principal -->
   <header class="sticky top-0 z-30 bg-slate-900 text-white shadow-md no-print">
     <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
       <div class="min-w-0">
         <div class="flex items-center gap-2">
           <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
-          <h1 class="text-lg sm:text-xl font-bold tracking-tight">
+          <h1 id="mainHeaderTitle" class="text-lg sm:text-xl font-bold tracking-tight">
             Planning Mensuel
           </h1>
         </div>
@@ -110,6 +110,45 @@
   <!-- Contenu principal -->
   <main class="flex-1 w-full max-w-4xl mx-auto px-3 sm:px-5 py-4 space-y-5">
 
+    <!-- Barre de navigation des mois (accès aux mois précédents et suivants) -->
+    <section class="bg-white rounded-2xl p-3.5 sm:p-4 shadow-sm border border-slate-200 no-print" aria-label="Navigation par mois">
+      <div class="flex items-center justify-between gap-2">
+        <button
+          id="prevMonthBtn"
+          type="button"
+          class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-800 text-xs sm:text-sm font-bold transition flex items-center gap-1"
+          aria-label="Mois précédent"
+        >
+          <span>◀</span>
+          <span>Précédent</span>
+        </button>
+
+        <div class="text-center flex flex-col items-center">
+          <span id="currentMonthDisplay" class="text-base sm:text-lg font-extrabold text-slate-900 capitalize">
+            Novembre 2026
+          </span>
+          <button
+            id="todayMonthBtn"
+            type="button"
+            class="hidden mt-0.5 px-2.5 py-0.5 rounded-full bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-xs font-semibold transition"
+          >
+            Revenir au mois actuel
+          </button>
+        </div>
+
+        <button
+          id="nextMonthBtn"
+          type="button"
+          class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-800 text-xs sm:text-sm font-bold transition flex items-center gap-1"
+          aria-label="Mois suivant"
+        >
+          <span>Suivant</span>
+          <span>▶</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Barre d'outils : filtre salarié, base horaire modifiable, impression, réinitialisation -->
     <section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 space-y-3.5 no-print">
       <div class="flex flex-wrap items-center justify-between gap-2.5">
         <div class="flex items-center gap-1.5 flex-wrap" role="group" aria-label="Filtrer par salarié">
@@ -174,10 +213,10 @@
     <section class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 print-break-avoid" aria-label="Bilan mensuel par salarié">
       <div class="flex items-center justify-between gap-2 mb-3">
         <div>
-          <h2 class="text-base sm:text-lg font-bold text-slate-900">Bilan Mensuel</h2>
+          <h2 id="bilanMonthTitle" class="text-base sm:text-lg font-bold text-slate-900">Bilan Mensuel</h2>
           <p id="bilanSubtitle" class="text-xs sm:text-sm text-slate-500">Calcul automatique (heures modifiables)</p>
         </div>
-        <span class="px-3 py-1 rounded-full text-xs sm:text-sm font-semibold bg-emerald-100 text-emerald-800">
+        <span id="daysInMonthBadge" class="px-3 py-1 rounded-full text-xs sm:text-sm font-semibold bg-emerald-100 text-emerald-800">
           30 jours
         </span>
       </div>
@@ -222,16 +261,42 @@
     const DEFAULT_BASE_HOURS = 7;
     const EMPLOYEES = ['Pierre', 'Damien', 'David'];
 
-    const NOW = new Date();
-    const YEAR = NOW.getFullYear();
-    const MONTH = NOW.getMonth();
-
     const MONTH_NAMES = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
     const MONTH_SHORT = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
-    const MONTH_LABEL = MONTH_NAMES[MONTH];
-    const DAYS_IN_MONTH = new Date(YEAR, MONTH + 1, 0).getDate();
+    const DAY_LABELS = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
 
-    const STORAGE_KEY = `planning_${YEAR}_${String(MONTH + 1).padStart(2, '0')}_libre_v3`;
+    // Suivi de la date système réelle (pour bascule automatique en temps réel au changement de mois)
+    let systemNow = new Date();
+    let systemYear = systemNow.getFullYear();
+    let systemMonth = systemNow.getMonth();
+
+    // Mois et année actuellement affichés (modifiables via Précédent / Suivant)
+    let activeYear = systemYear;
+    let activeMonth = systemMonth;
+
+    let appState = {
+      filter: 'ALL',
+      baseHours: DEFAULT_BASE_HOURS,
+      overrides: {},
+      weekHourOverrides: {},
+      monthHourOverrides: {}
+    };
+
+    function getStorageKey(year, month) {
+      return `planning_${year}_${String(month + 1).padStart(2, '0')}_libre_v3`;
+    }
+
+    function getLegacyStorageKeys(year, month) {
+      const mStr = String(month + 1).padStart(2, '0');
+      return [
+        `planning_${year}_${mStr}_libre_v2`,
+        `planning_${year}_${mStr}_libre_v1`
+      ];
+    }
+
+    function getDaysInMonth(year, month) {
+      return new Date(year, month + 1, 0).getDate();
+    }
 
     function computeEaster(year) {
       const a = year % 19;
@@ -266,10 +331,9 @@
       return set;
     }
 
-    const HOLIDAY_DATES = getFrenchHolidays(YEAR);
-
     function isHolidayDate(dateObj) {
-      return HOLIDAY_DATES.has(`${dateObj.getMonth() + 1}-${dateObj.getDate()}`);
+      const holidays = getFrenchHolidays(dateObj.getFullYear());
+      return holidays.has(`${dateObj.getMonth() + 1}-${dateObj.getDate()}`);
     }
 
     function getIsoWeekNumber(dateObj) {
@@ -279,8 +343,9 @@
       return Math.ceil(((t - yearStart) / 86400000 + 1) / 7);
     }
 
-    function buildWeeksConfig() {
-      const firstOfMonth = new Date(YEAR, MONTH, 1);
+    function buildWeeksConfig(year, month) {
+      const daysInMonth = getDaysInMonth(year, month);
+      const firstOfMonth = new Date(year, month, 1);
       const firstMonday = new Date(firstOfMonth);
       firstMonday.setDate(firstOfMonth.getDate() - ((firstOfMonth.getDay() + 6) % 7));
 
@@ -290,7 +355,7 @@
       while (guard < 20) {
         const weekEnd = new Date(cursor);
         weekEnd.setDate(cursor.getDate() + 6);
-        const overlapsMonth = weekEnd >= firstOfMonth && cursor <= new Date(YEAR, MONTH, DAYS_IN_MONTH);
+        const overlapsMonth = weekEnd >= firstOfMonth && cursor <= new Date(year, month, daysInMonth);
         if (!overlapsMonth) break;
         weeks.push({
           weekNumber: getIsoWeekNumber(cursor),
@@ -301,17 +366,6 @@
       }
       return weeks;
     }
-
-    const WEEKS_CONFIG = buildWeeksConfig();
-    const DAY_LABELS = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
-
-    let appState = {
-      filter: 'ALL',
-      baseHours: DEFAULT_BASE_HOURS,
-      overrides: {},
-      weekHourOverrides: {},
-      monthHourOverrides: {}
-    };
 
     function formatHours(val) {
       const num = Math.round((Number(val) || 0) * 100) / 100;
@@ -361,10 +415,30 @@
       return getDefaultCellCode(dayOfMonth, dateObj);
     }
 
-    function loadState() {
+    function loadStateForMonth(year, month) {
+      const currentFilter = appState.filter || 'ALL';
+      appState = {
+        filter: currentFilter,
+        baseHours: DEFAULT_BASE_HOURS,
+        overrides: {},
+        weekHourOverrides: {},
+        monthHourOverrides: {}
+      };
+
       try {
-        const raw = localStorage.getItem(STORAGE_KEY);
+        let raw = localStorage.getItem(getStorageKey(year, month));
+        // Récupération automatique des données enregistrées dans une version précédente du même mois
+        if (!raw) {
+          for (const legacyKey of getLegacyStorageKeys(year, month)) {
+            const legacyRaw = localStorage.getItem(legacyKey);
+            if (legacyRaw) {
+              raw = legacyRaw;
+              break;
+            }
+          }
+        }
         if (!raw) return;
+
         const parsed = JSON.parse(raw);
         if (parsed && typeof parsed === 'object') {
           if (typeof parsed.filter === 'string') appState.filter = parsed.filter;
@@ -382,7 +456,7 @@
 
     function saveState() {
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+        localStorage.setItem(getStorageKey(activeYear, activeMonth), JSON.stringify(appState));
       } catch (err) {
         console.warn('Impossible de sauvegarder dans localStorage :', err);
       }
@@ -438,6 +512,23 @@
       inp.style.height = `${targetHeight}px`;
     }
 
+    function buildWeekDays(weekCfg, year, month) {
+      const days = [];
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(weekCfg.startDate.getFullYear(), weekCfg.startDate.getMonth(), weekCfg.startDate.getDate() + i);
+        const inCurrentMonth = d.getMonth() === month && d.getFullYear() === year;
+        const dayOfMonth = d.getDate();
+        days.push({
+          dateObj: d,
+          inCurrentMonth,
+          dayOfMonth,
+          dayLabel: DAY_LABELS[i],
+          isHoliday: inCurrentMonth && isHolidayDate(d)
+        });
+      }
+      return days;
+    }
+
     function computeWeekEmployeeStats(employee, weekDays, weekIndex) {
       let workedDays = 0;
       let autoHours = 0;
@@ -472,13 +563,14 @@
     }
 
     function computeEmployeeStats(employee) {
+      const daysInMonth = getDaysInMonth(activeYear, activeMonth);
       let workedDays = 0;
       let restDays = 0;
       let ptoDays = 0;
       let holidayDays = 0;
 
-      for (let day = 1; day <= DAYS_IN_MONTH; day++) {
-        const dateObj = new Date(YEAR, MONTH, day);
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateObj = new Date(activeYear, activeMonth, day);
         const rawCode = getCellCode(employee, day, dateObj);
         const code = String(rawCode).trim().toUpperCase();
 
@@ -494,9 +586,10 @@
         }
       }
 
+      const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
       let sumWeeksHours = 0;
-      WEEKS_CONFIG.forEach((weekCfg, wIdx) => {
-        const wDays = buildWeekDays(weekCfg);
+      weeksConfig.forEach((weekCfg, wIdx) => {
+        const wDays = buildWeekDays(weekCfg, activeYear, activeMonth);
         sumWeeksHours += computeWeekEmployeeStats(employee, wDays, wIdx).hours;
       });
 
@@ -513,23 +606,6 @@
       };
     }
 
-    function buildWeekDays(weekCfg) {
-      const days = [];
-      for (let i = 0; i < 7; i++) {
-        const d = new Date(weekCfg.startDate.getFullYear(), weekCfg.startDate.getMonth(), weekCfg.startDate.getDate() + i);
-        const inCurrentMonth = d.getMonth() === MONTH && d.getFullYear() === YEAR;
-        const dayOfMonth = d.getDate();
-        days.push({
-          dateObj: d,
-          inCurrentMonth,
-          dayOfMonth,
-          dayLabel: DAY_LABELS[i],
-          isHoliday: inCurrentMonth && isHolidayDate(d)
-        });
-      }
-      return days;
-    }
-
     function updateFilterButtons() {
       document.querySelectorAll('.filter-btn').forEach((btn) => {
         const val = btn.getAttribute('data-filter');
@@ -540,7 +616,48 @@
       });
     }
 
+    function applyMonthLabels() {
+      const monthLabel = MONTH_NAMES[activeMonth];
+      const daysInMonth = getDaysInMonth(activeYear, activeMonth);
+      const isCurrentSystemMonth = (activeYear === systemYear && activeMonth === systemMonth);
+
+      document.title = `Planning ${monthLabel} ${activeYear} — Pierre, Damien & David`;
+
+      const h1 = document.getElementById('mainHeaderTitle');
+      if (h1) h1.textContent = `Planning ${monthLabel} ${activeYear}`;
+
+      const monthDisplay = document.getElementById('currentMonthDisplay');
+      if (monthDisplay) monthDisplay.textContent = `${monthLabel} ${activeYear}`;
+
+      const todayBtn = document.getElementById('todayMonthBtn');
+      if (todayBtn) {
+        if (isCurrentSystemMonth) {
+          todayBtn.classList.add('hidden');
+        } else {
+          todayBtn.classList.remove('hidden');
+        }
+      }
+
+      const badge = document.getElementById('daysInMonthBadge');
+      if (badge) badge.textContent = `${daysInMonth} jours`;
+
+      const bilanTitle = document.getElementById('bilanMonthTitle');
+      if (bilanTitle) bilanTitle.textContent = `Bilan Mensuel — ${monthLabel} ${activeYear}`;
+
+      const metaTitle = document.querySelector('meta[name="apple-mobile-web-app-title"]');
+      if (metaTitle) metaTitle.setAttribute('content', `Planning ${monthLabel} ${activeYear}`);
+    }
+
+    function switchToMonth(newYear, newMonth) {
+      activeYear = newYear;
+      activeMonth = newMonth;
+      loadStateForMonth(activeYear, activeMonth);
+      renderAll();
+    }
+
     function renderAll() {
+      applyMonthLabels();
+
       const baseInput = document.getElementById('baseHoursInput');
       if (baseInput) baseInput.value = appState.baseHours;
 
@@ -556,12 +673,15 @@
       const container = document.getElementById('weeksContainer');
       container.innerHTML = '';
 
+      const monthLabel = MONTH_NAMES[activeMonth];
+      const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
+
       const visibleEmployees = appState.filter === 'ALL'
         ? EMPLOYEES
         : EMPLOYEES.filter((name) => name === appState.filter);
 
-      WEEKS_CONFIG.forEach((weekCfg, index) => {
-        const weekDays = buildWeekDays(weekCfg);
+      weeksConfig.forEach((weekCfg, index) => {
+        const weekDays = buildWeekDays(weekCfg, activeYear, activeMonth);
         const hasCurrentMonthDay = weekDays.some((d) => d.inCurrentMonth);
         if (!hasCurrentMonthDay) return;
 
@@ -664,7 +784,7 @@
               inp.spellcheck = false;
               inp.setAttribute(
                 'aria-label',
-                `${employee}, ${d.dayLabel} ${d.dayOfMonth} ${MONTH_LABEL.toLowerCase()} ${YEAR}`
+                `${employee}, ${d.dayLabel} ${d.dayOfMonth} ${monthLabel.toLowerCase()} ${activeYear}`
               );
               inp.dataset.employee = employee;
               inp.dataset.day = d.dayOfMonth;
@@ -758,25 +878,50 @@
       tbody.appendChild(totalRow);
     }
 
-    function applyMonthLabels() {
-      document.title = `Planning ${MONTH_LABEL} ${YEAR} — Pierre, Damien & David`;
+    /**
+     * Vérifie en temps réel si la date système a changé de mois (ex: passage à minuit le 1er du mois).
+     */
+    function checkRealTimeMonthChange() {
+      const freshNow = new Date();
+      const freshYear = freshNow.getFullYear();
+      const freshMonth = freshNow.getMonth();
 
-      const h1 = document.querySelector('header h1');
-      if (h1) h1.textContent = `Planning ${MONTH_LABEL} ${YEAR}`;
+      if (freshYear !== systemYear || freshMonth !== systemMonth) {
+        const wasOnCurrentMonth = (activeYear === systemYear && activeMonth === systemMonth);
+        systemYear = freshYear;
+        systemMonth = freshMonth;
 
-      const badge = document.querySelector('section[aria-label="Bilan mensuel par salarié"] span.rounded-full');
-      if (badge) badge.textContent = `${DAYS_IN_MONTH} jours`;
-
-      const bilanTitle = document.querySelector('section[aria-label="Bilan mensuel par salarié"] h2');
-      if (bilanTitle) bilanTitle.textContent = `Bilan Mensuel — ${MONTH_LABEL} ${YEAR}`;
-
-      const metaTitle = document.querySelector('meta[name="apple-mobile-web-app-title"]');
-      if (metaTitle) metaTitle.setAttribute('content', `Planning ${MONTH_LABEL} ${YEAR}`);
+        if (wasOnCurrentMonth) {
+          switchToMonth(systemYear, systemMonth);
+          showToast(`Nouveau mois détecté : ${MONTH_NAMES[systemMonth]} ${systemYear}`);
+        } else {
+          applyMonthLabels();
+        }
+      }
     }
 
     function bindEvents() {
       const weeksContainer = document.getElementById('weeksContainer');
 
+      // Navigation Mois précédent / Mois suivant / Aujourd'hui
+      document.getElementById('prevMonthBtn').addEventListener('click', () => {
+        const prevDate = new Date(activeYear, activeMonth - 1, 1);
+        switchToMonth(prevDate.getFullYear(), prevDate.getMonth());
+      });
+
+      document.getElementById('nextMonthBtn').addEventListener('click', () => {
+        const nextDate = new Date(activeYear, activeMonth + 1, 1);
+        switchToMonth(nextDate.getFullYear(), nextDate.getMonth());
+      });
+
+      document.getElementById('todayMonthBtn').addEventListener('click', () => {
+        const now = new Date();
+        systemYear = now.getFullYear();
+        systemMonth = now.getMonth();
+        switchToMonth(systemYear, systemMonth);
+      });
+
+      // Saisie libre dans les cases journalières
       weeksContainer.addEventListener('input', (e) => {
         const inp = e.target;
         if (!inp.classList || !inp.classList.contains('planning-cell')) return;
@@ -800,14 +945,15 @@
           delete appState.weekHourOverrides[employee][weekIndex];
         }
 
-        const effectiveCode = getCellCode(employee, day, new Date(YEAR, MONTH, day));
+        const effectiveCode = getCellCode(employee, day, new Date(activeYear, activeMonth, day));
         const visual = getCellAppearance(effectiveCode);
         inp.className = `planning-cell rounded-lg border transition outline-none focus:ring-2 focus:ring-slate-500 ${visual.classes}`;
         autoFitCell(inp);
 
-        const weekCfg = WEEKS_CONFIG[weekIndex];
+        const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
+        const weekCfg = weeksConfig[weekIndex];
         if (weekCfg) {
-          const weekDays = buildWeekDays(weekCfg);
+          const weekDays = buildWeekDays(weekCfg, activeYear, activeMonth);
           const stats = computeWeekEmployeeStats(employee, weekDays, weekIndex);
           const tr = inp.closest('tr');
           if (tr) {
@@ -827,6 +973,7 @@
         saveState();
       });
 
+      // Modification directe des heures d'une semaine
       weeksContainer.addEventListener('focusin', (e) => {
         const hrInp = e.target;
         if (!hrInp.classList || !hrInp.classList.contains('hours-edit-input')) return;
@@ -852,8 +999,9 @@
           appState.weekHourOverrides[employee][weekIndex] = Math.max(0, parseFloat(raw));
         }
 
-        const weekCfg = WEEKS_CONFIG[weekIndex];
-        const weekDays = buildWeekDays(weekCfg);
+        const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
+        const weekCfg = weeksConfig[weekIndex];
+        const weekDays = buildWeekDays(weekCfg, activeYear, activeMonth);
         const stats = computeWeekEmployeeStats(employee, weekDays, weekIndex);
         hrInp.value = formatHours(stats.hours);
         hrInp.className = `hours-edit-input text-sm ${stats.isManual ? 'text-blue-700 underline decoration-dotted' : 'text-emerald-700'}`;
@@ -869,6 +1017,7 @@
         }
       });
 
+      // Modification directe des heures mensuelles dans le bilan
       const summaryBody = document.getElementById('summaryTableBody');
       summaryBody.addEventListener('focusin', (e) => {
         const mInp = e.target;
@@ -900,6 +1049,7 @@
         }
       });
 
+      // Modification de la base horaire journalière
       document.getElementById('baseHoursInput').addEventListener('input', (e) => {
         const val = parseFloat(String(e.target.value).replace(',', '.'));
         if (!isNaN(val) && val >= 0 && val <= 24) {
@@ -922,9 +1072,10 @@
       });
 
       document.getElementById('resetBtn').addEventListener('click', () => {
+        const monthLabel = MONTH_NAMES[activeMonth];
         openModal(
-          'Réinitialiser le planning ?',
-          '<p>Toutes vos modifications manuelles (cases, heures personnalisées et base horaire) seront effacées pour revenir au planning par défaut (7 h/jour).</p>'
+          `Réinitialiser ${monthLabel} ${activeYear} ?`,
+          `<p>Les modifications manuelles du mois de <strong>${monthLabel} ${activeYear}</strong> seront effacées. Les autres mois enregistrés ne seront pas touchés.</p>`
         );
         const confirmBtn = document.getElementById('confirmModalBtn');
         const originalText = confirmBtn.textContent;
@@ -940,7 +1091,7 @@
           closeModal();
           confirmBtn.textContent = originalText;
           confirmBtn.removeEventListener('click', onConfirm);
-          showToast('Planning réinitialisé aux valeurs par défaut.');
+          showToast(`Planning de ${monthLabel} ${activeYear} réinitialisé.`);
         };
 
         confirmBtn.addEventListener('click', onConfirm);
@@ -954,11 +1105,18 @@
       document.getElementById('closeToastBtn').addEventListener('click', () => {
         document.getElementById('toastBanner').classList.add('hidden');
       });
+
+      // Surveillance en temps réel du changement de mois (toutes les 30 s et au retour sur l'application)
+      setInterval(checkRealTimeMonthChange, 30000);
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+          checkRealTimeMonthChange();
+        }
+      });
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      applyMonthLabels();
-      loadState();
+      loadStateForMonth(activeYear, activeMonth);
       bindEvents();
       renderAll();
     });

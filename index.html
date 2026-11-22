@@ -76,7 +76,9 @@
         border-radius: 14px !important;
       }
       #openMonthlyBalanceMenuBtn,
+      #openOvertimeMenuBtn,
       #monthlyBalanceDrawer,
+      #overtimeDrawer,
       #infoModal,
       #toastBanner,
       .no-print {
@@ -446,6 +448,7 @@
       }
 
       input.hours-edit-input,
+      input.days-edit-input,
       input.month-hours-input {
         border: none !important;
         background: transparent !important;
@@ -484,17 +487,19 @@
       width: 100%;
     }
 
-    input.hours-edit-input {
+    input.hours-edit-input,
+    input.days-edit-input {
       background: transparent;
       text-align: center;
       font-weight: 700;
       width: 100%;
-      min-width: 62px;
+      min-width: 50px;
       padding: 4px 2px;
       border-radius: 0.5rem;
       outline: none;
     }
-    input.hours-edit-input:focus {
+    input.hours-edit-input:focus,
+    input.days-edit-input:focus {
       background-color: #ffffff;
       box-shadow: 0 0 0 2px var(--brand-green);
     }
@@ -549,38 +554,52 @@
 
   <!-- En-tête principal avec logo Débarras Express 09 -->
   <header class="app-header sticky top-0 z-30 bg-[#2d4727] text-[#fffdf9] shadow-md border-b border-[#46663e] no-print">
-    <div class="max-w-4xl mx-auto px-4 py-2.5 flex items-center justify-between gap-3">
-      <div class="flex items-center gap-3.5 min-w-0">
+    <div class="max-w-4xl mx-auto px-3 sm:px-4 py-2.5 flex items-center justify-between gap-2 sm:gap-3">
+      <div class="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
         <img
           id="brandLogoImg"
           src="./icons/logo-debarras-09.png"
           alt="Logo Débarras Express 09"
-          class="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover bg-[#f6f1e7] border-2 border-[#e5d8be] shrink-0 shadow-md"
+          class="w-11 h-11 sm:w-14 sm:h-14 rounded-full object-cover bg-[#f6f1e7] border-2 border-[#e5d8be] shrink-0 shadow-md"
           onerror="if (!this.dataset.fb1) { this.dataset.fb1 = '1'; this.src = './ic%C3%B4nes/logo-debarras-09.png'; } else if (!this.dataset.fb2) { this.dataset.fb2 = '1'; this.src = './icônes/logo-debarras-09.png'; } else { this.style.display = 'none'; }"
         />
         <div class="min-w-0">
           <div class="flex items-center gap-2">
-            <h1 id="mainHeaderTitle" class="text-base sm:text-xl font-bold tracking-tight truncate">
+            <h1 id="mainHeaderTitle" class="text-sm sm:text-xl font-bold tracking-tight truncate">
               Planning Mensuel
             </h1>
           </div>
-          <p id="headerSubtitle" class="text-xs sm:text-sm text-[#e6decb] truncate">
-            Débarras Express 09 · Pierre, Damien & David — Base 7 h / jour
+          <p id="headerSubtitle" class="text-[11px] sm:text-sm text-[#e6decb] truncate">
+            Débarras Express 09 · Pierre, Damien & David
           </p>
         </div>
       </div>
 
-      <button
-        id="openMonthlyBalanceMenuBtn"
-        type="button"
-        class="shrink-0 px-3 py-2 rounded-xl bg-[#f6f1e7] hover:bg-[#ebe2cf] active:scale-95 text-[#232921] text-xs sm:text-sm font-bold shadow-sm border border-[#d6c9ae] transition flex items-center gap-1.5 cursor-pointer"
-        aria-haspopup="dialog"
-        aria-expanded="false"
-      >
-        <span>☰</span>
-        <span>Bilan heures</span>
-        <span id="headerTotalHoursBadge" class="hidden sm:inline-block px-2 py-0.5 rounded-full bg-[#2d4727] text-[#fffdf9] text-xs font-extrabold">0 h</span>
-      </button>
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <button
+          id="openOvertimeMenuBtn"
+          type="button"
+          class="px-2.5 sm:px-3 py-2 rounded-xl bg-[#f7e6dc] hover:bg-[#efd3c2] active:scale-95 text-[#7a3918] text-xs sm:text-sm font-bold shadow-sm border border-[#e0b89f] transition flex items-center gap-1 cursor-pointer"
+          aria-haspopup="dialog"
+          aria-expanded="false"
+        >
+          <span>⏱️</span>
+          <span>Heures sup.</span>
+          <span id="headerOvertimeBadge" class="hidden md:inline-block px-2 py-0.5 rounded-full bg-[#9a4e28] text-[#fffdf9] text-xs font-extrabold">0 h</span>
+        </button>
+
+        <button
+          id="openMonthlyBalanceMenuBtn"
+          type="button"
+          class="px-2.5 sm:px-3 py-2 rounded-xl bg-[#f6f1e7] hover:bg-[#ebe2cf] active:scale-95 text-[#232921] text-xs sm:text-sm font-bold shadow-sm border border-[#d6c9ae] transition flex items-center gap-1.5 cursor-pointer"
+          aria-haspopup="dialog"
+          aria-expanded="false"
+        >
+          <span>☰</span>
+          <span>Bilan heures</span>
+          <span id="headerTotalHoursBadge" class="hidden sm:inline-block px-2 py-0.5 rounded-full bg-[#2d4727] text-[#fffdf9] text-xs font-extrabold">0 h</span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -592,7 +611,7 @@
           <div>
             <span class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#e4eee0] text-[#2d4727] mb-1">Menu Bilan</span>
             <h2 id="drawerBilanTitle" class="text-lg sm:text-xl font-extrabold text-[#232921]">Bilan Mensuel</h2>
-            <p id="drawerBilanSubtitle" class="text-xs sm:text-sm text-[#5b6358]">Heures effectuées (modifiables)</p>
+            <p id="drawerBilanSubtitle" class="text-xs sm:text-sm text-[#5b6358]">Heures &amp; jours modifiables indépendamment par salarié</p>
           </div>
           <button id="closeMonthlyBalanceBtn" type="button" class="px-3 py-1.5 rounded-xl bg-[#efe8d8] hover:bg-[#e3d7be] text-[#232921] font-bold text-sm cursor-pointer">✕</button>
         </div>
@@ -647,7 +666,7 @@
         </div>
 
         <p class="text-xs text-[#5b6358] text-center leading-relaxed bg-[#fcfaf5] p-3 rounded-xl border border-[#e7decb]">
-          Astuce : cliquez directement sur une valeur dans <strong class="text-[#232921]">Total Heures</strong> pour ajuster manuellement les heures d'un salarié sur le mois. Les totaux <strong class="text-[#2d4727]">Jours / Heures</strong> restent affichés à côté de chaque semaine.
+          Astuce : cliquez directement sur <strong class="text-[#232921]">Jours</strong> ou <strong class="text-[#232921]">Total Heures</strong> (par semaine ou par mois) pour ajuster indépendamment chaque salarié.
         </p>
       </div>
 
@@ -656,6 +675,102 @@
           Imprimer / PDF
         </button>
         <button id="doneMonthlyBalanceBtn" type="button" class="px-4 py-2 rounded-xl bg-[#2d4727] hover:bg-[#22371e] text-[#fffdf9] text-xs sm:text-sm font-bold transition cursor-pointer">
+          Fermer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu dédié aux heures supplémentaires pour les 3 salariés -->
+  <div id="overtimeDrawer" class="hidden fixed inset-0 z-50 bg-[#1a2418]/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 no-print" role="dialog" aria-modal="true" aria-labelledby="drawerOvertimeTitle">
+    <div id="overtimePanel" class="bg-[#fffdf9] w-full max-w-2xl max-h-[92vh] rounded-2xl shadow-2xl border border-[#dfd5c0] flex flex-col justify-between p-4 sm:p-6 overflow-y-auto animate-fade-in">
+      <div class="space-y-4">
+        <div class="flex items-start justify-between gap-2 pb-3 border-b border-[#e7decb]">
+          <div>
+            <span class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#f7e6dc] text-[#9a4e28] mb-1">Menu Heures Supp.</span>
+            <h2 id="drawerOvertimeTitle" class="text-lg sm:text-xl font-extrabold text-[#232921]">Heures Supplémentaires</h2>
+            <p id="drawerOvertimeSubtitle" class="text-xs sm:text-sm text-[#5b6358]">Suivi dédié pour Pierre, Damien &amp; David</p>
+          </div>
+          <button id="closeOvertimeBtn" type="button" class="px-3 py-1.5 rounded-xl bg-[#efe8d8] hover:bg-[#e3d7be] text-[#232921] font-bold text-sm cursor-pointer">✕</button>
+        </div>
+
+        <div class="flex items-center justify-between gap-3 flex-wrap bg-[#fcfaf5] p-3 rounded-xl border border-[#e7decb]">
+          <div class="flex items-center gap-2 flex-wrap">
+            <label for="overtimeThresholdInput" class="text-xs sm:text-sm font-bold text-[#232921]">
+              Seuil mensuel de référence :
+            </label>
+            <input
+              id="overtimeThresholdInput"
+              type="number"
+              step="0.5"
+              min="0"
+              max="400"
+              value="151.67"
+              class="w-24 px-2.5 py-1 rounded-lg border border-[#cfc2a8] bg-[#fffdf9] text-center text-xs sm:text-sm font-extrabold text-[#232921] focus:ring-2 focus:ring-[#9a4e28] outline-none"
+            />
+            <span class="text-xs sm:text-sm font-semibold text-[#5b6358]">h / mois</span>
+          </div>
+
+          <button
+            id="resetManualOvertimeBtn"
+            type="button"
+            class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#efe8d8] hover:bg-[#e3d7be] text-[#232921] border border-[#d6c9ae] transition cursor-pointer"
+            title="Recalculer automatiquement depuis les heures effectuées"
+          >
+            Auto-calcul
+          </button>
+        </div>
+
+        <div class="flex items-center justify-between gap-2 flex-wrap">
+          <button
+            id="copyOvertimeBtn"
+            type="button"
+            class="px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-semibold bg-[#efe8d8] hover:bg-[#e3d7be] text-[#232921] border border-[#d6c9ae] transition cursor-pointer"
+          >
+            Copier heures sup.
+          </button>
+
+          <label for="overtimeEmployeeSelect" class="sr-only">Choisir un salarié pour les heures supplémentaires</label>
+          <select
+            id="overtimeEmployeeSelect"
+            class="px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold bg-[#fffdf9] hover:bg-[#fcfaf5] text-[#232921] border border-[#cfc2a8] focus:ring-2 focus:ring-[#9a4e28] outline-none cursor-pointer text-center"
+          >
+            <option value="ALL">Tous les salariés (3)</option>
+            <option value="Pierre">Pierre</option>
+            <option value="Damien">Damien</option>
+            <option value="David">David</option>
+          </select>
+
+          <span id="totalOvertimePill" class="px-3 py-1 rounded-full text-xs sm:text-sm font-extrabold bg-[#f7e6dc] text-[#9a4e28]">
+            Total sup. : 0 h
+          </span>
+        </div>
+
+        <div class="overflow-x-auto rounded-xl border border-[#dfd5c0]">
+          <table class="w-full text-center border-collapse">
+            <thead>
+              <tr class="bg-[#f3ece0] border-b border-[#dfd5c0] text-[11px] sm:text-xs font-semibold text-[#4c5449] uppercase tracking-wide">
+                <th class="py-2.5 px-2.5 text-center">Salarié</th>
+                <th class="py-2.5 px-1.5 text-center whitespace-nowrap">Heures faites</th>
+                <th class="py-2.5 px-1.5 text-center whitespace-nowrap">Seuil</th>
+                <th class="py-2.5 px-2.5 text-center whitespace-nowrap">Heures Sup.</th>
+              </tr>
+            </thead>
+            <tbody id="overtimeTableBody" class="divide-y divide-[#e7decb] text-sm">
+            </tbody>
+          </table>
+        </div>
+
+        <p class="text-xs text-[#5b6358] text-center leading-relaxed bg-[#fcfaf5] p-3 rounded-xl border border-[#e7decb]">
+          Les <strong class="text-[#9a4e28]">Heures Sup.</strong> se calculent automatiquement au-delà du seuil mensuel (ex. <strong class="text-[#232921]">151,67 h</strong> pour 35 h/sem), et vous pouvez cliquer sur une valeur dans <strong class="text-[#9a4e28]">Heures Sup.</strong> pour la saisir ou la corriger à la main.
+        </p>
+      </div>
+
+      <div class="pt-4 mt-4 border-t border-[#e7decb] flex items-center justify-between gap-2">
+        <button id="overtimePrintBtn" type="button" class="px-3.5 py-2 rounded-xl bg-[#e6efe3] hover:bg-[#d6e4d1] text-[#2d4727] text-xs sm:text-sm font-bold border border-[#b9cfb2] transition cursor-pointer">
+          Imprimer / PDF
+        </button>
+        <button id="doneOvertimeBtn" type="button" class="px-4 py-2 rounded-xl bg-[#2d4727] hover:bg-[#22371e] text-[#fffdf9] text-xs sm:text-sm font-bold transition cursor-pointer">
           Fermer
         </button>
       </div>
@@ -709,7 +824,7 @@
       </div>
     </section>
 
-    <!-- Barre d'outils : filtre salarié, base horaire modifiable, impression, réinitialisation -->
+    <!-- Barre d'outils : filtre salarié, bases horaires indépendantes par salarié, impression, réinitialisation -->
     <section class="bg-[#fffdf9] rounded-2xl p-4 shadow-sm border border-[#dfd5c0] space-y-3.5 no-print">
       <div class="flex flex-wrap items-center justify-between gap-2.5">
         <div class="flex items-center gap-1.5 flex-wrap" role="group" aria-label="Filtrer par salarié">
@@ -762,26 +877,76 @@
         </div>
       </div>
 
-      <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-[#ece3d1]">
-        <label for="baseHoursInput" class="text-sm font-semibold text-[#232921] flex items-center gap-2">
-          <span>Base par défaut (jour travaillé) :</span>
-        </label>
-        <div class="flex items-center gap-1.5">
-          <input
-            id="baseHoursInput"
-            type="number"
-            step="0.25"
-            min="0"
-            max="24"
-            value="7"
-            class="w-20 px-2.5 py-1.5 rounded-xl border border-[#cfc2a8] bg-[#fffdf9] text-center text-sm font-bold text-[#232921] focus:ring-2 focus:ring-[#2d4727] focus:border-[#2d4727] outline-none"
-          />
-          <span class="text-sm font-semibold text-[#5b6358]">h / jour</span>
+      <div class="pt-2.5 border-t border-[#ece3d1] space-y-2">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <span class="text-xs sm:text-sm font-bold text-[#232921]">
+            Heures / jour par salarié (indépendant) :
+          </span>
+          <button
+            id="applyGlobalBaseToAllBtn"
+            type="button"
+            class="px-2.5 py-1 rounded-lg bg-[#efe8d8] hover:bg-[#e3d7be] text-[#232921] text-xs font-bold border border-[#d6c9ae] transition cursor-pointer"
+          >
+            Aligner les 3 sur la même base
+          </button>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2">
+          <div class="flex items-center justify-between gap-1.5 bg-[#fcfaf5] border border-[#dfd5c0] rounded-xl px-2.5 py-1.5">
+            <label for="baseHoursPierre" class="text-xs sm:text-sm font-bold text-[#232921] truncate">Pierre</label>
+            <div class="flex items-center gap-1">
+              <input
+                id="baseHoursPierre"
+                data-emp-base="Pierre"
+                type="number"
+                step="0.25"
+                min="0"
+                max="24"
+                value="7"
+                class="w-14 sm:w-16 px-1.5 py-1 rounded-lg border border-[#cfc2a8] bg-[#fffdf9] text-center text-xs sm:text-sm font-extrabold text-[#2d4727] focus:ring-2 focus:ring-[#2d4727] outline-none"
+              />
+              <span class="text-xs font-semibold text-[#5b6358]">h</span>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between gap-1.5 bg-[#fcfaf5] border border-[#dfd5c0] rounded-xl px-2.5 py-1.5">
+            <label for="baseHoursDamien" class="text-xs sm:text-sm font-bold text-[#232921] truncate">Damien</label>
+            <div class="flex items-center gap-1">
+              <input
+                id="baseHoursDamien"
+                data-emp-base="Damien"
+                type="number"
+                step="0.25"
+                min="0"
+                max="24"
+                value="7"
+                class="w-14 sm:w-16 px-1.5 py-1 rounded-lg border border-[#cfc2a8] bg-[#fffdf9] text-center text-xs sm:text-sm font-extrabold text-[#2d4727] focus:ring-2 focus:ring-[#2d4727] outline-none"
+              />
+              <span class="text-xs font-semibold text-[#5b6358]">h</span>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between gap-1.5 bg-[#fcfaf5] border border-[#dfd5c0] rounded-xl px-2.5 py-1.5">
+            <label for="baseHoursDavid" class="text-xs sm:text-sm font-bold text-[#232921] truncate">David</label>
+            <div class="flex items-center gap-1">
+              <input
+                id="baseHoursDavid"
+                data-emp-base="David"
+                type="number"
+                step="0.25"
+                min="0"
+                max="24"
+                value="7"
+                class="w-14 sm:w-16 px-1.5 py-1 rounded-lg border border-[#cfc2a8] bg-[#fffdf9] text-center text-xs sm:text-sm font-extrabold text-[#2d4727] focus:ring-2 focus:ring-[#2d4727] outline-none"
+              />
+              <span class="text-xs font-semibold text-[#5b6358]">h</span>
+            </div>
+          </div>
         </div>
       </div>
 
       <p class="text-xs sm:text-sm text-[#5b6358] leading-relaxed">
-        Touchez une case pour écrire librement : saisissez un nombre d'heures (<strong class="text-[#232921]">8</strong>, <strong class="text-[#232921]">8,5 h</strong>, <strong class="text-[#232921]">8h-16h</strong>), <strong class="text-[#232921]">R</strong> (repos) ou <strong class="text-[#9a4e28]">CP</strong> (congés). Toutes les cases de la semaine (débuts de semaine, vendredis et changements de mois) restent actives et modifiables.
+        Touchez une case pour écrire librement (<strong class="text-[#232921]">8</strong>, <strong class="text-[#232921]">8,5 h</strong>, <strong class="text-[#232921]">8h-16h</strong>, <strong class="text-[#232921]">R</strong>, <strong class="text-[#9a4e28]">CP</strong>), et modifiez les <strong class="text-[#232921]">heures/jour</strong>, <strong class="text-[#232921]">Jours</strong> ou <strong class="text-[#2d4727]">Heures</strong> séparément pour chaque salarié.
       </p>
     </section>
 
@@ -839,7 +1004,7 @@
 
       <div id="printBilanFooter" class="hidden">
         <span>Document généré depuis Planning Mensuel — Débarras Express 09</span>
-        <span id="printBilanBaseInfo">Base : 7 h / jour</span>
+        <span id="printBilanBaseInfo">Bases individuelles actives</span>
       </div>
     </section>
 
@@ -864,6 +1029,7 @@
 
   <script>
     const DEFAULT_BASE_HOURS = 7;
+    const DEFAULT_OVERTIME_THRESHOLD = 151.67;
     const EMPLOYEES = ['Pierre', 'Damien', 'David'];
 
     const MONTH_NAMES = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
@@ -883,23 +1049,47 @@
     let afterPrintCleanupTimer = null;
     let isPrintSessionActive = false;
 
+    function createDefaultEmployeeBases(baseVal = DEFAULT_BASE_HOURS) {
+      return {
+        Pierre: baseVal,
+        Damien: baseVal,
+        David: baseVal
+      };
+    }
+
     let appState = {
       filter: 'ALL',
       baseHours: DEFAULT_BASE_HOURS,
+      employeeBaseHours: createDefaultEmployeeBases(DEFAULT_BASE_HOURS),
+      overtimeThreshold: DEFAULT_OVERTIME_THRESHOLD,
       overrides: {},
       weekHourOverrides: {},
-      monthHourOverrides: {}
+      monthHourOverrides: {},
+      weekDayOverrides: {},
+      monthDayOverrides: {},
+      overtimeOverrides: {}
     };
 
     const holidaysCache = new Map();
 
+    function getEmployeeBaseHours(employee) {
+      const empVal = appState.employeeBaseHours?.[employee];
+      if (typeof empVal === 'number' && !isNaN(empVal) && empVal >= 0) {
+        return empVal;
+      }
+      return typeof appState.baseHours === 'number' && !isNaN(appState.baseHours)
+        ? appState.baseHours
+        : DEFAULT_BASE_HOURS;
+    }
+
     function getStorageKey(year, month) {
-      return `planning_${year}_${String(month + 1).padStart(2, '0')}_libre_v4`;
+      return `planning_${year}_${String(month + 1).padStart(2, '0')}_libre_v5`;
     }
 
     function getLegacyStorageKeys(year, month) {
       const mStr = String(month + 1).padStart(2, '0');
       return [
+        `planning_${year}_${mStr}_libre_v4`,
         `planning_${year}_${mStr}_libre_v3`,
         `planning_${year}_${mStr}_libre_v2`,
         `planning_${year}_${mStr}_libre_v1`
@@ -911,6 +1101,11 @@
       const m = String(dateObj.getMonth() + 1).padStart(2, '0');
       const d = String(dateObj.getDate()).padStart(2, '0');
       return `${y}-${m}-${d}`;
+    }
+
+    function formatDays(val) {
+      const num = Math.round((Number(val) || 0) * 100) / 100;
+      return `${String(num).replace('.', ',')} j`;
     }
 
     function getDaysInMonth(year, month) {
@@ -1058,9 +1253,14 @@
       appState = {
         filter: currentFilter,
         baseHours: DEFAULT_BASE_HOURS,
+        employeeBaseHours: createDefaultEmployeeBases(DEFAULT_BASE_HOURS),
+        overtimeThreshold: DEFAULT_OVERTIME_THRESHOLD,
         overrides: {},
         weekHourOverrides: {},
-        monthHourOverrides: {}
+        monthHourOverrides: {},
+        weekDayOverrides: {},
+        monthDayOverrides: {},
+        overtimeOverrides: {}
       };
 
       try {
@@ -1082,9 +1282,24 @@
           if (typeof parsed.baseHours === 'number' && !isNaN(parsed.baseHours)) {
             appState.baseHours = parsed.baseHours;
           }
+          appState.employeeBaseHours = createDefaultEmployeeBases(appState.baseHours);
+          if (parsed.employeeBaseHours && typeof parsed.employeeBaseHours === 'object') {
+            EMPLOYEES.forEach((emp) => {
+              const v = parsed.employeeBaseHours[emp];
+              if (typeof v === 'number' && !isNaN(v) && v >= 0) {
+                appState.employeeBaseHours[emp] = v;
+              }
+            });
+          }
+          if (typeof parsed.overtimeThreshold === 'number' && !isNaN(parsed.overtimeThreshold) && parsed.overtimeThreshold >= 0) {
+            appState.overtimeThreshold = parsed.overtimeThreshold;
+          }
           if (parsed.overrides && typeof parsed.overrides === 'object') appState.overrides = parsed.overrides;
           if (parsed.weekHourOverrides && typeof parsed.weekHourOverrides === 'object') appState.weekHourOverrides = parsed.weekHourOverrides;
           if (parsed.monthHourOverrides && typeof parsed.monthHourOverrides === 'object') appState.monthHourOverrides = parsed.monthHourOverrides;
+          if (parsed.weekDayOverrides && typeof parsed.weekDayOverrides === 'object') appState.weekDayOverrides = parsed.weekDayOverrides;
+          if (parsed.monthDayOverrides && typeof parsed.monthDayOverrides === 'object') appState.monthDayOverrides = parsed.monthDayOverrides;
+          if (parsed.overtimeOverrides && typeof parsed.overtimeOverrides === 'object') appState.overtimeOverrides = parsed.overtimeOverrides;
         }
       } catch (err) {
         console.warn('Impossible de charger les préférences locales :', err);
@@ -1170,7 +1385,8 @@
     }
 
     function computeWeekEmployeeStats(employee, weekDays, weekIndex) {
-      let workedDays = 0;
+      const empBase = getEmployeeBaseHours(employee);
+      let autoWorkedDays = 0;
       let autoHours = 0;
 
       for (const dayInfo of weekDays) {
@@ -1182,27 +1398,32 @@
         }
 
         const dayHours = code === 'WORK'
-          ? appState.baseHours
-          : parseHoursFromText(rawCode, appState.baseHours);
+          ? empBase
+          : parseHoursFromText(rawCode, empBase);
 
         if (dayHours > 0) {
-          workedDays += 1;
+          autoWorkedDays += 1;
           autoHours += dayHours;
         }
       }
 
       const manualWeekHours = appState.weekHourOverrides?.[employee]?.[weekIndex];
-      const hasManualOverride = typeof manualWeekHours === 'number' && !isNaN(manualWeekHours);
+      const hasManualHours = typeof manualWeekHours === 'number' && !isNaN(manualWeekHours);
+
+      const manualWeekDays = appState.weekDayOverrides?.[employee]?.[weekIndex];
+      const hasManualDays = typeof manualWeekDays === 'number' && !isNaN(manualWeekDays);
 
       return {
-        workedDays,
-        hours: hasManualOverride ? manualWeekHours : autoHours,
-        isManual: hasManualOverride
+        workedDays: hasManualDays ? manualWeekDays : autoWorkedDays,
+        hours: hasManualHours ? manualWeekHours : autoHours,
+        isManual: hasManualHours,
+        isManualDays: hasManualDays
       };
     }
 
     function computeEmployeeStats(employee) {
       const daysInMonth = getDaysInMonth(activeYear, activeMonth);
+      const empBase = getEmployeeBaseHours(employee);
       let workedDays = 0;
       let restDays = 0;
       let ptoDays = 0;
@@ -1221,7 +1442,7 @@
         } else if (code === 'HOLIDAY' || code === 'F' || code === 'FERIE') {
           holidayDays += 1;
         } else {
-          const h = code === 'WORK' ? appState.baseHours : parseHoursFromText(rawCode, appState.baseHours);
+          const h = code === 'WORK' ? empBase : parseHoursFromText(rawCode, empBase);
           if (h > 0) {
             workedDays += 1;
             autoMonthHours += h;
@@ -1232,13 +1453,28 @@
       const manualMonthHours = appState.monthHourOverrides?.[employee];
       const hasManualMonth = typeof manualMonthHours === 'number' && !isNaN(manualMonthHours);
 
+      const manualMonthDays = appState.monthDayOverrides?.[employee];
+      const hasManualDays = typeof manualMonthDays === 'number' && !isNaN(manualMonthDays);
+
+      const totalHours = hasManualMonth ? manualMonthHours : autoMonthHours;
+      const threshold = typeof appState.overtimeThreshold === 'number' && !isNaN(appState.overtimeThreshold)
+        ? appState.overtimeThreshold
+        : DEFAULT_OVERTIME_THRESHOLD;
+      const autoOvertime = Math.max(0, Math.round((totalHours - threshold) * 100) / 100);
+      const manualOvertime = appState.overtimeOverrides?.[employee];
+      const hasManualOvertime = typeof manualOvertime === 'number' && !isNaN(manualOvertime);
+
       return {
-        workedDays,
+        workedDays: hasManualDays ? manualMonthDays : workedDays,
         restDays,
         ptoDays,
         holidayDays,
-        totalHours: hasManualMonth ? manualMonthHours : autoMonthHours,
-        isManual: hasManualMonth
+        totalHours,
+        threshold,
+        overtimeHours: hasManualOvertime ? manualOvertime : autoOvertime,
+        isManual: hasManualMonth,
+        isManualDays: hasManualDays,
+        isManualOvertime: hasManualOvertime
       };
     }
 
@@ -1250,6 +1486,15 @@
           ? 'filter-btn px-3.5 py-2 rounded-xl text-sm font-semibold bg-[#2d4727] text-[#fffdf9] transition'
           : 'filter-btn px-3.5 py-2 rounded-xl text-sm font-semibold bg-[#efe8d8] text-[#232921] hover:bg-[#e3d7be] transition';
       });
+    }
+
+    function syncEmployeeBaseInputs() {
+      EMPLOYEES.forEach((emp) => {
+        const inp = document.querySelector(`input[data-emp-base="${emp}"]`);
+        if (inp) inp.value = getEmployeeBaseHours(emp);
+      });
+      const thrInp = document.getElementById('overtimeThresholdInput');
+      if (thrInp) thrInp.value = appState.overtimeThreshold;
     }
 
     function applyMonthLabels() {
@@ -1281,6 +1526,10 @@
 
       const bilanTitle = document.getElementById('drawerBilanTitle');
       if (bilanTitle) bilanTitle.textContent = `Bilan Mensuel — ${monthLabel} ${activeYear}`;
+
+      const overtimeTitle = document.getElementById('drawerOvertimeTitle');
+      if (overtimeTitle) overtimeTitle.textContent = `Heures Supplémentaires — ${monthLabel} ${activeYear}`;
+
       const printBilanTitle = document.getElementById('printBilanTitle');
       if (printBilanTitle) {
         printBilanTitle.textContent = isSingleSelected
@@ -1289,7 +1538,7 @@
       }
       const printBilanBaseInfo = document.getElementById('printBilanBaseInfo');
       if (printBilanBaseInfo) {
-        printBilanBaseInfo.textContent = `Base : ${formatHours(appState.baseHours)} / jour`;
+        printBilanBaseInfo.textContent = EMPLOYEES.map((e) => `${e}: ${formatHours(getEmployeeBaseHours(e))}`).join(' · ');
       }
 
       const metaTitle = document.querySelector('meta[name="apple-mobile-web-app-title"]');
@@ -1347,16 +1596,17 @@
 
     function renderAll() {
       applyMonthLabels();
-
-      const baseInput = document.getElementById('baseHoursInput');
-      if (baseInput) baseInput.value = appState.baseHours;
+      syncEmployeeBaseInputs();
 
       const sub = document.getElementById('headerSubtitle');
-      if (sub) sub.textContent = `Débarras Express 09 · Pierre, Damien & David — Base ${formatHours(appState.baseHours)} / jour`;
+      if (sub) {
+        sub.textContent = `Débarras Express 09 · Pierre (${formatHours(getEmployeeBaseHours('Pierre'))}), Damien (${formatHours(getEmployeeBaseHours('Damien'))}), David (${formatHours(getEmployeeBaseHours('David'))})`;
+      }
 
       updateFilterButtons();
       renderWeeks();
       renderSummaryTable();
+      renderOvertimeTable();
     }
 
     function renderWeeks() {
@@ -1438,7 +1688,7 @@
         rightInfo.className = isFocusedWeek ? 'text-xs text-[#5b6358] print-hide-hint' : 'text-xs text-[#5b6358]';
         rightInfo.textContent = isFocusedWeek
           ? 'Bouton « Précédent » du téléphone ou « Vue d’ensemble » pour revenir'
-          : `Base ${formatHours(appState.baseHours)} / jour`;
+          : 'Jours & heures indépendants';
 
         const printWeekBtn = document.createElement('button');
         printWeekBtn.type = 'button';
@@ -1493,12 +1743,12 @@
         });
 
         const thDays = document.createElement('th');
-        thDays.className = 'py-2.5 px-2 border-r border-[#dfd5c0] text-xs text-[#232921] min-w-[54px]';
+        thDays.className = 'py-2.5 px-1.5 border-r border-[#dfd5c0] text-xs text-[#232921] min-w-[56px]';
         thDays.textContent = 'Jours';
         headRow.appendChild(thDays);
 
         const thHours = document.createElement('th');
-        thHours.className = 'py-2.5 px-2 text-xs text-[#232921] min-w-[70px]';
+        thHours.className = 'py-2.5 px-1.5 text-xs text-[#232921] min-w-[70px]';
         thHours.textContent = 'Heures';
         headRow.appendChild(thHours);
 
@@ -1514,7 +1764,7 @@
 
           const tdName = document.createElement('td');
           tdName.className = 'py-2.5 px-3 text-left text-sm sm:text-base font-bold text-[#232921] sticky left-0 bg-[#fffdf9] z-10 border-r border-[#dfd5c0]';
-          tdName.textContent = employee;
+          tdName.innerHTML = `<div>${employee}</div><div class="text-[11px] font-semibold text-[#5b6358]">Base ${formatHours(getEmployeeBaseHours(employee))}</div>`;
           tr.appendChild(tdName);
 
           weekDays.forEach((d) => {
@@ -1549,18 +1799,26 @@
           const weekStats = computeWeekEmployeeStats(employee, weekDays, index);
 
           const tdDays = document.createElement('td');
-          tdDays.className = 'py-2 px-2 border-r border-[#dfd5c0] text-sm font-bold text-[#232921] whitespace-nowrap';
-          tdDays.textContent = `${weekStats.workedDays} j`;
+          tdDays.className = 'py-1.5 px-1 border-r border-[#dfd5c0] text-sm font-bold text-[#232921] whitespace-nowrap';
+          const weekDayInput = document.createElement('input');
+          weekDayInput.type = 'text';
+          weekDayInput.inputMode = 'decimal';
+          weekDayInput.className = `days-edit-input text-sm ${weekStats.isManualDays ? 'text-[#9a4e28] underline decoration-dotted' : 'text-[#232921]'}`;
+          weekDayInput.value = formatDays(weekStats.workedDays);
+          weekDayInput.title = `Cliquez pour modifier indépendamment le nombre de jours de ${employee} cette semaine`;
+          weekDayInput.dataset.employee = employee;
+          weekDayInput.dataset.weekIndex = index;
+          tdDays.appendChild(weekDayInput);
           tr.appendChild(tdDays);
 
           const tdHours = document.createElement('td');
-          tdHours.className = 'py-1.5 px-1.5 text-sm font-bold text-[#2d4727] whitespace-nowrap';
+          tdHours.className = 'py-1.5 px-1 text-sm font-bold text-[#2d4727] whitespace-nowrap';
           const weekHourInput = document.createElement('input');
           weekHourInput.type = 'text';
           weekHourInput.inputMode = 'decimal';
           weekHourInput.className = `hours-edit-input text-sm ${weekStats.isManual ? 'text-[#9a4e28] underline decoration-dotted' : 'text-[#2d4727]'}`;
           weekHourInput.value = formatHours(weekStats.hours);
-          weekHourInput.title = 'Cliquez pour modifier manuellement le total d’heures de la semaine';
+          weekHourInput.title = `Cliquez pour modifier indépendamment le total d’heures de ${employee} cette semaine`;
           weekHourInput.dataset.employee = employee;
           weekHourInput.dataset.weekIndex = index;
           tdHours.appendChild(weekHourInput);
@@ -1583,7 +1841,7 @@
           return `
             <div class="print-week-summary-line">
               <strong>${emp}</strong>
-              <span>${st.workedDays} j · <strong>${formatHours(st.hours)}</strong></span>
+              <span>${formatDays(st.workedDays)} · <strong>${formatHours(st.hours)}</strong></span>
             </div>
           `;
         }).join('');
@@ -1594,7 +1852,7 @@
             <div class="print-legend-list">
               <div class="print-legend-item">
                 <span class="print-swatch" style="background-color:#e6f0e3;border-color:#b7ccb1;"></span>
-                <span>Jour travaillé (${formatHours(appState.baseHours)})</span>
+                <span>Jour travaillé (base individuelle)</span>
               </div>
               <div class="print-legend-item">
                 <span class="print-swatch" style="background-color:#efe8d8;border-color:#d3c7ae;"></span>
@@ -1760,22 +2018,27 @@
             nameSpan.textContent = employee;
 
             const rightStats = document.createElement('div');
-            rightStats.className = 'flex items-center gap-3';
+            rightStats.className = 'flex items-center gap-2';
 
-            const daysSpan = document.createElement('span');
-            daysSpan.className = 'text-sm font-bold text-[#232921]';
-            daysSpan.textContent = `${weekStats.workedDays} j`;
+            const dyInp = document.createElement('input');
+            dyInp.type = 'text';
+            dyInp.inputMode = 'decimal';
+            dyInp.className = `days-edit-input text-sm !w-16 border border-[#dfd5c0] bg-[#fcfaf5] ${weekStats.isManualDays ? 'text-[#9a4e28] underline decoration-dotted' : 'text-[#232921]'}`;
+            dyInp.value = formatDays(weekStats.workedDays);
+            dyInp.title = 'Cliquez pour modifier indépendamment le nombre de jours de la semaine';
+            dyInp.dataset.employee = employee;
+            dyInp.dataset.weekIndex = index;
 
             const hrInp = document.createElement('input');
             hrInp.type = 'text';
             hrInp.inputMode = 'decimal';
             hrInp.className = `hours-edit-input text-sm !w-20 border border-[#dfd5c0] bg-[#fcfaf5] ${weekStats.isManual ? 'text-[#9a4e28] underline decoration-dotted' : 'text-[#2d4727]'}`;
             hrInp.value = formatHours(weekStats.hours);
-            hrInp.title = 'Cliquez pour modifier manuellement le total d’heures de la semaine';
+            hrInp.title = 'Cliquez pour modifier indépendamment le total d’heures de la semaine';
             hrInp.dataset.employee = employee;
             hrInp.dataset.weekIndex = index;
 
-            rightStats.appendChild(daysSpan);
+            rightStats.appendChild(dyInp);
             rightStats.appendChild(hrInp);
             row.appendChild(nameSpan);
             row.appendChild(rightStats);
@@ -1820,7 +2083,7 @@
           const st = computeEmployeeStats(selectedEmp);
           document.getElementById('spotlightTitle').textContent = `Heures mensuelles — ${selectedEmp}`;
           document.getElementById('spotlightHours').textContent = formatHours(st.totalHours);
-          document.getElementById('spotlightMeta').textContent = `${st.workedDays} j travaillés · ${st.restDays} repos · ${st.ptoDays} congés`;
+          document.getElementById('spotlightMeta').textContent = `${formatDays(st.workedDays)} travaillés · ${st.restDays} repos · ${st.ptoDays} congés · ${formatHours(st.overtimeHours)} sup.`;
           spotlight.classList.remove('hidden');
         } else {
           spotlight.classList.add('hidden');
@@ -1836,7 +2099,16 @@
 
         tr.innerHTML = `
           <td class="py-3 px-2.5 font-bold text-[#232921] text-sm text-center">${employee}</td>
-          <td class="py-3 px-1.5 text-center font-semibold text-[#2d4727] text-sm whitespace-nowrap">${stats.workedDays} j</td>
+          <td class="py-2 px-1.5 text-center whitespace-nowrap">
+            <input
+              type="text"
+              inputmode="decimal"
+              data-month-days-employee="${employee}"
+              value="${formatDays(stats.workedDays)}"
+              title="Cliquez pour modifier indépendamment le nombre de jours sur le mois"
+              class="month-hours-input text-center font-semibold text-sm w-16 px-1 py-1 rounded-lg bg-transparent focus:bg-white focus:ring-2 focus:ring-[#2d4727] outline-none ${stats.isManualDays ? 'text-[#9a4e28] underline decoration-dotted' : 'text-[#2d4727]'}"
+            />
+          </td>
           <td class="py-3 px-1.5 text-center text-[#4c5449] text-sm whitespace-nowrap">${stats.restDays}</td>
           <td class="py-3 px-1.5 text-center text-[#9a4e28] text-sm whitespace-nowrap">${stats.ptoDays}</td>
           <td class="py-2 px-2.5 text-center whitespace-nowrap">
@@ -1845,7 +2117,7 @@
               inputmode="decimal"
               data-month-employee="${employee}"
               value="${formatHours(stats.totalHours)}"
-              title="Cliquez pour modifier manuellement le total mensuel"
+              title="Cliquez pour modifier indépendamment le total mensuel d'heures"
               class="month-hours-input text-center font-extrabold text-sm w-20 sm:w-24 px-1.5 py-1 rounded-lg bg-transparent focus:bg-white focus:ring-2 focus:ring-[#2d4727] outline-none ${stats.isManual ? 'text-[#9a4e28] underline decoration-dotted' : 'text-[#232921]'}"
             />
           </td>
@@ -1862,7 +2134,7 @@
       totalRow.className = 'bg-[#2d4727] text-[#fffdf9] font-bold text-sm';
       totalRow.innerHTML = `
         <td class="py-3 px-2.5 text-center">${isSingleSelected ? `Total ${selectedEmp}` : 'Total équipe'}</td>
-        <td class="py-3 px-1.5 text-center text-[#d7ead1] whitespace-nowrap">${shownWorked} j</td>
+        <td class="py-3 px-1.5 text-center text-[#d7ead1] whitespace-nowrap">${formatDays(shownWorked)}</td>
         <td class="py-3 px-1.5 text-center text-[#ece4d3] whitespace-nowrap">${shownRest}</td>
         <td class="py-3 px-1.5 text-center text-[#f7d0b8] whitespace-nowrap">${shownPto}</td>
         <td id="teamTotalHoursCell" class="py-3 px-2.5 text-center text-[#d7ead1] whitespace-nowrap">${formatHours(shownHours)}</td>
@@ -1889,14 +2161,14 @@
       if (printKpiHours) printKpiHours.textContent = formatHours(shownHours);
 
       const printKpiDays = document.getElementById('printKpiDays');
-      if (printKpiDays) printKpiDays.textContent = `${shownWorked} j`;
+      if (printKpiDays) printKpiDays.textContent = formatDays(shownWorked);
 
       const printKpiRestPto = document.getElementById('printKpiRestPto');
       if (printKpiRestPto) printKpiRestPto.textContent = `${shownRest} R · ${shownPto} CP`;
 
       const printBilanBaseInfo = document.getElementById('printBilanBaseInfo');
       if (printBilanBaseInfo) {
-        printBilanBaseInfo.textContent = `Base : ${formatHours(appState.baseHours)} / jour`;
+        printBilanBaseInfo.textContent = EMPLOYEES.map((e) => `${e}: ${formatHours(getEmployeeBaseHours(e))}`).join(' · ');
       }
 
       const printTbody = document.getElementById('printSummaryTableBody');
@@ -1908,7 +2180,7 @@
           const ptr = document.createElement('tr');
           ptr.innerHTML = `
             <td class="py-1.5 px-2 font-bold text-[#232921]">${employee}</td>
-            <td class="py-1.5 px-1.5 text-center font-semibold text-[#2d4727]">${stats.workedDays} j</td>
+            <td class="py-1.5 px-1.5 text-center font-semibold text-[#2d4727]">${formatDays(stats.workedDays)}</td>
             <td class="py-1.5 px-1.5 text-center text-[#4c5449]">${stats.restDays}</td>
             <td class="py-1.5 px-1.5 text-center text-[#9a4e28]">${stats.ptoDays}</td>
             <td class="py-1.5 px-2 text-right font-bold text-[#232921]">${formatHours(stats.totalHours)}</td>
@@ -1920,12 +2192,79 @@
         ptot.className = 'bg-[#2d4727] text-[#fffdf9] font-bold';
         ptot.innerHTML = `
           <td class="py-1.5 px-2">${isSingleSelected ? `Total ${selectedEmp}` : 'Total équipe'}</td>
-          <td class="py-1.5 px-1.5 text-center">${shownWorked} j</td>
+          <td class="py-1.5 px-1.5 text-center">${formatDays(shownWorked)}</td>
           <td class="py-1.5 px-1.5 text-center">${shownRest}</td>
           <td class="py-1.5 px-1.5 text-center">${shownPto}</td>
           <td class="py-1.5 px-2 text-right">${formatHours(shownHours)}</td>
         `;
         printTbody.appendChild(ptot);
+      }
+    }
+
+    function renderOvertimeTable() {
+      const tbody = document.getElementById('overtimeTableBody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      const selectEl = document.getElementById('overtimeEmployeeSelect');
+      const selectedEmp = selectEl ? selectEl.value : 'ALL';
+      const isSingleSelected = Boolean(selectedEmp && selectedEmp !== 'ALL');
+
+      const listToShow = isSingleSelected
+        ? EMPLOYEES.filter((e) => e === selectedEmp)
+        : EMPLOYEES;
+
+      let allTeamOvertime = 0;
+      EMPLOYEES.forEach((emp) => {
+        allTeamOvertime += computeEmployeeStats(emp).overtimeHours;
+      });
+
+      listToShow.forEach((employee) => {
+        const stats = computeEmployeeStats(employee);
+        const tr = document.createElement('tr');
+        tr.className = isSingleSelected ? 'bg-[#eef5eb]' : 'bg-[#fffdf9]';
+
+        tr.innerHTML = `
+          <td class="py-3 px-2.5 font-bold text-[#232921] text-sm text-center">${employee}</td>
+          <td class="py-3 px-1.5 text-center font-semibold text-[#2d4727] text-sm whitespace-nowrap">${formatHours(stats.totalHours)}</td>
+          <td class="py-3 px-1.5 text-center text-[#5b6358] text-sm whitespace-nowrap">${formatHours(stats.threshold)}</td>
+          <td class="py-2 px-2.5 text-center whitespace-nowrap">
+            <input
+              type="text"
+              inputmode="decimal"
+              data-overtime-employee="${employee}"
+              value="${formatHours(stats.overtimeHours)}"
+              title="Cliquez pour modifier manuellement les heures supplémentaires de ${employee}"
+              class="month-hours-input text-center font-extrabold text-sm w-20 sm:w-24 px-1.5 py-1 rounded-lg bg-[#fcfaf5] border border-[#e0b89f] focus:bg-white focus:ring-2 focus:ring-[#9a4e28] outline-none ${stats.isManualOvertime ? 'text-[#2d4727] underline decoration-dotted' : 'text-[#9a4e28]'}"
+            />
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const shownHours = listToShow.reduce((acc, e) => acc + computeEmployeeStats(e).totalHours, 0);
+      const shownOvertime = listToShow.reduce((acc, e) => acc + computeEmployeeStats(e).overtimeHours, 0);
+
+      const totRow = document.createElement('tr');
+      totRow.className = 'bg-[#2d4727] text-[#fffdf9] font-bold text-sm';
+      totRow.innerHTML = `
+        <td class="py-3 px-2.5 text-center">${isSingleSelected ? `Total ${selectedEmp}` : 'Total équipe (3)'}</td>
+        <td class="py-3 px-1.5 text-center text-[#d7ead1] whitespace-nowrap">${formatHours(shownHours)}</td>
+        <td class="py-3 px-1.5 text-center text-[#ece4d3] whitespace-nowrap">${formatHours(appState.overtimeThreshold)}</td>
+        <td class="py-3 px-2.5 text-center text-[#f7d0b8] whitespace-nowrap">${formatHours(shownOvertime)}</td>
+      `;
+      tbody.appendChild(totRow);
+
+      const pill = document.getElementById('totalOvertimePill');
+      if (pill) {
+        pill.textContent = isSingleSelected
+          ? `${selectedEmp} sup. : ${formatHours(shownOvertime)}`
+          : `Total sup. : ${formatHours(allTeamOvertime)}`;
+      }
+
+      const hdrBadge = document.getElementById('headerOvertimeBadge');
+      if (hdrBadge) {
+        hdrBadge.textContent = formatHours(allTeamOvertime);
       }
     }
 
@@ -1970,6 +2309,7 @@
       }
       renderWeeks();
       renderSummaryTable();
+      renderOvertimeTable();
 
       document.body.classList.remove('printing-single-week', 'printing-balance-only', 'single-emp-week');
       document.querySelectorAll('.print-target-week').forEach((el) => el.classList.remove('print-target-week'));
@@ -2136,6 +2476,9 @@
         if (appState.weekHourOverrides[employee]) {
           delete appState.weekHourOverrides[employee][weekIndex];
         }
+        if (appState.weekDayOverrides[employee]) {
+          delete appState.weekDayOverrides[employee][weekIndex];
+        }
 
         const effectiveCode = getCellCode(employee, dateObj);
         const visual = getCellAppearance(effectiveCode);
@@ -2149,60 +2492,94 @@
           const stats = computeWeekEmployeeStats(employee, weekDays, weekIndex);
           const tr = inp.closest('tr');
           if (tr) {
-            const cells = tr.querySelectorAll('td');
-            if (cells.length >= 2) {
-              cells[cells.length - 2].textContent = `${stats.workedDays} j`;
-              const hrInp = cells[cells.length - 1].querySelector('input.hours-edit-input');
-              if (hrInp) {
-                hrInp.value = formatHours(stats.hours);
-                hrInp.className = 'hours-edit-input text-sm text-[#2d4727]';
-              }
+            const dyInp = tr.querySelector('input.days-edit-input');
+            const hrInp = tr.querySelector('input.hours-edit-input');
+            if (dyInp) {
+              dyInp.value = formatDays(stats.workedDays);
+              dyInp.className = 'days-edit-input text-sm text-[#232921]';
+            }
+            if (hrInp) {
+              hrInp.value = formatHours(stats.hours);
+              hrInp.className = 'hours-edit-input text-sm text-[#2d4727]';
             }
           }
         }
 
         renderSummaryTable();
+        renderOvertimeTable();
         saveState();
       });
 
       weeksContainer.addEventListener('focusin', (e) => {
         const hrInp = e.target;
-        if (!hrInp.classList || !hrInp.classList.contains('hours-edit-input')) return;
-        hrInp.value = hrInp.value.replace(/\s*h\s*$/i, '').trim();
-        hrInp.select();
+        if (hrInp.classList?.contains('hours-edit-input')) {
+          hrInp.value = hrInp.value.replace(/\s*h\s*$/i, '').trim();
+          hrInp.select();
+        } else if (hrInp.classList?.contains('days-edit-input')) {
+          hrInp.value = hrInp.value.replace(/\s*j\s*$/i, '').trim();
+          hrInp.select();
+        }
       });
 
       weeksContainer.addEventListener('focusout', (e) => {
-        const hrInp = e.target;
-        if (!hrInp.classList || !hrInp.classList.contains('hours-edit-input')) return;
+        const el = e.target;
+        if (!el.classList) return;
 
-        const employee = hrInp.dataset.employee;
-        const weekIndex = parseInt(hrInp.dataset.weekIndex, 10);
-        const raw = hrInp.value.trim().replace(',', '.');
+        if (el.classList.contains('days-edit-input')) {
+          const employee = el.dataset.employee;
+          const weekIndex = parseInt(el.dataset.weekIndex, 10);
+          const raw = el.value.trim().replace(',', '.');
 
-        if (!appState.weekHourOverrides[employee]) {
-          appState.weekHourOverrides[employee] = {};
+          if (!appState.weekDayOverrides[employee]) {
+            appState.weekDayOverrides[employee] = {};
+          }
+
+          if (raw === '' || isNaN(parseFloat(raw))) {
+            delete appState.weekDayOverrides[employee][weekIndex];
+          } else {
+            appState.weekDayOverrides[employee][weekIndex] = Math.max(0, parseFloat(raw));
+          }
+
+          const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
+          const weekDays = buildWeekDays(weeksConfig[weekIndex]);
+          const stats = computeWeekEmployeeStats(employee, weekDays, weekIndex);
+          el.value = formatDays(stats.workedDays);
+          el.className = `days-edit-input text-sm ${stats.isManualDays ? 'text-[#9a4e28] underline decoration-dotted' : 'text-[#232921]'}`;
+
+          renderSummaryTable();
+          saveState();
+          return;
         }
 
-        if (raw === '' || isNaN(parseFloat(raw))) {
-          delete appState.weekHourOverrides[employee][weekIndex];
-        } else {
-          appState.weekHourOverrides[employee][weekIndex] = Math.max(0, parseFloat(raw));
+        if (el.classList.contains('hours-edit-input')) {
+          const employee = el.dataset.employee;
+          const weekIndex = parseInt(el.dataset.weekIndex, 10);
+          const raw = el.value.trim().replace(',', '.');
+
+          if (!appState.weekHourOverrides[employee]) {
+            appState.weekHourOverrides[employee] = {};
+          }
+
+          if (raw === '' || isNaN(parseFloat(raw))) {
+            delete appState.weekHourOverrides[employee][weekIndex];
+          } else {
+            appState.weekHourOverrides[employee][weekIndex] = Math.max(0, parseFloat(raw));
+          }
+
+          const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
+          const weekDays = buildWeekDays(weeksConfig[weekIndex]);
+          const stats = computeWeekEmployeeStats(employee, weekDays, weekIndex);
+          el.value = formatHours(stats.hours);
+          el.className = `hours-edit-input text-sm ${stats.isManual ? 'text-[#9a4e28] underline decoration-dotted' : 'text-[#2d4727]'}`;
+
+          renderSummaryTable();
+          renderOvertimeTable();
+          saveState();
         }
-
-        const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
-        const weekCfg = weeksConfig[weekIndex];
-        const weekDays = buildWeekDays(weekCfg);
-        const stats = computeWeekEmployeeStats(employee, weekDays, weekIndex);
-        hrInp.value = formatHours(stats.hours);
-        hrInp.className = `hours-edit-input text-sm ${stats.isManual ? 'text-[#9a4e28] underline decoration-dotted' : 'text-[#2d4727]'}`;
-
-        renderSummaryTable();
-        saveState();
       });
 
       weeksContainer.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && e.target.classList?.contains('hours-edit-input')) {
+        if (e.key === 'Enter' && (e.target.classList?.contains('hours-edit-input') || e.target.classList?.contains('days-edit-input'))) {
           e.preventDefault();
           e.target.blur();
         }
@@ -2212,13 +2589,27 @@
       summaryBody.addEventListener('focusin', (e) => {
         const mInp = e.target;
         if (!mInp.classList || !mInp.classList.contains('month-hours-input')) return;
-        mInp.value = mInp.value.replace(/\s*h\s*$/i, '').trim();
+        mInp.value = mInp.value.replace(/\s*[hj]\s*$/i, '').trim();
         mInp.select();
       });
 
       summaryBody.addEventListener('focusout', (e) => {
         const mInp = e.target;
         if (!mInp.classList || !mInp.classList.contains('month-hours-input')) return;
+
+        const dayEmp = mInp.dataset.monthDaysEmployee;
+        if (dayEmp) {
+          const rawDays = mInp.value.trim().replace(',', '.');
+          if (rawDays === '' || isNaN(parseFloat(rawDays))) {
+            delete appState.monthDayOverrides[dayEmp];
+          } else {
+            appState.monthDayOverrides[dayEmp] = Math.max(0, parseFloat(rawDays));
+          }
+          renderSummaryTable();
+          saveState();
+          return;
+        }
+
         const employee = mInp.dataset.monthEmployee;
         const raw = mInp.value.trim().replace(',', '.');
 
@@ -2229,6 +2620,7 @@
         }
 
         renderSummaryTable();
+        renderOvertimeTable();
         saveState();
       });
 
@@ -2239,14 +2631,84 @@
         }
       });
 
-      document.getElementById('baseHoursInput').addEventListener('input', (e) => {
-        const val = parseFloat(String(e.target.value).replace(',', '.'));
-        if (!isNaN(val) && val >= 0 && val <= 24) {
-          appState.baseHours = val;
+      const overtimeBody = document.getElementById('overtimeTableBody');
+      if (overtimeBody) {
+        overtimeBody.addEventListener('focusin', (e) => {
+          const oInp = e.target;
+          if (!oInp.classList || !oInp.dataset.overtimeEmployee) return;
+          oInp.value = oInp.value.replace(/\s*h\s*$/i, '').trim();
+          oInp.select();
+        });
+
+        overtimeBody.addEventListener('focusout', (e) => {
+          const oInp = e.target;
+          if (!oInp.classList || !oInp.dataset.overtimeEmployee) return;
+          const emp = oInp.dataset.overtimeEmployee;
+          const raw = oInp.value.trim().replace(',', '.');
+
+          if (raw === '' || isNaN(parseFloat(raw))) {
+            delete appState.overtimeOverrides[emp];
+          } else {
+            appState.overtimeOverrides[emp] = Math.max(0, parseFloat(raw));
+          }
+          renderOvertimeTable();
+          saveState();
+        });
+
+        overtimeBody.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' && e.target.dataset?.overtimeEmployee) {
+            e.preventDefault();
+            e.target.blur();
+          }
+        });
+      }
+
+      document.querySelectorAll('input[data-emp-base]').forEach((inp) => {
+        inp.addEventListener('input', (e) => {
+          const emp = e.target.getAttribute('data-emp-base');
+          const val = parseFloat(String(e.target.value).replace(',', '.'));
+          if (emp && !isNaN(val) && val >= 0 && val <= 24) {
+            appState.employeeBaseHours[emp] = val;
+            appState.baseHours = val;
+            saveState();
+            renderAll();
+          }
+        });
+      });
+
+      const applyGlobalBtn = document.getElementById('applyGlobalBaseToAllBtn');
+      if (applyGlobalBtn) {
+        applyGlobalBtn.addEventListener('click', () => {
+          const firstVal = getEmployeeBaseHours('Pierre');
+          appState.baseHours = firstVal;
+          appState.employeeBaseHours = createDefaultEmployeeBases(firstVal);
           saveState();
           renderAll();
-        }
-      });
+          showToast(`Base alignée sur ${formatHours(firstVal)} / jour pour les 3 salariés.`);
+        });
+      }
+
+      const overtimeThrInp = document.getElementById('overtimeThresholdInput');
+      if (overtimeThrInp) {
+        overtimeThrInp.addEventListener('input', (e) => {
+          const val = parseFloat(String(e.target.value).replace(',', '.'));
+          if (!isNaN(val) && val >= 0 && val <= 400) {
+            appState.overtimeThreshold = val;
+            saveState();
+            renderOvertimeTable();
+          }
+        });
+      }
+
+      const resetManualOtBtn = document.getElementById('resetManualOvertimeBtn');
+      if (resetManualOtBtn) {
+        resetManualOtBtn.addEventListener('click', () => {
+          appState.overtimeOverrides = {};
+          saveState();
+          renderOvertimeTable();
+          showToast('Heures supplémentaires repassées en calcul automatique.');
+        });
+      }
 
       document.querySelectorAll('.filter-btn').forEach((btn) => {
         btn.addEventListener('click', () => {
@@ -2308,7 +2770,12 @@
           appState.overrides = {};
           appState.weekHourOverrides = {};
           appState.monthHourOverrides = {};
+          appState.weekDayOverrides = {};
+          appState.monthDayOverrides = {};
+          appState.overtimeOverrides = {};
           appState.baseHours = DEFAULT_BASE_HOURS;
+          appState.employeeBaseHours = createDefaultEmployeeBases(DEFAULT_BASE_HOURS);
+          appState.overtimeThreshold = DEFAULT_OVERTIME_THRESHOLD;
           saveState();
           renderAll();
           closeModal();
@@ -2332,16 +2799,21 @@
       function exportCurrentMonthBackup() {
         const payload = {
           app: 'DebarrasExpress09Planning',
-          version: 1,
+          version: 2,
           exportedAt: new Date().toISOString(),
           year: activeYear,
           month: activeMonth + 1,
           state: {
             filter: appState.filter,
             baseHours: appState.baseHours,
+            employeeBaseHours: appState.employeeBaseHours,
+            overtimeThreshold: appState.overtimeThreshold,
             overrides: appState.overrides,
             weekHourOverrides: appState.weekHourOverrides,
-            monthHourOverrides: appState.monthHourOverrides
+            monthHourOverrides: appState.monthHourOverrides,
+            weekDayOverrides: appState.weekDayOverrides,
+            monthDayOverrides: appState.monthDayOverrides,
+            overtimeOverrides: appState.overtimeOverrides
           }
         };
         const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
@@ -2429,12 +2901,26 @@
               activeYear = parsed.year;
               activeMonth = parsed.month - 1;
             }
+            const baseHrs = typeof st.baseHours === 'number' && !isNaN(st.baseHours) ? st.baseHours : DEFAULT_BASE_HOURS;
+            const empBases = createDefaultEmployeeBases(baseHrs);
+            if (st.employeeBaseHours && typeof st.employeeBaseHours === 'object') {
+              EMPLOYEES.forEach((emp) => {
+                if (typeof st.employeeBaseHours[emp] === 'number' && !isNaN(st.employeeBaseHours[emp])) {
+                  empBases[emp] = st.employeeBaseHours[emp];
+                }
+              });
+            }
             appState = {
               filter: typeof st.filter === 'string' ? st.filter : appState.filter,
-              baseHours: typeof st.baseHours === 'number' && !isNaN(st.baseHours) ? st.baseHours : DEFAULT_BASE_HOURS,
+              baseHours: baseHrs,
+              employeeBaseHours: empBases,
+              overtimeThreshold: typeof st.overtimeThreshold === 'number' && !isNaN(st.overtimeThreshold) ? st.overtimeThreshold : DEFAULT_OVERTIME_THRESHOLD,
               overrides: st.overrides && typeof st.overrides === 'object' ? st.overrides : {},
               weekHourOverrides: st.weekHourOverrides && typeof st.weekHourOverrides === 'object' ? st.weekHourOverrides : {},
-              monthHourOverrides: st.monthHourOverrides && typeof st.monthHourOverrides === 'object' ? st.monthHourOverrides : {}
+              monthHourOverrides: st.monthHourOverrides && typeof st.monthHourOverrides === 'object' ? st.monthHourOverrides : {},
+              weekDayOverrides: st.weekDayOverrides && typeof st.weekDayOverrides === 'object' ? st.weekDayOverrides : {},
+              monthDayOverrides: st.monthDayOverrides && typeof st.monthDayOverrides === 'object' ? st.monthDayOverrides : {},
+              overtimeOverrides: st.overtimeOverrides && typeof st.overtimeOverrides === 'object' ? st.overtimeOverrides : {}
             };
             saveState();
             renderAll();
@@ -2467,11 +2953,11 @@
           totR += st.restDays;
           totCP += st.ptoDays;
           totH += st.totalHours;
-          lines.push(`• ${emp} : ${st.workedDays} j travaillés | ${st.restDays} R | ${st.ptoDays} CP | ${formatHours(st.totalHours)}`);
+          lines.push(`• ${emp} : ${formatDays(st.workedDays)} travaillés | ${st.restDays} R | ${st.ptoDays} CP | ${formatHours(st.totalHours)}`);
         });
 
         if (!isSingleSelected) {
-          lines.push(`Total équipe : ${totJ} j | ${totR} R | ${totCP} CP | ${formatHours(totH)}`);
+          lines.push(`Total équipe : ${formatDays(totJ)} | ${totR} R | ${totCP} CP | ${formatHours(totH)}`);
         }
         const textOut = lines.join('\n');
 
@@ -2485,6 +2971,39 @@
           showToast('Copie non prise en charge sur ce navigateur.');
         }
       });
+
+      const copyOvertimeBtn = document.getElementById('copyOvertimeBtn');
+      if (copyOvertimeBtn) {
+        copyOvertimeBtn.addEventListener('click', () => {
+          const monthLabel = MONTH_NAMES[activeMonth];
+          const selectedEmp = document.getElementById('overtimeEmployeeSelect')?.value || 'ALL';
+          const isSingleSelected = selectedEmp !== 'ALL';
+          const targetEmployees = isSingleSelected
+            ? EMPLOYEES.filter((e) => e === selectedEmp)
+            : EMPLOYEES;
+
+          const lines = [
+            `Heures supplémentaires — ${monthLabel} ${activeYear} (Seuil : ${formatHours(appState.overtimeThreshold)})`
+          ];
+          let totSup = 0;
+          targetEmployees.forEach((emp) => {
+            const st = computeEmployeeStats(emp);
+            totSup += st.overtimeHours;
+            lines.push(`• ${emp} : ${formatHours(st.totalHours)} effectuées → ${formatHours(st.overtimeHours)} sup.`);
+          });
+          if (!isSingleSelected) {
+            lines.push(`Total heures sup. équipe : ${formatHours(totSup)}`);
+          }
+
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(lines.join('\n')).then(() => {
+              showToast('Heures supplémentaires copiées.');
+            }).catch(() => {
+              showToast('Impossible de copier automatiquement.');
+            });
+          }
+        });
+      }
 
       weeksContainer.addEventListener('click', (e) => {
         if (e.target.closest('.back-to-month-btn')) return;
@@ -2532,6 +3051,13 @@
       const doneDrawerBtn = document.getElementById('doneMonthlyBalanceBtn');
       const drawerPrintBtn = document.getElementById('drawerPrintBtn');
 
+      const otDrawer = document.getElementById('overtimeDrawer');
+      const openOtDrawerBtn = document.getElementById('openOvertimeMenuBtn');
+      const closeOtDrawerBtn = document.getElementById('closeOvertimeBtn');
+      const doneOtDrawerBtn = document.getElementById('doneOvertimeBtn');
+      const otPrintBtn = document.getElementById('overtimePrintBtn');
+      const otEmpSelect = document.getElementById('overtimeEmployeeSelect');
+
       function setMonthlyDrawerOpen(isOpen) {
         if (!drawer) return;
         if (isOpen) {
@@ -2544,10 +3070,28 @@
         }
       }
 
+      function setOvertimeDrawerOpen(isOpen) {
+        if (!otDrawer) return;
+        if (isOpen) {
+          renderOvertimeTable();
+          otDrawer.classList.remove('hidden');
+          if (openOtDrawerBtn) openOtDrawerBtn.setAttribute('aria-expanded', 'true');
+        } else {
+          otDrawer.classList.add('hidden');
+          if (openOtDrawerBtn) openOtDrawerBtn.setAttribute('aria-expanded', 'false');
+        }
+      }
+
       const bilanEmpSelect = document.getElementById('bilanEmployeeSelect');
       if (bilanEmpSelect) {
         bilanEmpSelect.addEventListener('change', () => {
           renderSummaryTable();
+        });
+      }
+
+      if (otEmpSelect) {
+        otEmpSelect.addEventListener('change', () => {
+          renderOvertimeTable();
         });
       }
 
@@ -2561,6 +3105,18 @@
           setMonthlyDrawerOpen(true);
         });
       }
+
+      if (openOtDrawerBtn) {
+        openOtDrawerBtn.addEventListener('click', () => {
+          if (otEmpSelect && appState.filter && appState.filter !== 'ALL') {
+            otEmpSelect.value = appState.filter;
+          } else if (otEmpSelect) {
+            otEmpSelect.value = 'ALL';
+          }
+          setOvertimeDrawerOpen(true);
+        });
+      }
+
       if (closeDrawerBtn) {
         closeDrawerBtn.addEventListener('click', () => setMonthlyDrawerOpen(false));
       }
@@ -2578,9 +3134,29 @@
           launchPrintJob('balance', null);
         });
       }
+
+      if (closeOtDrawerBtn) {
+        closeOtDrawerBtn.addEventListener('click', () => setOvertimeDrawerOpen(false));
+      }
+      if (doneOtDrawerBtn) {
+        doneOtDrawerBtn.addEventListener('click', () => setOvertimeDrawerOpen(false));
+      }
+      if (otDrawer) {
+        otDrawer.addEventListener('click', (e) => {
+          if (e.target === otDrawer) setOvertimeDrawerOpen(false);
+        });
+      }
+      if (otPrintBtn) {
+        otPrintBtn.addEventListener('click', () => {
+          setOvertimeDrawerOpen(false);
+          launchPrintJob('balance', null);
+        });
+      }
+
       document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && drawer && !drawer.classList.contains('hidden')) {
-          setMonthlyDrawerOpen(false);
+        if (e.key === 'Escape') {
+          if (drawer && !drawer.classList.contains('hidden')) setMonthlyDrawerOpen(false);
+          if (otDrawer && !otDrawer.classList.contains('hidden')) setOvertimeDrawerOpen(false);
         }
       });
 

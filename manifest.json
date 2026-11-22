@@ -8,8 +8,8 @@
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#031233",
-  "theme_color": "#031233",
+  "background_color": "#2d4727",
+  "theme_color": "#2d4727",
   "icons": [
     {
       "src": "./icons/logo-debarras-09.png",

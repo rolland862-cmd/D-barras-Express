@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <!-- Métadonnées d'encodage et de mise à l'échelle mobile -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
   <meta name="theme-color" content="#0f172a" />
@@ -12,10 +11,8 @@
   <meta name="apple-mobile-web-app-title" content="Planning" />
   <title>Planning Mensuel — Pierre, Damien & David</title>
 
-  <!-- Chargement de Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Police Inter pour une lisibilité mobile soignée -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -45,7 +42,6 @@
       }
     }
 
-    /* Cases de saisie libre agrandies, sans coupure de texte */
     textarea.planning-cell {
       resize: none;
       overflow: hidden;
@@ -62,13 +58,12 @@
       width: 100%;
     }
 
-    /* Champs d'heures totaux modifiables directement */
     input.hours-edit-input {
       background: transparent;
       text-align: center;
       font-weight: 700;
       width: 100%;
-      min-width: 56px;
+      min-width: 58px;
       padding: 4px 2px;
       border-radius: 0.5rem;
       outline: none;
@@ -89,9 +84,9 @@
 </head>
 <body class="min-h-screen flex flex-col bg-slate-100 text-slate-900">
 
-  <!-- En-tête principal responsive -->
+  <!-- En-tête principal sans bouton Installer -->
   <header class="sticky top-0 z-30 bg-slate-900 text-white shadow-md no-print">
-    <div class="max-w-4xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-2">
+    <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
       <div class="min-w-0">
         <div class="flex items-center gap-2">
           <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
@@ -102,21 +97,6 @@
         <p id="headerSubtitle" class="text-xs sm:text-sm text-slate-300">
           Pierre · Damien · David — Base 7 h / jour travaillé
         </p>
-      </div>
-
-      <!-- Bouton d'installation -->
-      <div class="flex items-center gap-2">
-        <button
-          id="installPwaBtn"
-          type="button"
-          class="px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 font-semibold text-sm transition flex items-center gap-1.5 shadow"
-          aria-label="Installer ou ajouter à l'écran d'accueil"
-        >
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v12m0 0l-4-4m4 4l4-4M4 17v1a2 2 0 002 2h12a2 2 0 002-2v-1" />
-          </svg>
-          <span>Installer</span>
-        </button>
       </div>
     </div>
   </header>
@@ -130,7 +110,6 @@
   <!-- Contenu principal -->
   <main class="flex-1 w-full max-w-4xl mx-auto px-3 sm:px-5 py-4 space-y-5">
 
-    <!-- Barre d'outils : filtre salarié, base horaire modifiable, impression, réinitialisation -->
     <section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 space-y-3.5 no-print">
       <div class="flex flex-wrap items-center justify-between gap-2.5">
         <div class="flex items-center gap-1.5 flex-wrap" role="group" aria-label="Filtrer par salarié">
@@ -166,7 +145,6 @@
         </div>
       </div>
 
-      <!-- Réglage de la base horaire journalière -->
       <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-100">
         <label for="baseHoursInput" class="text-sm font-semibold text-slate-700 flex items-center gap-2">
           <span>Base par défaut (jour travaillé) :</span>
@@ -190,11 +168,9 @@
       </p>
     </section>
 
-    <!-- Blocs hebdomadaires -->
     <section id="weeksContainer" class="space-y-4" aria-label="Planning semaine par semaine">
     </section>
 
-    <!-- Bilan mensuel dynamique par salarié -->
     <section class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 print-break-avoid" aria-label="Bilan mensuel par salarié">
       <div class="flex items-center justify-between gap-2 mb-3">
         <div>
@@ -209,12 +185,12 @@
       <div class="overflow-x-auto rounded-xl border border-slate-200">
         <table class="w-full text-left border-collapse">
           <thead>
-            <tr class="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-600 uppercase tracking-wider">
-              <th class="py-3 px-3">Salarié</th>
-              <th class="py-3 px-2 text-center">Jours Trav.</th>
-              <th class="py-3 px-2 text-center">Repos (R)</th>
-              <th class="py-3 px-2 text-center">Congés (CP)</th>
-              <th class="py-3 px-3 text-right">Total Heures</th>
+            <tr class="bg-slate-50 border-b border-slate-200 text-[11px] sm:text-xs font-semibold text-slate-600 uppercase tracking-wide">
+              <th class="py-3 px-2.5">Salarié</th>
+              <th class="py-3 px-1.5 text-center">Jours</th>
+              <th class="py-3 px-1.5 text-center">Repos</th>
+              <th class="py-3 px-1.5 text-center">Congés</th>
+              <th class="py-3 px-2.5 text-right whitespace-nowrap">Total Heures</th>
             </tr>
           </thead>
           <tbody id="summaryTableBody" class="divide-y divide-slate-200 text-sm">
@@ -225,11 +201,11 @@
 
   </main>
 
-  <!-- Modale informative -->
+  <!-- Modale de confirmation -->
   <div id="infoModal" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4 no-print" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl border border-slate-200 space-y-4 animate-fade-in">
       <div class="flex items-center justify-between">
-        <h3 id="modalTitle" class="text-lg font-bold text-slate-900">Ajouter à l'écran d'accueil</h3>
+        <h3 id="modalTitle" class="text-lg font-bold text-slate-900">Confirmation</h3>
         <button id="closeModalBtn" type="button" class="text-slate-400 hover:text-slate-700 font-bold text-lg px-2 py-1 rounded-lg">✕</button>
       </div>
       <div id="modalContent" class="text-sm text-slate-600 space-y-2.5 leading-relaxed">
@@ -246,7 +222,6 @@
     const DEFAULT_BASE_HOURS = 7;
     const EMPLOYEES = ['Pierre', 'Damien', 'David'];
 
-    // Détection automatique du mois en cours
     const NOW = new Date();
     const YEAR = NOW.getFullYear();
     const MONTH = NOW.getMonth();
@@ -256,9 +231,8 @@
     const MONTH_LABEL = MONTH_NAMES[MONTH];
     const DAYS_IN_MONTH = new Date(YEAR, MONTH + 1, 0).getDate();
 
-    const STORAGE_KEY = `planning_${YEAR}_${String(MONTH + 1).padStart(2, '0')}_libre_v2`;
+    const STORAGE_KEY = `planning_${YEAR}_${String(MONTH + 1).padStart(2, '0')}_libre_v3`;
 
-    // Calcul des jours fériés français
     function computeEaster(year) {
       const a = year % 19;
       const b = Math.floor(year / 100);
@@ -331,36 +305,23 @@
     const WEEKS_CONFIG = buildWeeksConfig();
     const DAY_LABELS = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
 
-    // État de l'application
     let appState = {
       filter: 'ALL',
       baseHours: DEFAULT_BASE_HOURS,
-      overrides: {},       // overrides[employee][dayOfMonth] = texte saisi
-      weekHourOverrides: {}, // weekHourOverrides[employee][weekIndex] = nombre d'heures manuel
-      monthHourOverrides: {} // monthHourOverrides[employee] = nombre d'heures manuel mensuel
+      overrides: {},
+      weekHourOverrides: {},
+      monthHourOverrides: {}
     };
 
-    let deferredInstallPrompt = null;
-
-    /**
-     * Formate proprement un nombre d'heures (ex. 7 -> "7 h", 7.5 -> "7,5 h").
-     */
     function formatHours(val) {
       const num = Math.round((Number(val) || 0) * 100) / 100;
       return `${String(num).replace('.', ',')} h`;
     }
 
-    /**
-     * Extrait intelligemment une durée en heures depuis le texte d'une case :
-     * - Plage horaire ex. "08h-16h", "8:30-17:00", "7h30 - 15h" -> différence calculée
-     * - Nombre simple ex. "8", "8h", "6,5 h", "7.5" -> valeur numérique
-     * - Autre texte non vide (ex. "Matin", "Présent") -> baseHours par défaut
-     */
     function parseHoursFromText(text, fallbackHours) {
       const clean = String(text || '').trim();
       if (!clean) return fallbackHours;
 
-      // 1. Détection d'une plage horaire (ex: 8h-16h, 08:30-16:00, 7h30 - 14h30)
       const rangeMatch = clean.match(/^(\d{1,2})(?:[h:](\d{1,2}))?\s*[-–à/]\s*(\d{1,2})(?:[h:](\d{1,2}))?$/i);
       if (rangeMatch) {
         const h1 = parseInt(rangeMatch[1], 10) + (rangeMatch[2] ? parseInt(rangeMatch[2], 10) / 60 : 0);
@@ -370,14 +331,12 @@
         }
       }
 
-      // 2. Détection format "7h30" seul
       const hmMatch = clean.match(/^(\d{1,2})h(\d{1,2})$/i);
       if (hmMatch) {
         const hrs = parseInt(hmMatch[1], 10) + parseInt(hmMatch[2], 10) / 60;
         if (!isNaN(hrs)) return Math.round(hrs * 100) / 100;
       }
 
-      // 3. Détection d'un nombre avec ou sans "h" (ex: "8", "8 h", "7,5", "6.25h")
       const numMatch = clean.match(/^(\d+(?:[.,]\d+)?)\s*h?$/i);
       if (numMatch) {
         const parsed = parseFloat(numMatch[1].replace(',', '.'));
@@ -412,15 +371,9 @@
           if (typeof parsed.baseHours === 'number' && !isNaN(parsed.baseHours)) {
             appState.baseHours = parsed.baseHours;
           }
-          if (parsed.overrides && typeof parsed.overrides === 'object') {
-            appState.overrides = parsed.overrides;
-          }
-          if (parsed.weekHourOverrides && typeof parsed.weekHourOverrides === 'object') {
-            appState.weekHourOverrides = parsed.weekHourOverrides;
-          }
-          if (parsed.monthHourOverrides && typeof parsed.monthHourOverrides === 'object') {
-            appState.monthHourOverrides = parsed.monthHourOverrides;
-          }
+          if (parsed.overrides && typeof parsed.overrides === 'object') appState.overrides = parsed.overrides;
+          if (parsed.weekHourOverrides && typeof parsed.weekHourOverrides === 'object') appState.weekHourOverrides = parsed.weekHourOverrides;
+          if (parsed.monthHourOverrides && typeof parsed.monthHourOverrides === 'object') appState.monthHourOverrides = parsed.monthHourOverrides;
         }
       } catch (err) {
         console.warn('Impossible de charger les préférences locales :', err);
@@ -463,47 +416,28 @@
 
       switch (code) {
         case 'WORK':
-          return {
-            classes: 'bg-emerald-100 hover:bg-emerald-200 text-emerald-950 border-emerald-300'
-          };
+          return { classes: 'bg-emerald-100 hover:bg-emerald-200 text-emerald-950 border-emerald-300' };
         case 'HOLIDAY':
         case 'F':
         case 'FERIE':
-          return {
-            classes: 'bg-rose-100 hover:bg-rose-200 text-rose-900 border-rose-300 font-semibold'
-          };
+          return { classes: 'bg-rose-100 hover:bg-rose-200 text-rose-900 border-rose-300 font-semibold' };
         case 'R':
-          return {
-            classes: 'bg-slate-200 hover:bg-slate-300 text-slate-800 border-slate-300 font-bold'
-          };
+          return { classes: 'bg-slate-200 hover:bg-slate-300 text-slate-800 border-slate-300 font-bold' };
         case 'CP':
-          return {
-            classes: 'bg-amber-100 hover:bg-amber-200 text-amber-900 border-amber-300 font-bold'
-          };
+          return { classes: 'bg-amber-100 hover:bg-amber-200 text-amber-900 border-amber-300 font-bold' };
         case '':
-          return {
-            classes: 'bg-white text-slate-400 border-slate-200'
-          };
+          return { classes: 'bg-white text-slate-400 border-slate-200' };
         default:
-          return {
-            classes: 'bg-emerald-50 text-slate-900 border-emerald-400 font-semibold'
-          };
+          return { classes: 'bg-emerald-50 text-slate-900 border-emerald-400 font-semibold' };
       }
     }
 
-    /**
-     * Ajuste la hauteur de la case automatiquement pour que le texte écrit
-     * ne soit jamais coupé, quelle que soit sa longueur.
-     */
     function autoFitCell(inp) {
       inp.style.height = 'auto';
       const targetHeight = Math.max(44, inp.scrollHeight);
       inp.style.height = `${targetHeight}px`;
     }
 
-    /**
-     * Calcule les jours et heures d'un salarié sur une semaine donnée.
-     */
     function computeWeekEmployeeStats(employee, weekDays, weekIndex) {
       let workedDays = 0;
       let autoHours = 0;
@@ -537,9 +471,6 @@
       };
     }
 
-    /**
-     * Calcule les statistiques mensuelles complètes d'un salarié.
-     */
     function computeEmployeeStats(employee) {
       let workedDays = 0;
       let restDays = 0;
@@ -563,7 +494,6 @@
         }
       }
 
-      // Somme des heures de chaque semaine (prenant en compte les modifications manuelles éventuelles par semaine)
       let sumWeeksHours = 0;
       WEEKS_CONFIG.forEach((weekCfg, wIdx) => {
         const wDays = buildWeekDays(weekCfg);
@@ -754,7 +684,6 @@
           tdDays.textContent = `${weekStats.workedDays} j`;
           tr.appendChild(tdDays);
 
-          // Total d'heures de la semaine directement éditable
           const tdHours = document.createElement('td');
           tdHours.className = 'py-1.5 px-1.5 text-sm font-bold text-emerald-700 whitespace-nowrap';
           const weekHourInput = document.createElement('input');
@@ -799,18 +728,18 @@
         tr.className = isHighlighted ? 'bg-emerald-50/70 font-medium' : 'bg-white';
 
         tr.innerHTML = `
-          <td class="py-3 px-3 font-bold text-slate-900 text-sm sm:text-base">${employee}</td>
-          <td class="py-3 px-2 text-center font-semibold text-emerald-700 text-sm">${stats.workedDays} j</td>
-          <td class="py-3 px-2 text-center text-slate-700 text-sm">${stats.restDays}</td>
-          <td class="py-3 px-2 text-center text-amber-800 text-sm">${stats.ptoDays}</td>
-          <td class="py-2 px-2 text-right">
+          <td class="py-3 px-2.5 font-bold text-slate-900 text-sm">${employee}</td>
+          <td class="py-3 px-1.5 text-center font-semibold text-emerald-700 text-sm whitespace-nowrap">${stats.workedDays} j</td>
+          <td class="py-3 px-1.5 text-center text-slate-700 text-sm whitespace-nowrap">${stats.restDays}</td>
+          <td class="py-3 px-1.5 text-center text-amber-800 text-sm whitespace-nowrap">${stats.ptoDays}</td>
+          <td class="py-2 px-2 text-right whitespace-nowrap">
             <input
               type="text"
               inputmode="decimal"
               data-month-employee="${employee}"
               value="${formatHours(stats.totalHours)}"
               title="Cliquez pour modifier manuellement le total mensuel"
-              class="month-hours-input text-right font-extrabold text-sm sm:text-base w-24 px-2 py-1 rounded-lg bg-transparent focus:bg-white focus:ring-2 focus:ring-emerald-500 outline-none ${stats.isManual ? 'text-blue-700 underline decoration-dotted' : 'text-slate-900'}"
+              class="month-hours-input text-right font-extrabold text-sm w-20 sm:w-24 px-1.5 py-1 rounded-lg bg-transparent focus:bg-white focus:ring-2 focus:ring-emerald-500 outline-none ${stats.isManual ? 'text-blue-700 underline decoration-dotted' : 'text-slate-900'}"
             />
           </td>
         `;
@@ -818,13 +747,13 @@
       });
 
       const totalRow = document.createElement('tr');
-      totalRow.className = 'bg-slate-900 text-white font-bold text-sm sm:text-base';
+      totalRow.className = 'bg-slate-900 text-white font-bold text-sm';
       totalRow.innerHTML = `
-        <td class="py-3 px-3">Total équipe</td>
-        <td class="py-3 px-2 text-center text-emerald-300">${sumWorked} j</td>
-        <td class="py-3 px-2 text-center text-slate-200">${sumRest}</td>
-        <td class="py-3 px-2 text-center text-amber-300">${sumPto}</td>
-        <td id="teamTotalHoursCell" class="py-3 px-3 text-right text-emerald-300">${formatHours(sumHours)}</td>
+        <td class="py-3 px-2.5">Total équipe</td>
+        <td class="py-3 px-1.5 text-center text-emerald-300 whitespace-nowrap">${sumWorked} j</td>
+        <td class="py-3 px-1.5 text-center text-slate-200 whitespace-nowrap">${sumRest}</td>
+        <td class="py-3 px-1.5 text-center text-amber-300 whitespace-nowrap">${sumPto}</td>
+        <td id="teamTotalHoursCell" class="py-3 px-2.5 text-right text-emerald-300 whitespace-nowrap">${formatHours(sumHours)}</td>
       `;
       tbody.appendChild(totalRow);
     }
@@ -845,38 +774,9 @@
       if (metaTitle) metaTitle.setAttribute('content', `Planning ${MONTH_LABEL} ${YEAR}`);
     }
 
-    window.addEventListener('beforeinstallprompt', (event) => {
-      event.preventDefault();
-      deferredInstallPrompt = event;
-      showToast('Application prête à être installée sur votre écran d\'accueil.');
-    });
-
-    async function handleInstallClick() {
-      if (deferredInstallPrompt) {
-        deferredInstallPrompt.prompt();
-        const choice = await deferredInstallPrompt.userChoice;
-        deferredInstallPrompt = null;
-        if (choice.outcome === 'accepted') {
-          showToast('Application installée sur l\'écran d\'accueil.');
-        } else {
-          showToast('Installation annulée.');
-        }
-        return;
-      }
-
-      openModal(
-        'Ajouter à l\'écran d\'accueil',
-        `
-          <p><strong>Sur Android (Chrome) :</strong> ouvrez le menu <strong>⋮</strong> en haut à droite puis sélectionnez <strong>« Ajouter à l'écran d'accueil »</strong> ou <strong>« Installer l'application »</strong>.</p>
-          <p><strong>Sur iPhone / iPad (Safari) :</strong> touchez l'icône <strong>Partager</strong> puis <strong>« Sur l'écran d'accueil »</strong>.</p>
-        `
-      );
-    }
-
     function bindEvents() {
       const weeksContainer = document.getElementById('weeksContainer');
 
-      // 1. Saisie libre dans les cases journalières
       weeksContainer.addEventListener('input', (e) => {
         const inp = e.target;
         if (!inp.classList || !inp.classList.contains('planning-cell')) return;
@@ -896,7 +796,6 @@
           appState.overrides[employee][day] = val;
         }
 
-        // Si l'utilisateur modifie une case, on réinitialise l'éventuel forçage manuel de la semaine pour recalculer en direct
         if (appState.weekHourOverrides[employee]) {
           delete appState.weekHourOverrides[employee][weekIndex];
         }
@@ -928,7 +827,6 @@
         saveState();
       });
 
-      // 2. Modification directe des heures d'une semaine (focus -> nombre brut, blur -> sauvegarde)
       weeksContainer.addEventListener('focusin', (e) => {
         const hrInp = e.target;
         if (!hrInp.classList || !hrInp.classList.contains('hours-edit-input')) return;
@@ -971,7 +869,6 @@
         }
       });
 
-      // 3. Modification directe des heures mensuelles dans le bilan
       const summaryBody = document.getElementById('summaryTableBody');
       summaryBody.addEventListener('focusin', (e) => {
         const mInp = e.target;
@@ -1003,7 +900,6 @@
         }
       });
 
-      // 4. Modification de la base horaire journalière (ex: passer de 7h à 7.5h ou 8h)
       document.getElementById('baseHoursInput').addEventListener('input', (e) => {
         const val = parseFloat(String(e.target.value).replace(',', '.'));
         if (!isNaN(val) && val >= 0 && val <= 24) {
@@ -1013,7 +909,6 @@
         }
       });
 
-      // Filtres salariés
       document.querySelectorAll('.filter-btn').forEach((btn) => {
         btn.addEventListener('click', () => {
           appState.filter = btn.getAttribute('data-filter');
@@ -1021,8 +916,6 @@
           renderAll();
         });
       });
-
-      document.getElementById('installPwaBtn').addEventListener('click', handleInstallClick);
 
       document.getElementById('printBtn').addEventListener('click', () => {
         window.print();

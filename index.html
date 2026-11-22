@@ -70,15 +70,42 @@
       .no-print {
         display: none !important;
       }
-      .print-only-banner {
+      main {
+        padding-top: 8px !important;
+        padding-bottom: 8px !important;
+      }
+      #weeksContainer {
         display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+      }
+      #weeksContainer > div {
+        padding: 8px 10px !important;
+        border-radius: 10px !important;
+      }
+      #weeksContainer > div > div:first-child {
+        margin-bottom: 5px !important;
+      }
+      #weeksContainer th {
+        padding-top: 3px !important;
+        padding-bottom: 3px !important;
+        min-width: 0 !important;
+        font-size: 9.5px !important;
+      }
+      #weeksContainer td {
+        padding: 2px !important;
+      }
+      #weeksContainer td:first-child {
+        padding: 3px 6px !important;
+        min-width: 0 !important;
+        font-size: 10.5px !important;
       }
       .week-fullscreen-vertical {
         position: static !important;
         inset: auto !important;
         overflow: visible !important;
         padding: 0 !important;
-        margin: 0 0 16px 0 !important;
+        margin: 0 0 10px 0 !important;
         background-color: transparent !important;
         z-index: auto !important;
       }
@@ -94,10 +121,12 @@
         page-break-inside: avoid;
       }
       textarea.planning-cell {
-        min-height: 36px !important;
+        min-height: 24px !important;
+        height: 24px !important;
         min-width: 0 !important;
-        font-size: 11px !important;
-        padding: 4px 2px !important;
+        font-size: 10.5px !important;
+        line-height: 1.15 !important;
+        padding: 2px 2px !important;
         border-width: 1px !important;
       }
       input.hours-edit-input,
@@ -111,9 +140,6 @@
       .shadow-sm, .shadow-md, .shadow-lg, .shadow-xl {
         box-shadow: none !important;
       }
-    }
-    .print-only-banner {
-      display: none;
     }
 
     /* Cases de saisie libre agrandies et élargies pour éviter toute coupure de mot */
@@ -232,23 +258,6 @@
 
   <!-- Contenu principal -->
   <main class="flex-1 w-full max-w-4xl mx-auto px-3 sm:px-5 py-4 space-y-5">
-
-    <!-- Bandeau visible uniquement à l'impression / export PDF -->
-    <div id="printMetaBanner" class="print-only-banner items-center justify-between gap-3 bg-[#fffdf9] border border-[#dfd5c0] rounded-2xl px-4 py-2.5 text-xs text-[#232921]">
-      <div class="flex items-center gap-2.5">
-        <img
-          src="./icons/logo-debarras-09.png"
-          alt="Débarras Express 09"
-          class="w-8 h-8 rounded-full object-cover border border-[#2d4727]"
-          onerror="this.style.display='none'"
-        />
-        <div>
-          <div id="printBannerTitle" class="font-bold text-sm text-[#2d4727]">Débarras Express 09 — Planning</div>
-          <div id="printBannerSub" class="text-[#5b6358]">Base horaire &amp; présences</div>
-        </div>
-      </div>
-      <div id="printBannerDate" class="font-semibold text-[#4c5449]"></div>
-    </div>
 
     <!-- Barre de navigation des mois -->
     <section class="bg-[#fffdf9] rounded-2xl p-3.5 sm:p-4 shadow-sm border border-[#dfd5c0] no-print" aria-label="Navigation par mois">
@@ -701,6 +710,10 @@
     }
 
     function autoFitCell(inp) {
+      if (window.matchMedia && window.matchMedia('print').matches) {
+        inp.style.height = '24px';
+        return;
+      }
       inp.style.height = 'auto';
       const targetHeight = Math.max(46, inp.scrollHeight);
       inp.style.height = `${targetHeight}px`;
@@ -835,13 +848,6 @@
 
       const metaTitle = document.querySelector('meta[name="apple-mobile-web-app-title"]');
       if (metaTitle) metaTitle.setAttribute('content', `Planning ${monthLabel} ${activeYear}`);
-
-      const pTitle = document.getElementById('printBannerTitle');
-      const pSub = document.getElementById('printBannerSub');
-      const pDate = document.getElementById('printBannerDate');
-      if (pTitle) pTitle.textContent = `Débarras Express 09 — Planning ${monthLabel} ${activeYear}`;
-      if (pSub) pSub.textContent = `Pierre, Damien & David · Base ${formatHours(appState.baseHours)} / jour`;
-      if (pDate) pDate.textContent = `Édité le ${new Date().toLocaleDateString('fr-FR')}`;
     }
 
     function setFocusedWeek(weekIdx, pushHistory = true) {
@@ -1703,4 +1709,3 @@
   </script>
 </body>
 </html>
-

@@ -92,7 +92,6 @@
         margin: 0 !important;
       }
 
-      /* Vue d'ensemble (toutes les semaines) : répartition équilibrée et lisible */
       #weeksContainer {
         display: flex !important;
         flex-direction: column !important;
@@ -151,7 +150,6 @@
         display: none !important;
       }
 
-      /* Mode impression : BILAN SEUL — centré verticalement et horizontalement */
       body.printing-balance-only header.app-header,
       body.printing-balance-only #weeksContainer,
       body.printing-balance-only #printOvertimeSection,
@@ -303,7 +301,6 @@
         color: #5b6358 !important;
       }
 
-      /* Mode impression : HEURES SUPPLEMENTAIRES SEULES — centré verticalement et horizontalement */
       body.printing-overtime-only header.app-header,
       body.printing-overtime-only #weeksContainer,
       body.printing-overtime-only #printSummarySection,
@@ -455,7 +452,6 @@
         color: #5b6358 !important;
       }
 
-      /* Mode impression : UNE SEULE SEMAINE */
       .week-fullscreen-vertical {
         position: static !important;
         inset: auto !important;
@@ -649,7 +645,6 @@
         color: #5b6358 !important;
       }
 
-      /* Vue d'ensemble (mode ALL) : aération et lisibilité confortables */
       body[data-print-mode="all"] #weeksContainer {
         display: flex !important;
         flex-direction: column !important;
@@ -819,7 +814,6 @@
 </head>
 <body class="min-h-screen flex flex-col bg-[#f6f1e7] text-[#232921]">
 
-  <!-- En-tête principal avec logo Débarras Express 09 -->
   <header class="app-header sticky top-0 z-30 bg-[#2d4727] text-[#fffdf9] shadow-md border-b border-[#46663e] no-print">
     <div class="max-w-4xl mx-auto px-3 sm:px-4 py-2.5 flex items-center justify-between gap-2 sm:gap-3">
       <div class="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
@@ -831,10 +825,14 @@
           onerror="if (!this.dataset.fb1) { this.dataset.fb1 = '1'; this.src = './ic%C3%B4nes/logo-debarras-09.png'; } else if (!this.dataset.fb2) { this.dataset.fb2 = '1'; this.src = './icônes/logo-debarras-09.png'; } else { this.style.display = 'none'; }"
         />
         <div class="min-w-0">
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 flex-wrap">
             <h1 id="mainHeaderTitle" class="text-sm sm:text-xl font-bold tracking-tight truncate">
               Planning Mensuel
             </h1>
+            <span id="firebaseSyncBadge" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-[#3e6136] text-[#e6f3e2] border border-[#5c8453]">
+              <span id="firebaseSyncDot" class="w-1.5 h-1.5 rounded-full bg-[#9ce68a]"></span>
+              <span id="firebaseSyncText">Synchro Firebase</span>
+            </span>
           </div>
           <p id="headerSubtitle" class="text-[11px] sm:text-sm text-[#e6decb] truncate">
             Débarras Express 09 · Pierre, Damien & Tiffany
@@ -870,7 +868,6 @@
     </div>
   </header>
 
-  <!-- Menu / Fenêtre centrée du bilan mensuel des heures effectuées -->
   <div id="monthlyBalanceDrawer" class="hidden fixed inset-0 z-50 bg-[#1a2418]/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 no-print" role="dialog" aria-modal="true" aria-labelledby="drawerBilanTitle">
     <div id="monthlyBalancePanel" class="bg-[#fffdf9] w-full max-w-2xl max-h-[92vh] rounded-2xl shadow-2xl border border-[#dfd5c0] flex flex-col justify-between p-4 sm:p-6 overflow-y-auto animate-fade-in">
       <div class="space-y-4">
@@ -958,7 +955,6 @@
     </div>
   </div>
 
-  <!-- Menu dédié aux heures supplémentaires pour les 3 salariés -->
   <div id="overtimeDrawer" class="hidden fixed inset-0 z-50 bg-[#1a2418]/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 no-print" role="dialog" aria-modal="true" aria-labelledby="drawerOvertimeTitle">
     <div id="overtimePanel" class="bg-[#fffdf9] w-full max-w-2xl max-h-[92vh] rounded-2xl shadow-2xl border border-[#dfd5c0] flex flex-col justify-between p-4 sm:p-6 overflow-y-auto animate-fade-in">
       <div class="space-y-4">
@@ -1054,16 +1050,13 @@
     </div>
   </div>
 
-  <!-- Notification toast -->
   <div id="toastBanner" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-md bg-[#2d4727] text-[#fffdf9] px-4 py-3 rounded-2xl shadow-xl border border-[#618258] text-sm font-medium flex items-center justify-between gap-3 animate-fade-in no-print">
     <span id="toastMessage">Action effectuée.</span>
     <button id="closeToastBtn" type="button" class="text-[#dce4d8] hover:text-white font-bold px-1.5">✕</button>
   </div>
 
-  <!-- Contenu principal -->
   <main class="flex-1 w-full max-w-4xl mx-auto px-3 sm:px-5 py-4 space-y-5">
 
-    <!-- Barre de navigation des mois -->
     <section class="bg-[#fffdf9] rounded-2xl p-3.5 sm:p-4 shadow-sm border border-[#dfd5c0] no-print" aria-label="Navigation par mois">
       <div class="flex items-center justify-between gap-2">
         <button
@@ -1101,7 +1094,6 @@
       </div>
     </section>
 
-    <!-- Barre d'outils : filtre salarié, bases horaires indépendantes par salarié, impression, réinitialisation -->
     <section class="bg-[#fffdf9] rounded-2xl p-4 shadow-sm border border-[#dfd5c0] space-y-3.5 no-print">
       <div class="flex flex-wrap items-center justify-between gap-2.5">
         <div class="flex items-center gap-1.5 flex-wrap" role="group" aria-label="Filtrer par salarié">
@@ -1341,7 +1333,6 @@
 
   </main>
 
-  <!-- Modale de confirmation -->
   <div id="infoModal" class="hidden fixed inset-0 z-50 bg-[#1a2418]/60 backdrop-blur-xs flex items-center justify-center p-4 no-print" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="bg-[#fffdf9] rounded-2xl max-w-md w-full p-5 shadow-2xl border border-[#dfd5c0] space-y-4 animate-fade-in">
       <div class="flex items-center justify-between">
@@ -1359,6 +1350,16 @@
   </div>
 
   <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBoZPt79EOroZowJEMXCIkkW5cDMK5X-3o",
+      authDomain: "debarras-express-plannin-25275.firebaseapp.com",
+      databaseURL: "https://debarras-express-plannin-25275-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "debarras-express-plannin-25275",
+      storageBucket: "debarras-express-plannin-25275.firebasestorage.app",
+      messagingSenderId: "428954170995",
+      appId: "1:428954170995:web:d9152e59fcce8f27d51c06"
+    };
+
     const DEFAULT_BASE_HOURS = 7;
     const DEFAULT_OVERTIME_THRESHOLD = 151.67;
     const EMPLOYEES = ['Pierre', 'Damien', 'Tiffany'];
@@ -1380,6 +1381,11 @@
     let afterPrintCleanupTimer = null;
     let isPrintSessionActive = false;
 
+    let firebaseEventSource = null;
+    let firebaseSaveTimer = null;
+    let lastRemotePayloadHash = '';
+    let isApplyingRemoteState = false;
+
     function createDefaultEmployeeBases(baseVal = DEFAULT_BASE_HOURS) {
       return {
         Pierre: baseVal,
@@ -1398,10 +1404,215 @@
       monthHourOverrides: {},
       weekDayOverrides: {},
       monthDayOverrides: {},
-      overtimeOverrides: {}
+      overtimeOverrides: {},
+      updatedAt: 0
     };
 
     const holidaysCache = new Map();
+
+    function setFirebaseBadgeStatus(status) {
+      const badge = document.getElementById('firebaseSyncBadge');
+      const dot = document.getElementById('firebaseSyncDot');
+      const text = document.getElementById('firebaseSyncText');
+      if (!badge || !dot || !text) return;
+
+      if (status === 'connected') {
+        badge.className = 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-[#3e6136] text-[#e6f3e2] border border-[#5c8453]';
+        dot.className = 'w-1.5 h-1.5 rounded-full bg-[#9ce68a]';
+        text.textContent = 'Synchro Firebase';
+      } else if (status === 'saving') {
+        badge.className = 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-[#4f6d34] text-[#fffdf9] border border-[#799d56]';
+        dot.className = 'w-1.5 h-1.5 rounded-full bg-[#ffe082]';
+        text.textContent = 'Enregistrement…';
+      } else if (status === 'rules') {
+        badge.className = 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-[#7a3918] text-[#fffdf9] border border-[#b5633b]';
+        dot.className = 'w-1.5 h-1.5 rounded-full bg-[#ffb48a]';
+        text.textContent = 'Local (Règles RTDB)';
+      } else {
+        badge.className = 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-[#5a4e3c] text-[#f6f1e7] border border-[#7d6f58]';
+        dot.className = 'w-1.5 h-1.5 rounded-full bg-[#e5d8be]';
+        text.textContent = 'Hors ligne';
+      }
+    }
+
+    function getFirebaseMonthUrl(year, month) {
+      const mStr = String(month + 1).padStart(2, '0');
+      const baseUrl = firebaseConfig.databaseURL.replace(/\/+$/, '');
+      return `${baseUrl}/plannings/${year}_${mStr}.json`;
+    }
+
+    function getFirebaseSseUrl(year, month) {
+      const url = getFirebaseMonthUrl(year, month);
+      return `${url}?auth=${encodeURIComponent(firebaseConfig.apiKey)}`;
+    }
+
+    function normalizeIncomingState(parsed) {
+      const baseHrs = typeof parsed.baseHours === 'number' && !isNaN(parsed.baseHours)
+        ? parsed.baseHours
+        : DEFAULT_BASE_HOURS;
+      const empBases = createDefaultEmployeeBases(baseHrs);
+      if (parsed.employeeBaseHours && typeof parsed.employeeBaseHours === 'object') {
+        EMPLOYEES.forEach((emp) => {
+          const v = parsed.employeeBaseHours[emp];
+          if (typeof v === 'number' && !isNaN(v) && v >= 0) {
+            empBases[emp] = v;
+          }
+        });
+      }
+      return {
+        filter: typeof parsed.filter === 'string' ? parsed.filter : (appState.filter || 'ALL'),
+        baseHours: baseHrs,
+        employeeBaseHours: empBases,
+        overtimeThreshold: typeof parsed.overtimeThreshold === 'number' && !isNaN(parsed.overtimeThreshold) && parsed.overtimeThreshold >= 0
+          ? parsed.overtimeThreshold
+          : DEFAULT_OVERTIME_THRESHOLD,
+        overrides: parsed.overrides && typeof parsed.overrides === 'object' ? parsed.overrides : {},
+        weekHourOverrides: parsed.weekHourOverrides && typeof parsed.weekHourOverrides === 'object' ? parsed.weekHourOverrides : {},
+        monthHourOverrides: parsed.monthHourOverrides && typeof parsed.monthHourOverrides === 'object' ? parsed.monthHourOverrides : {},
+        weekDayOverrides: parsed.weekDayOverrides && typeof parsed.weekDayOverrides === 'object' ? parsed.weekDayOverrides : {},
+        monthDayOverrides: parsed.monthDayOverrides && typeof parsed.monthDayOverrides === 'object' ? parsed.monthDayOverrides : {},
+        overtimeOverrides: parsed.overtimeOverrides && typeof parsed.overtimeOverrides === 'object' ? parsed.overtimeOverrides : {},
+        updatedAt: typeof parsed.updatedAt === 'number' ? parsed.updatedAt : 0
+      };
+    }
+
+    function hasActiveFocusOrEdit() {
+      const activeTag = document.activeElement?.tagName?.toLowerCase();
+      return activeTag === 'textarea' || activeTag === 'input';
+    }
+
+    function applyRemoteDataIfNewer(rawData) {
+      if (!rawData || typeof rawData !== 'object') return;
+      const incoming = normalizeIncomingState(rawData);
+      const signature = JSON.stringify({
+        baseHours: incoming.baseHours,
+        employeeBaseHours: incoming.employeeBaseHours,
+        overtimeThreshold: incoming.overtimeThreshold,
+        overrides: incoming.overrides,
+        weekHourOverrides: incoming.weekHourOverrides,
+        monthHourOverrides: incoming.monthHourOverrides,
+        weekDayOverrides: incoming.weekDayOverrides,
+        monthDayOverrides: incoming.monthDayOverrides,
+        overtimeOverrides: incoming.overtimeOverrides
+      });
+      if (signature === lastRemotePayloadHash) return;
+      if (incoming.updatedAt && appState.updatedAt && incoming.updatedAt < appState.updatedAt) return;
+
+      lastRemotePayloadHash = signature;
+      isApplyingRemoteState = true;
+      appState = incoming;
+      try {
+        localStorage.setItem(getStorageKey(activeYear, activeMonth), JSON.stringify(appState));
+      } catch (_) {}
+
+      if (!hasActiveFocusOrEdit()) {
+        renderAll();
+      } else {
+        renderSummaryTable();
+        renderOvertimeTable();
+      }
+      isApplyingRemoteState = false;
+      setFirebaseBadgeStatus('connected');
+    }
+
+    async function pushStateToFirebase(year, month, stateObj) {
+      if (!navigator.onLine) {
+        setFirebaseBadgeStatus('offline');
+        return;
+      }
+      setFirebaseBadgeStatus('saving');
+      try {
+        const res = await fetch(getFirebaseMonthUrl(year, month), {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(stateObj)
+        });
+        if (!res.ok) {
+          setFirebaseBadgeStatus(res.status === 401 || res.status === 403 ? 'rules' : 'offline');
+          return;
+        }
+        lastRemotePayloadHash = JSON.stringify({
+          baseHours: stateObj.baseHours,
+          employeeBaseHours: stateObj.employeeBaseHours,
+          overtimeThreshold: stateObj.overtimeThreshold,
+          overrides: stateObj.overrides,
+          weekHourOverrides: stateObj.weekHourOverrides,
+          monthHourOverrides: stateObj.monthHourOverrides,
+          weekDayOverrides: stateObj.weekDayOverrides,
+          monthDayOverrides: stateObj.monthDayOverrides,
+          overtimeOverrides: stateObj.overtimeOverrides
+        });
+        setFirebaseBadgeStatus('connected');
+      } catch (_) {
+        setFirebaseBadgeStatus('offline');
+      }
+    }
+
+    function connectFirebaseForMonth(year, month) {
+      if (firebaseEventSource) {
+        try { firebaseEventSource.close(); } catch (_) {}
+        firebaseEventSource = null;
+      }
+      lastRemotePayloadHash = '';
+
+      if (!navigator.onLine) {
+        setFirebaseBadgeStatus('offline');
+        return;
+      }
+
+      fetch(getFirebaseMonthUrl(year, month))
+        .then((r) => {
+          if (!r.ok) {
+            setFirebaseBadgeStatus(r.status === 401 || r.status === 403 ? 'rules' : 'offline');
+            return null;
+          }
+          setFirebaseBadgeStatus('connected');
+          return r.json();
+        })
+        .then((data) => {
+          if (data) {
+            applyRemoteDataIfNewer(data);
+          } else if (appState.updatedAt > 0) {
+            pushStateToFirebase(year, month, appState);
+          }
+        })
+        .catch(() => setFirebaseBadgeStatus('offline'));
+
+      if (typeof EventSource !== 'undefined') {
+        try {
+          const es = new EventSource(getFirebaseSseUrl(year, month));
+          firebaseEventSource = es;
+
+          es.addEventListener('put', (evt) => {
+            try {
+              const payload = JSON.parse(evt.data);
+              if (!payload) return;
+              if (payload.path === '/') {
+                if (payload.data) applyRemoteDataIfNewer(payload.data);
+              } else if (payload.path && payload.path !== '/') {
+                fetch(getFirebaseMonthUrl(year, month))
+                  .then((r) => r.ok ? r.json() : null)
+                  .then((d) => d && applyRemoteDataIfNewer(d))
+                  .catch(() => {});
+              }
+            } catch (_) {}
+          });
+
+          es.addEventListener('patch', () => {
+            fetch(getFirebaseMonthUrl(year, month))
+              .then((r) => r.ok ? r.json() : null)
+              .then((d) => d && applyRemoteDataIfNewer(d))
+              .catch(() => {});
+          });
+
+          es.onerror = () => {
+            if (!navigator.onLine) {
+              setFirebaseBadgeStatus('offline');
+            }
+          };
+        } catch (_) {}
+      }
+    }
 
     function getEmployeeBaseHours(employee) {
       const empVal = appState.employeeBaseHours?.[employee];
@@ -1591,7 +1802,8 @@
         monthHourOverrides: {},
         weekDayOverrides: {},
         monthDayOverrides: {},
-        overtimeOverrides: {}
+        overtimeOverrides: {},
+        updatedAt: 0
       };
 
       try {
@@ -1609,28 +1821,8 @@
 
         const parsed = JSON.parse(raw);
         if (parsed && typeof parsed === 'object') {
-          if (typeof parsed.filter === 'string') appState.filter = parsed.filter;
-          if (typeof parsed.baseHours === 'number' && !isNaN(parsed.baseHours)) {
-            appState.baseHours = parsed.baseHours;
-          }
-          appState.employeeBaseHours = createDefaultEmployeeBases(appState.baseHours);
-          if (parsed.employeeBaseHours && typeof parsed.employeeBaseHours === 'object') {
-            EMPLOYEES.forEach((emp) => {
-              const v = parsed.employeeBaseHours[emp];
-              if (typeof v === 'number' && !isNaN(v) && v >= 0) {
-                appState.employeeBaseHours[emp] = v;
-              }
-            });
-          }
-          if (typeof parsed.overtimeThreshold === 'number' && !isNaN(parsed.overtimeThreshold) && parsed.overtimeThreshold >= 0) {
-            appState.overtimeThreshold = parsed.overtimeThreshold;
-          }
-          if (parsed.overrides && typeof parsed.overrides === 'object') appState.overrides = parsed.overrides;
-          if (parsed.weekHourOverrides && typeof parsed.weekHourOverrides === 'object') appState.weekHourOverrides = parsed.weekHourOverrides;
-          if (parsed.monthHourOverrides && typeof parsed.monthHourOverrides === 'object') appState.monthHourOverrides = parsed.monthHourOverrides;
-          if (parsed.weekDayOverrides && typeof parsed.weekDayOverrides === 'object') appState.weekDayOverrides = parsed.weekDayOverrides;
-          if (parsed.monthDayOverrides && typeof parsed.monthDayOverrides === 'object') appState.monthDayOverrides = parsed.monthDayOverrides;
-          if (parsed.overtimeOverrides && typeof parsed.overtimeOverrides === 'object') appState.overtimeOverrides = parsed.overtimeOverrides;
+          appState = normalizeIncomingState(parsed);
+          appState.filter = currentFilter;
         }
       } catch (err) {
         console.warn('Impossible de charger les préférences locales :', err);
@@ -1638,10 +1830,21 @@
     }
 
     function saveState() {
+      appState.updatedAt = Date.now();
       try {
         localStorage.setItem(getStorageKey(activeYear, activeMonth), JSON.stringify(appState));
       } catch (err) {
         console.warn('Impossible de sauvegarder dans localStorage :', err);
+      }
+
+      if (!isApplyingRemoteState) {
+        const snapYear = activeYear;
+        const snapMonth = activeMonth;
+        const snapState = JSON.parse(JSON.stringify(appState));
+        if (firebaseSaveTimer) clearTimeout(firebaseSaveTimer);
+        firebaseSaveTimer = setTimeout(() => {
+          pushStateToFirebase(snapYear, snapMonth, snapState);
+        }, 180);
       }
     }
 
@@ -1989,6 +2192,7 @@
       activeMonth = newMonth;
       loadStateForMonth(activeYear, activeMonth);
       renderAll();
+      connectFirebaseForMonth(activeYear, activeMonth);
     }
 
     function renderAll() {
@@ -3134,6 +3338,14 @@
     function bindEvents() {
       const weeksContainer = document.getElementById('weeksContainer');
 
+      window.addEventListener('online', () => {
+        connectFirebaseForMonth(activeYear, activeMonth);
+      });
+
+      window.addEventListener('offline', () => {
+        setFirebaseBadgeStatus('offline');
+      });
+
       document.getElementById('prevMonthBtn').addEventListener('click', () => {
         const prevDate = new Date(activeYear, activeMonth - 1, 1);
         switchToMonth(prevDate.getFullYear(), prevDate.getMonth());
@@ -3615,26 +3827,10 @@
               activeYear = parsed.year;
               activeMonth = parsed.month - 1;
             }
-            const baseHrs = typeof st.baseHours === 'number' && !isNaN(st.baseHours) ? st.baseHours : DEFAULT_BASE_HOURS;
-            const empBases = createDefaultEmployeeBases(baseHrs);
-            if (st.employeeBaseHours && typeof st.employeeBaseHours === 'object') {
-              EMPLOYEES.forEach((emp) => {
-                if (typeof st.employeeBaseHours[emp] === 'number' && !isNaN(st.employeeBaseHours[emp])) {
-                  empBases[emp] = st.employeeBaseHours[emp];
-                }
-              });
-            }
+            const norm = normalizeIncomingState(st);
             appState = {
-              filter: typeof st.filter === 'string' ? st.filter : appState.filter,
-              baseHours: baseHrs,
-              employeeBaseHours: empBases,
-              overtimeThreshold: typeof st.overtimeThreshold === 'number' && !isNaN(st.overtimeThreshold) ? st.overtimeThreshold : DEFAULT_OVERTIME_THRESHOLD,
-              overrides: st.overrides && typeof st.overrides === 'object' ? st.overrides : {},
-              weekHourOverrides: st.weekHourOverrides && typeof st.weekHourOverrides === 'object' ? st.weekHourOverrides : {},
-              monthHourOverrides: st.monthHourOverrides && typeof st.monthHourOverrides === 'object' ? st.monthHourOverrides : {},
-              weekDayOverrides: st.weekDayOverrides && typeof st.weekDayOverrides === 'object' ? st.weekDayOverrides : {},
-              monthDayOverrides: st.monthDayOverrides && typeof st.monthDayOverrides === 'object' ? st.monthDayOverrides : {},
-              overtimeOverrides: st.overtimeOverrides && typeof st.overtimeOverrides === 'object' ? st.overtimeOverrides : {}
+              ...norm,
+              filter: typeof st.filter === 'string' ? st.filter : appState.filter
             };
             saveState();
             renderAll();
@@ -3741,6 +3937,7 @@
             loadStateForMonth(activeYear, activeMonth);
             focusedWeekIndex = typeof st.week === 'number' ? st.week : null;
             renderAll();
+            connectFirebaseForMonth(activeYear, activeMonth);
             return;
           }
           focusedWeekIndex = typeof st.week === 'number' ? st.week : null;
@@ -3878,6 +4075,7 @@
       document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'visible') {
           checkRealTimeMonthChange();
+          connectFirebaseForMonth(activeYear, activeMonth);
         }
       });
     }
@@ -3886,6 +4084,7 @@
       loadStateForMonth(activeYear, activeMonth);
       bindEvents();
       renderAll();
+      connectFirebaseForMonth(activeYear, activeMonth);
     });
   </script>
 </body>

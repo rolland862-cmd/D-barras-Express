@@ -61,7 +61,7 @@
       html, body {
         height: auto !important;
         min-height: 0 !important;
-        overflow: hidden !important;
+        overflow: visible !important;
         background-color: #ffffff !important;
         color: var(--ink-main) !important;
         font-size: 11px;
@@ -122,19 +122,19 @@
       #weeksContainer td:first-child,
       #weeksContainer th:first-child {
         position: static !important;
-        width: 70px !important;
+        width: 72px !important;
         padding: 4px 5px !important;
         min-width: 0 !important;
         font-size: 11px !important;
       }
       #weeksContainer th:nth-last-child(2),
       #weeksContainer td:nth-last-child(2) {
-        width: 44px !important;
+        width: 46px !important;
         font-size: 11px !important;
       }
       #weeksContainer th:last-child,
       #weeksContainer td:last-child {
-        width: 58px !important;
+        width: 60px !important;
         font-size: 11px !important;
       }
       .today-col-highlight {
@@ -174,10 +174,8 @@
         visibility: visible !important;
         opacity: 1 !important;
         margin: 0 auto !important;
-        padding: 26px 24px !important;
-        min-height: 250mm !important;
-        max-height: 254mm !important;
-        overflow: hidden !important;
+        padding: 24px 22px !important;
+        min-height: 242mm !important;
         box-sizing: border-box !important;
         border: 1.5px solid #c8ba9d !important;
         border-radius: 18px !important;
@@ -191,11 +189,11 @@
         align-items: center !important;
         justify-content: space-between !important;
         gap: 16px !important;
-        padding: 18px 20px !important;
+        padding: 16px 20px !important;
         border-radius: 16px !important;
         background-color: #2d4727 !important;
         color: #fffdf9 !important;
-        margin-bottom: 24px !important;
+        margin-bottom: 20px !important;
       }
       body.printing-balance-only #printBilanBrandGroup,
       body[data-print-mode="balance"] #printBilanBrandGroup {
@@ -206,20 +204,18 @@
       body.printing-balance-only #printBilanLogo,
       body[data-print-mode="balance"] #printBilanLogo {
         display: block !important;
-        width: 68px !important;
-        height: 68px !important;
+        width: 64px !important;
+        height: 64px !important;
         border-radius: 9999px !important;
         object-fit: cover !important;
         background-color: #f6f1e7 !important;
         border: 3px solid #e5d8be !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18) !important;
         flex-shrink: 0 !important;
       }
       body.printing-balance-only #printBilanTitle,
       body[data-print-mode="balance"] #printBilanTitle {
-        font-size: 20px !important;
+        font-size: 19px !important;
         font-weight: 800 !important;
-        letter-spacing: -0.01em !important;
         margin: 0 !important;
         color: #fffdf9 !important;
       }
@@ -244,8 +240,8 @@
       body[data-print-mode="balance"] #printBilanKpis {
         display: grid !important;
         grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-        gap: 16px !important;
-        margin-bottom: 24px !important;
+        gap: 14px !important;
+        margin-bottom: 20px !important;
       }
       body.printing-balance-only .print-kpi-card,
       body[data-print-mode="balance"] .print-kpi-card {
@@ -253,12 +249,12 @@
         border-top: 4px solid #2d4727 !important;
         background-color: #fbf8f1 !important;
         border-radius: 14px !important;
-        padding: 24px 14px !important;
+        padding: 20px 12px !important;
         text-align: center !important;
       }
       body.printing-balance-only .print-kpi-label,
       body[data-print-mode="balance"] .print-kpi-label {
-        font-size: 11.5px !important;
+        font-size: 11px !important;
         font-weight: 700 !important;
         text-transform: uppercase !important;
         letter-spacing: 0.05em !important;
@@ -266,40 +262,39 @@
       }
       body.printing-balance-only .print-kpi-value,
       body[data-print-mode="balance"] .print-kpi-value {
-        font-size: 25px !important;
+        font-size: 24px !important;
         font-weight: 800 !important;
         color: #2d4727 !important;
-        margin-top: 8px !important;
+        margin-top: 6px !important;
       }
       body.printing-balance-only #printSummarySection .print-table-wrap,
       body[data-print-mode="balance"] #printSummarySection .print-table-wrap {
         border-radius: 14px !important;
         border: 1px solid #d9ccb2 !important;
         background-color: #ffffff !important;
-        margin-bottom: 24px !important;
+        margin-bottom: 20px !important;
       }
       body.printing-balance-only #printSummarySection table,
       body[data-print-mode="balance"] #printSummarySection table {
-        font-size: 15px !important;
+        font-size: 14px !important;
       }
       body.printing-balance-only #printSummarySection th,
       body[data-print-mode="balance"] #printSummarySection th {
-        padding: 14px 14px !important;
-        font-size: 12px !important;
-        letter-spacing: 0.03em !important;
+        padding: 12px 12px !important;
+        font-size: 11.5px !important;
       }
       body.printing-balance-only #printSummarySection td,
       body[data-print-mode="balance"] #printSummarySection td {
-        padding: 22px 14px !important;
+        padding: 18px 12px !important;
       }
       body.printing-balance-only #printBilanFooter,
       body[data-print-mode="balance"] #printBilanFooter {
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
-        padding-top: 14px !important;
+        padding-top: 12px !important;
         border-top: 1px solid #dfd5c0 !important;
-        font-size: 11.5px !important;
+        font-size: 11px !important;
         color: #5b6358 !important;
       }
 
@@ -332,10 +327,8 @@
         visibility: visible !important;
         opacity: 1 !important;
         margin: 0 auto !important;
-        padding: 26px 24px !important;
-        min-height: 250mm !important;
-        max-height: 254mm !important;
-        overflow: hidden !important;
+        padding: 24px 22px !important;
+        min-height: 242mm !important;
         box-sizing: border-box !important;
         border: 1.5px solid #c8ba9d !important;
         border-radius: 18px !important;
@@ -349,11 +342,11 @@
         align-items: center !important;
         justify-content: space-between !important;
         gap: 16px !important;
-        padding: 18px 20px !important;
+        padding: 16px 20px !important;
         border-radius: 16px !important;
         background-color: #2d4727 !important;
         color: #fffdf9 !important;
-        margin-bottom: 24px !important;
+        margin-bottom: 20px !important;
       }
       body.printing-overtime-only #printOvertimeBrandGroup,
       body[data-print-mode="overtime"] #printOvertimeBrandGroup {
@@ -364,20 +357,18 @@
       body.printing-overtime-only #printOvertimeLogo,
       body[data-print-mode="overtime"] #printOvertimeLogo {
         display: block !important;
-        width: 68px !important;
-        height: 68px !important;
+        width: 64px !important;
+        height: 64px !important;
         border-radius: 9999px !important;
         object-fit: cover !important;
         background-color: #f6f1e7 !important;
         border: 3px solid #e5d8be !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18) !important;
         flex-shrink: 0 !important;
       }
       body.printing-overtime-only #printOvertimeTitle,
       body[data-print-mode="overtime"] #printOvertimeTitle {
-        font-size: 20px !important;
+        font-size: 19px !important;
         font-weight: 800 !important;
-        letter-spacing: -0.01em !important;
         margin: 0 !important;
         color: #fffdf9 !important;
       }
@@ -402,8 +393,8 @@
       body[data-print-mode="overtime"] #printOvertimeKpis {
         display: grid !important;
         grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-        gap: 16px !important;
-        margin-bottom: 24px !important;
+        gap: 14px !important;
+        margin-bottom: 20px !important;
       }
       body.printing-overtime-only .print-ot-kpi-card,
       body[data-print-mode="overtime"] .print-ot-kpi-card {
@@ -411,12 +402,12 @@
         border-top: 4px solid #9a4e28 !important;
         background-color: #fbf8f1 !important;
         border-radius: 14px !important;
-        padding: 24px 14px !important;
+        padding: 20px 12px !important;
         text-align: center !important;
       }
       body.printing-overtime-only .print-ot-kpi-label,
       body[data-print-mode="overtime"] .print-ot-kpi-label {
-        font-size: 11.5px !important;
+        font-size: 11px !important;
         font-weight: 700 !important;
         text-transform: uppercase !important;
         letter-spacing: 0.05em !important;
@@ -424,44 +415,43 @@
       }
       body.printing-overtime-only .print-ot-kpi-value,
       body[data-print-mode="overtime"] .print-ot-kpi-value {
-        font-size: 25px !important;
+        font-size: 24px !important;
         font-weight: 800 !important;
         color: #9a4e28 !important;
-        margin-top: 8px !important;
+        margin-top: 6px !important;
       }
       body.printing-overtime-only #printOvertimeSection .print-table-wrap,
       body[data-print-mode="overtime"] #printOvertimeSection .print-table-wrap {
         border-radius: 14px !important;
         border: 1px solid #d9ccb2 !important;
         background-color: #ffffff !important;
-        margin-bottom: 24px !important;
+        margin-bottom: 20px !important;
       }
       body.printing-overtime-only #printOvertimeSection table,
       body[data-print-mode="overtime"] #printOvertimeSection table {
-        font-size: 15px !important;
+        font-size: 14px !important;
       }
       body.printing-overtime-only #printOvertimeSection th,
       body[data-print-mode="overtime"] #printOvertimeSection th {
-        padding: 14px 14px !important;
-        font-size: 12px !important;
-        letter-spacing: 0.03em !important;
+        padding: 12px 12px !important;
+        font-size: 11.5px !important;
       }
       body.printing-overtime-only #printOvertimeSection td,
       body[data-print-mode="overtime"] #printOvertimeSection td {
-        padding: 22px 14px !important;
+        padding: 18px 12px !important;
       }
       body.printing-overtime-only #printOvertimeFooter,
       body[data-print-mode="overtime"] #printOvertimeFooter {
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
-        padding-top: 14px !important;
+        padding-top: 12px !important;
         border-top: 1px solid #dfd5c0 !important;
-        font-size: 11.5px !important;
+        font-size: 11px !important;
         color: #5b6358 !important;
       }
 
-      /* Mode impression : UNE SEULE SEMAINE — REMPLISSAGE A4 SUR 1 PAGE UNIQUE */
+      /* Mode impression : UNE SEULE SEMAINE — CONTENU COMPLET SUR 1 PAGE A4 */
       .week-fullscreen-vertical {
         position: static !important;
         inset: auto !important;
@@ -471,7 +461,7 @@
         bottom: auto !important;
         height: auto !important;
         min-height: 0 !important;
-        overflow: hidden !important;
+        overflow: visible !important;
         padding: 0 !important;
         margin: 0 !important;
         background-color: transparent !important;
@@ -486,8 +476,7 @@
         visibility: visible !important;
         opacity: 1 !important;
         height: auto !important;
-        max-height: 254mm !important;
-        overflow: hidden !important;
+        overflow: visible !important;
       }
       body.printing-single-week #weeksContainer > div:not(.print-target-week) {
         display: none !important;
@@ -504,14 +493,13 @@
       }
       body.printing-single-week .print-target-week,
       body.printing-single-week .print-target-week > div {
-        padding: 14px 14px !important;
+        padding: 12px 14px !important;
         max-width: 100% !important;
         width: 100% !important;
         margin: 0 auto !important;
-        min-height: 246mm !important;
+        min-height: 236mm !important;
         height: auto !important;
-        max-height: 252mm !important;
-        overflow: hidden !important;
+        overflow: visible !important;
         box-sizing: border-box !important;
         display: flex !important;
         flex-direction: column !important;
@@ -536,29 +524,18 @@
         display: flex !important;
         flex-direction: column !important;
         justify-content: space-between !important;
-        flex: 1 1 auto !important;
         visibility: visible !important;
         opacity: 1 !important;
-        min-height: 0 !important;
         height: auto !important;
-        max-height: 224mm !important;
-        overflow: hidden !important;
+        overflow: visible !important;
         margin-top: 6px !important;
-        gap: 4px !important;
-      }
-      body.printing-single-week .print-target-week .sm\:hidden.space-y-1\.5 > :not(:last-child) > * + *,
-      body.printing-single-week .print-target-week .sm\:hidden.space-y-2\.5 > :not(:last-child) > * + * {
-        margin-top: 0 !important;
+        gap: 6px !important;
       }
       body.printing-single-week .print-target-week .sm\:hidden > div:not(:last-child) {
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
-        flex: 1 1 auto !important;
-        padding: 6px 10px !important;
-        min-height: 0 !important;
-        max-height: 30mm !important;
-        overflow: hidden !important;
+        padding: 8px 12px !important;
         border-radius: 10px !important;
         visibility: visible !important;
         opacity: 1 !important;
@@ -566,35 +543,27 @@
         page-break-inside: avoid !important;
       }
       body.printing-single-week .print-target-week .sm\:hidden > div:not(:last-child) span {
-        font-size: 12px !important;
-        line-height: 1.2 !important;
+        font-size: 12.5px !important;
+        line-height: 1.25 !important;
       }
       body.printing-single-week .print-target-week .sm\:hidden > div:last-child {
         display: block !important;
-        flex: 0 0 auto !important;
-        margin-top: 4px !important;
-        padding: 8px 10px !important;
+        margin-top: 6px !important;
+        padding: 10px 12px !important;
         border-radius: 10px !important;
         visibility: visible !important;
         opacity: 1 !important;
         break-inside: avoid !important;
         page-break-inside: avoid !important;
       }
-      body.printing-single-week .print-target-week .sm\:hidden > div:last-child > div:first-child {
-        font-size: 10px !important;
-        margin-bottom: 4px !important;
-      }
       body.printing-single-week .print-target-week .sm\:hidden > div:last-child > div:not(:first-child) {
-        padding: 6px 10px !important;
-      }
-      body.printing-single-week .print-target-week .sm\:hidden > div:last-child span {
-        font-size: 12px !important;
+        padding: 8px 12px !important;
       }
       body.printing-single-week .print-target-week .overflow-x-auto {
         margin-top: 6px !important;
         border-radius: 12px !important;
         background-color: #ffffff !important;
-        flex: 1 1 auto !important;
+        overflow: visible !important;
       }
       body.printing-single-week .print-target-week thead th {
         padding-top: 8px !important;
@@ -602,24 +571,24 @@
         font-size: 11px !important;
       }
       body.printing-single-week .print-target-week tbody td {
-        padding: 5px 4px !important;
+        padding: 6px 4px !important;
         font-size: 11px !important;
       }
       body.printing-single-week .print-target-week .print-cell-mirror {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
         min-height: 36px !important;
-        max-height: 54px !important;
         height: auto !important;
         font-size: 11px !important;
-        line-height: 1.15 !important;
-        padding: 3px 6px !important;
+        line-height: 1.2 !important;
+        padding: 4px 6px !important;
         border-radius: 7px !important;
-        overflow: hidden !important;
       }
       body.printing-single-week .print-target-week .sm\:hidden .print-cell-mirror {
-        width: 96px !important;
-        min-width: 96px !important;
-        min-height: 32px !important;
-        max-height: 48px !important;
+        width: 108px !important;
+        min-width: 108px !important;
+        min-height: 34px !important;
         height: auto !important;
         flex-shrink: 0 !important;
       }
@@ -628,37 +597,20 @@
       body[data-print-mode="all"] #weeksContainer {
         display: flex !important;
         flex-direction: column !important;
-        justify-content: space-between !important;
-        min-height: 250mm !important;
-        max-height: 254mm !important;
-        overflow: hidden !important;
         gap: 5px !important;
       }
       body[data-print-mode="all"] #weeksContainer > div {
-        flex: 1 1 auto !important;
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: space-between !important;
         padding: 6px 8px !important;
-        min-height: 0 !important;
-        overflow: hidden !important;
       }
       body[data-print-mode="all"] #weeksContainer .overflow-x-auto {
-        flex: 1 1 auto !important;
-        display: flex !important;
-        flex-direction: column !important;
-      }
-      body[data-print-mode="all"] #weeksContainer table {
-        height: 100% !important;
+        overflow: visible !important;
       }
       body[data-print-mode="all"] #weeksContainer .print-cell-mirror {
         min-height: 24px !important;
-        max-height: 36px !important;
         height: auto !important;
         font-size: 9.5px !important;
-        line-height: 1.1 !important;
+        line-height: 1.15 !important;
         padding: 2px 4px !important;
-        overflow: hidden !important;
       }
 
       .print-break-avoid {
@@ -2786,10 +2738,8 @@
             visibility: visible !important;
             opacity: 1 !important;
             margin: 0 auto !important;
-            padding: 26px 24px !important;
-            min-height: 250mm !important;
-            max-height: 254mm !important;
-            overflow: hidden !important;
+            padding: 24px 22px !important;
+            min-height: 242mm !important;
             box-sizing: border-box !important;
           }
         `);
@@ -2828,10 +2778,8 @@
             visibility: visible !important;
             opacity: 1 !important;
             margin: 0 auto !important;
-            padding: 26px 24px !important;
-            min-height: 250mm !important;
-            max-height: 254mm !important;
-            overflow: hidden !important;
+            padding: 24px 22px !important;
+            min-height: 242mm !important;
             box-sizing: border-box !important;
           }
         `);
@@ -2848,7 +2796,7 @@
             fwWrapper.style.top = 'auto';
             fwWrapper.style.position = 'static';
             fwWrapper.style.height = 'auto';
-            fwWrapper.style.overflow = 'hidden';
+            fwWrapper.style.overflow = 'visible';
           }
           targetEl = document.querySelector('#weeksContainer .week-fullscreen-vertical > div');
         } else {
@@ -2870,8 +2818,7 @@
           html, body, main {
             height: auto !important;
             min-height: 0 !important;
-            max-height: 256mm !important;
-            overflow: hidden !important;
+            overflow: visible !important;
             visibility: visible !important;
             opacity: 1 !important;
           }
@@ -2881,8 +2828,7 @@
             visibility: visible !important;
             opacity: 1 !important;
             height: auto !important;
-            max-height: 254mm !important;
-            overflow: hidden !important;
+            overflow: visible !important;
           }
           #weeksContainer > div:not(.print-target-week) { display: none !important; }
           #weeksContainer > div.week-fullscreen-vertical {
@@ -2891,8 +2837,7 @@
             top: auto !important;
             height: auto !important;
             min-height: 0 !important;
-            max-height: 254mm !important;
-            overflow: hidden !important;
+            overflow: visible !important;
             padding: 0 !important;
             display: block !important;
             visibility: visible !important;
@@ -2901,11 +2846,10 @@
           #weeksContainer > div.week-fullscreen-vertical > div:not(.print-target-week) { display: none !important; }
           .print-target-week,
           .print-target-week > div {
-            padding: 14px 14px !important;
-            min-height: 246mm !important;
+            padding: 12px 14px !important;
+            min-height: 236mm !important;
             height: auto !important;
-            max-height: 252mm !important;
-            overflow: hidden !important;
+            overflow: visible !important;
             display: flex !important;
             flex-direction: column !important;
             justify-content: space-between !important;
@@ -2922,59 +2866,49 @@
             display: flex !important;
             flex-direction: column !important;
             justify-content: space-between !important;
-            flex: 1 1 auto !important;
             visibility: visible !important;
             opacity: 1 !important;
-            min-height: 0 !important;
             height: auto !important;
-            max-height: 224mm !important;
-            overflow: hidden !important;
+            overflow: visible !important;
             margin-top: 6px !important;
-            gap: 4px !important;
+            gap: 6px !important;
           }
           .print-target-week .sm\\:hidden > div:not(:last-child) {
             display: flex !important;
             align-items: center !important;
             justify-content: space-between !important;
-            flex: 1 1 auto !important;
-            padding: 6px 10px !important;
-            min-height: 0 !important;
-            max-height: 30mm !important;
-            overflow: hidden !important;
+            padding: 8px 12px !important;
             border-radius: 10px !important;
             visibility: visible !important;
             opacity: 1 !important;
           }
           .print-target-week .sm\\:hidden > div:not(:last-child) span {
-            font-size: 12px !important;
-            line-height: 1.2 !important;
+            font-size: 12.5px !important;
+            line-height: 1.25 !important;
           }
           .print-target-week .sm\\:hidden > div:last-child {
             display: block !important;
-            flex: 0 0 auto !important;
-            margin-top: 4px !important;
-            padding: 8px 10px !important;
+            margin-top: 6px !important;
+            padding: 10px 12px !important;
             border-radius: 10px !important;
             visibility: visible !important;
             opacity: 1 !important;
           }
           .print-target-week .sm\\:hidden > div:last-child > div:not(:first-child) {
-            padding: 6px 10px !important;
+            padding: 8px 12px !important;
           }
           .print-target-week .print-cell-mirror {
             display: flex !important;
             visibility: visible !important;
             opacity: 1 !important;
-            width: 96px !important;
-            min-width: 96px !important;
-            min-height: 32px !important;
-            max-height: 48px !important;
+            width: 108px !important;
+            min-width: 108px !important;
+            min-height: 34px !important;
             height: auto !important;
             font-size: 11px !important;
-            line-height: 1.15 !important;
-            padding: 3px 6px !important;
+            line-height: 1.2 !important;
+            padding: 4px 6px !important;
             border-radius: 7px !important;
-            overflow: hidden !important;
           }
         `);
       } else {
@@ -2983,45 +2917,21 @@
         document.title = `Planning ${MONTH_NAMES[activeMonth]} ${activeYear}${empSuffix} — Débarras Express 09`;
         setDynamicPrintStyle(`
           @page { size: A4 portrait; margin: 5mm; }
-          html, body, main {
-            max-height: 256mm !important;
-            overflow: hidden !important;
-          }
           #printSummarySection, #printOvertimeSection { display: none !important; }
           #weeksContainer {
             display: flex !important;
             flex-direction: column !important;
-            justify-content: space-between !important;
-            min-height: 250mm !important;
-            max-height: 254mm !important;
-            overflow: hidden !important;
             gap: 5px !important;
           }
           #weeksContainer > div {
-            flex: 1 1 auto !important;
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: space-between !important;
             padding: 6px 8px !important;
-            min-height: 0 !important;
-            overflow: hidden !important;
-          }
-          #weeksContainer .overflow-x-auto {
-            flex: 1 1 auto !important;
-            display: flex !important;
-            flex-direction: column !important;
-          }
-          #weeksContainer table {
-            height: 100% !important;
           }
           #weeksContainer .print-cell-mirror {
             min-height: 24px !important;
-            max-height: 36px !important;
             height: auto !important;
             font-size: 9.5px !important;
-            line-height: 1.1 !important;
+            line-height: 1.15 !important;
             padding: 2px 4px !important;
-            overflow: hidden !important;
           }
         `);
       }
@@ -3041,8 +2951,8 @@
         const val = (ta.value || '').trim();
         const lineCount = Math.max(1, val.split('\n').length);
         const minH = isSingleWeekPrint
-          ? Math.max(30, Math.min(48, lineCount * 13 + 8))
-          : Math.max(24, Math.min(36, lineCount * 11 + 6));
+          ? Math.max(32, lineCount * 14 + 8)
+          : Math.max(24, lineCount * 12 + 6);
         const cleanClasses = ta.className
           .replace(/planning-cell/g, '')
           .replace(/min-h-\[[^\]]+\]/g, '')

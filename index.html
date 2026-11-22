@@ -52,7 +52,7 @@
     @media print {
       @page {
         size: A4 portrait;
-        margin: 6mm;
+        margin: 5mm;
       }
       * {
         -webkit-print-color-adjust: exact !important;
@@ -61,7 +61,7 @@
       html, body {
         height: auto !important;
         min-height: 0 !important;
-        overflow: visible !important;
+        overflow: hidden !important;
         background-color: #ffffff !important;
         color: var(--ink-main) !important;
         font-size: 11px;
@@ -89,7 +89,7 @@
         max-width: 100% !important;
         padding-left: 0 !important;
         padding-right: 0 !important;
-        padding-top: 4px !important;
+        padding-top: 0 !important;
         padding-bottom: 0 !important;
       }
       #weeksContainer {
@@ -175,8 +175,9 @@
         opacity: 1 !important;
         margin: 0 auto !important;
         padding: 26px 24px !important;
-        min-height: 248mm !important;
-        max-height: none !important;
+        min-height: 250mm !important;
+        max-height: 254mm !important;
+        overflow: hidden !important;
         box-sizing: border-box !important;
         border: 1.5px solid #c8ba9d !important;
         border-radius: 18px !important;
@@ -332,8 +333,9 @@
         opacity: 1 !important;
         margin: 0 auto !important;
         padding: 26px 24px !important;
-        min-height: 248mm !important;
-        max-height: none !important;
+        min-height: 250mm !important;
+        max-height: 254mm !important;
+        overflow: hidden !important;
         box-sizing: border-box !important;
         border: 1.5px solid #c8ba9d !important;
         border-radius: 18px !important;
@@ -459,7 +461,7 @@
         color: #5b6358 !important;
       }
 
-      /* Mode impression : UNE SEULE SEMAINE COMPACTE SUR 1 FEUILLE */
+      /* Mode impression : UNE SEULE SEMAINE — REMPLISSAGE A4 SUR 1 PAGE UNIQUE */
       .week-fullscreen-vertical {
         position: static !important;
         inset: auto !important;
@@ -469,7 +471,7 @@
         bottom: auto !important;
         height: auto !important;
         min-height: 0 !important;
-        overflow: visible !important;
+        overflow: hidden !important;
         padding: 0 !important;
         margin: 0 !important;
         background-color: transparent !important;
@@ -483,6 +485,9 @@
         display: block !important;
         visibility: visible !important;
         opacity: 1 !important;
+        height: auto !important;
+        max-height: 254mm !important;
+        overflow: hidden !important;
       }
       body.printing-single-week #weeksContainer > div:not(.print-target-week) {
         display: none !important;
@@ -499,19 +504,22 @@
       }
       body.printing-single-week .print-target-week,
       body.printing-single-week .print-target-week > div {
-        padding: 8px 10px !important;
+        padding: 14px 14px !important;
         max-width: 100% !important;
         width: 100% !important;
         margin: 0 auto !important;
-        min-height: 0 !important;
+        min-height: 246mm !important;
         height: auto !important;
-        max-height: none !important;
+        max-height: 252mm !important;
+        overflow: hidden !important;
         box-sizing: border-box !important;
-        display: block !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
         visibility: visible !important;
         opacity: 1 !important;
         border: 1.5px solid #c8ba9d !important;
-        border-radius: 14px !important;
+        border-radius: 16px !important;
         background-color: #fffdf9 !important;
         break-inside: avoid !important;
         page-break-inside: avoid !important;
@@ -525,82 +533,134 @@
         display: none !important;
       }
       body.printing-single-week .print-target-week .sm\:hidden {
-        display: block !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        flex: 1 1 auto !important;
         visibility: visible !important;
         opacity: 1 !important;
+        min-height: 0 !important;
         height: auto !important;
-        flex: none !important;
-        margin-top: 4px !important;
+        max-height: 224mm !important;
+        overflow: hidden !important;
+        margin-top: 6px !important;
+        gap: 4px !important;
       }
       body.printing-single-week .print-target-week .sm\:hidden.space-y-1\.5 > :not(:last-child) > * + *,
       body.printing-single-week .print-target-week .sm\:hidden.space-y-2\.5 > :not(:last-child) > * + * {
-        margin-top: 3px !important;
+        margin-top: 0 !important;
       }
       body.printing-single-week .print-target-week .sm\:hidden > div:not(:last-child) {
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
-        padding: 4px 8px !important;
+        flex: 1 1 auto !important;
+        padding: 6px 10px !important;
         min-height: 0 !important;
-        border-radius: 8px !important;
+        max-height: 30mm !important;
+        overflow: hidden !important;
+        border-radius: 10px !important;
         visibility: visible !important;
         opacity: 1 !important;
         break-inside: avoid !important;
         page-break-inside: avoid !important;
       }
       body.printing-single-week .print-target-week .sm\:hidden > div:not(:last-child) span {
-        font-size: 10.5px !important;
-        line-height: 1.15 !important;
+        font-size: 12px !important;
+        line-height: 1.2 !important;
       }
       body.printing-single-week .print-target-week .sm\:hidden > div:last-child {
         display: block !important;
-        margin-top: 5px !important;
-        padding: 6px 8px !important;
-        border-radius: 8px !important;
+        flex: 0 0 auto !important;
+        margin-top: 4px !important;
+        padding: 8px 10px !important;
+        border-radius: 10px !important;
         visibility: visible !important;
         opacity: 1 !important;
         break-inside: avoid !important;
         page-break-inside: avoid !important;
       }
       body.printing-single-week .print-target-week .sm\:hidden > div:last-child > div:first-child {
-        font-size: 9.5px !important;
-        margin-bottom: 3px !important;
+        font-size: 10px !important;
+        margin-bottom: 4px !important;
       }
       body.printing-single-week .print-target-week .sm\:hidden > div:last-child > div:not(:first-child) {
-        padding: 4px 8px !important;
+        padding: 6px 10px !important;
       }
       body.printing-single-week .print-target-week .sm\:hidden > div:last-child span {
-        font-size: 10.5px !important;
+        font-size: 12px !important;
       }
       body.printing-single-week .print-target-week .overflow-x-auto {
         margin-top: 6px !important;
-        border-radius: 10px !important;
+        border-radius: 12px !important;
         background-color: #ffffff !important;
+        flex: 1 1 auto !important;
       }
       body.printing-single-week .print-target-week thead th {
-        padding-top: 5px !important;
-        padding-bottom: 5px !important;
-        font-size: 10.5px !important;
+        padding-top: 8px !important;
+        padding-bottom: 8px !important;
+        font-size: 11px !important;
       }
       body.printing-single-week .print-target-week tbody td {
-        padding: 3px !important;
-        font-size: 10.5px !important;
+        padding: 5px 4px !important;
+        font-size: 11px !important;
       }
       body.printing-single-week .print-target-week .print-cell-mirror {
-        min-height: 24px !important;
-        height: 24px !important;
-        font-size: 10px !important;
+        min-height: 36px !important;
+        max-height: 54px !important;
+        height: auto !important;
+        font-size: 11px !important;
         line-height: 1.15 !important;
-        padding: 2px 6px !important;
-        border-radius: 6px !important;
+        padding: 3px 6px !important;
+        border-radius: 7px !important;
+        overflow: hidden !important;
       }
       body.printing-single-week .print-target-week .sm\:hidden .print-cell-mirror {
-        width: 78px !important;
-        min-width: 78px !important;
-        height: 22px !important;
-        min-height: 22px !important;
+        width: 96px !important;
+        min-width: 96px !important;
+        min-height: 32px !important;
+        max-height: 48px !important;
+        height: auto !important;
         flex-shrink: 0 !important;
       }
+
+      /* Mode impression : PLANNING COMPLET (TOUTES LES SEMAINES) SUR 1 PAGE */
+      body[data-print-mode="all"] #weeksContainer {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        min-height: 250mm !important;
+        max-height: 254mm !important;
+        overflow: hidden !important;
+        gap: 5px !important;
+      }
+      body[data-print-mode="all"] #weeksContainer > div {
+        flex: 1 1 auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        padding: 6px 8px !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+      }
+      body[data-print-mode="all"] #weeksContainer .overflow-x-auto {
+        flex: 1 1 auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+      }
+      body[data-print-mode="all"] #weeksContainer table {
+        height: 100% !important;
+      }
+      body[data-print-mode="all"] #weeksContainer .print-cell-mirror {
+        min-height: 24px !important;
+        max-height: 36px !important;
+        height: auto !important;
+        font-size: 9.5px !important;
+        line-height: 1.1 !important;
+        padding: 2px 4px !important;
+        overflow: hidden !important;
+      }
+
       .print-break-avoid {
         break-inside: avoid;
         page-break-inside: avoid;
@@ -2727,8 +2787,9 @@
             opacity: 1 !important;
             margin: 0 auto !important;
             padding: 26px 24px !important;
-            min-height: 248mm !important;
-            max-height: none !important;
+            min-height: 250mm !important;
+            max-height: 254mm !important;
+            overflow: hidden !important;
             box-sizing: border-box !important;
           }
         `);
@@ -2768,8 +2829,9 @@
             opacity: 1 !important;
             margin: 0 auto !important;
             padding: 26px 24px !important;
-            min-height: 248mm !important;
-            max-height: none !important;
+            min-height: 250mm !important;
+            max-height: 254mm !important;
+            overflow: hidden !important;
             box-sizing: border-box !important;
           }
         `);
@@ -2786,7 +2848,7 @@
             fwWrapper.style.top = 'auto';
             fwWrapper.style.position = 'static';
             fwWrapper.style.height = 'auto';
-            fwWrapper.style.overflow = 'visible';
+            fwWrapper.style.overflow = 'hidden';
           }
           targetEl = document.querySelector('#weeksContainer .week-fullscreen-vertical > div');
         } else {
@@ -2804,11 +2866,12 @@
           document.title = `Semaine ${wkCfg.weekNumber}${empSuffix} — ${MONTH_NAMES[activeMonth]} ${activeYear} — Débarras Express 09`;
         }
         setDynamicPrintStyle(`
-          @page { size: A4 portrait; margin: 6mm; }
+          @page { size: A4 portrait; margin: 5mm; }
           html, body, main {
             height: auto !important;
             min-height: 0 !important;
-            overflow: visible !important;
+            max-height: 256mm !important;
+            overflow: hidden !important;
             visibility: visible !important;
             opacity: 1 !important;
           }
@@ -2818,6 +2881,8 @@
             visibility: visible !important;
             opacity: 1 !important;
             height: auto !important;
+            max-height: 254mm !important;
+            overflow: hidden !important;
           }
           #weeksContainer > div:not(.print-target-week) { display: none !important; }
           #weeksContainer > div.week-fullscreen-vertical {
@@ -2826,7 +2891,8 @@
             top: auto !important;
             height: auto !important;
             min-height: 0 !important;
-            overflow: visible !important;
+            max-height: 254mm !important;
+            overflow: hidden !important;
             padding: 0 !important;
             display: block !important;
             visibility: visible !important;
@@ -2835,10 +2901,14 @@
           #weeksContainer > div.week-fullscreen-vertical > div:not(.print-target-week) { display: none !important; }
           .print-target-week,
           .print-target-week > div {
-            padding: 8px 10px !important;
-            min-height: 0 !important;
+            padding: 14px 14px !important;
+            min-height: 246mm !important;
             height: auto !important;
-            display: block !important;
+            max-height: 252mm !important;
+            overflow: hidden !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
             visibility: visible !important;
             opacity: 1 !important;
             break-inside: avoid !important;
@@ -2849,50 +2919,62 @@
             display: none !important;
           }
           .print-target-week .sm\\:hidden {
-            display: block !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+            flex: 1 1 auto !important;
             visibility: visible !important;
             opacity: 1 !important;
+            min-height: 0 !important;
             height: auto !important;
-            flex: none !important;
-            margin-top: 4px !important;
+            max-height: 224mm !important;
+            overflow: hidden !important;
+            margin-top: 6px !important;
+            gap: 4px !important;
           }
           .print-target-week .sm\\:hidden > div:not(:last-child) {
             display: flex !important;
             align-items: center !important;
             justify-content: space-between !important;
-            padding: 4px 8px !important;
+            flex: 1 1 auto !important;
+            padding: 6px 10px !important;
             min-height: 0 !important;
-            border-radius: 8px !important;
+            max-height: 30mm !important;
+            overflow: hidden !important;
+            border-radius: 10px !important;
             visibility: visible !important;
             opacity: 1 !important;
           }
           .print-target-week .sm\\:hidden > div:not(:last-child) span {
-            font-size: 10.5px !important;
-            line-height: 1.15 !important;
+            font-size: 12px !important;
+            line-height: 1.2 !important;
           }
           .print-target-week .sm\\:hidden > div:last-child {
             display: block !important;
-            margin-top: 5px !important;
-            padding: 6px 8px !important;
-            border-radius: 8px !important;
+            flex: 0 0 auto !important;
+            margin-top: 4px !important;
+            padding: 8px 10px !important;
+            border-radius: 10px !important;
             visibility: visible !important;
             opacity: 1 !important;
           }
           .print-target-week .sm\\:hidden > div:last-child > div:not(:first-child) {
-            padding: 4px 8px !important;
+            padding: 6px 10px !important;
           }
           .print-target-week .print-cell-mirror {
             display: flex !important;
             visibility: visible !important;
             opacity: 1 !important;
-            width: 78px !important;
-            min-width: 78px !important;
-            height: 22px !important;
-            min-height: 22px !important;
-            font-size: 10px !important;
+            width: 96px !important;
+            min-width: 96px !important;
+            min-height: 32px !important;
+            max-height: 48px !important;
+            height: auto !important;
+            font-size: 11px !important;
             line-height: 1.15 !important;
-            padding: 2px 6px !important;
-            border-radius: 6px !important;
+            padding: 3px 6px !important;
+            border-radius: 7px !important;
+            overflow: hidden !important;
           }
         `);
       } else {
@@ -2900,7 +2982,47 @@
         renderWeeks();
         document.title = `Planning ${MONTH_NAMES[activeMonth]} ${activeYear}${empSuffix} — Débarras Express 09`;
         setDynamicPrintStyle(`
+          @page { size: A4 portrait; margin: 5mm; }
+          html, body, main {
+            max-height: 256mm !important;
+            overflow: hidden !important;
+          }
           #printSummarySection, #printOvertimeSection { display: none !important; }
+          #weeksContainer {
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+            min-height: 250mm !important;
+            max-height: 254mm !important;
+            overflow: hidden !important;
+            gap: 5px !important;
+          }
+          #weeksContainer > div {
+            flex: 1 1 auto !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+            padding: 6px 8px !important;
+            min-height: 0 !important;
+            overflow: hidden !important;
+          }
+          #weeksContainer .overflow-x-auto {
+            flex: 1 1 auto !important;
+            display: flex !important;
+            flex-direction: column !important;
+          }
+          #weeksContainer table {
+            height: 100% !important;
+          }
+          #weeksContainer .print-cell-mirror {
+            min-height: 24px !important;
+            max-height: 36px !important;
+            height: auto !important;
+            font-size: 9.5px !important;
+            line-height: 1.1 !important;
+            padding: 2px 4px !important;
+            overflow: hidden !important;
+          }
         `);
       }
     }
@@ -2919,8 +3041,8 @@
         const val = (ta.value || '').trim();
         const lineCount = Math.max(1, val.split('\n').length);
         const minH = isSingleWeekPrint
-          ? Math.max(22, lineCount * 12 + 4)
-          : (lineCount > 1 ? Math.max(36, lineCount * 13 + 6) : 28);
+          ? Math.max(30, Math.min(48, lineCount * 13 + 8))
+          : Math.max(24, Math.min(36, lineCount * 11 + 6));
         const cleanClasses = ta.className
           .replace(/planning-cell/g, '')
           .replace(/min-h-\[[^\]]+\]/g, '')

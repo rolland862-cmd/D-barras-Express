@@ -59,9 +59,9 @@
         print-color-adjust: exact !important;
       }
       body {
-        background-color: var(--bg-cream) !important;
+        background-color: #ffffff !important;
         color: var(--ink-main) !important;
-        font-size: 12px;
+        font-size: 11.5px;
         padding-bottom: 0 !important;
       }
       header.app-header {
@@ -71,9 +71,10 @@
         display: block !important;
         box-shadow: none !important;
       }
-      #openMonthlyBalanceMenuBtn {
-        display: none !important;
-      }
+      #openMonthlyBalanceMenuBtn,
+      #monthlyBalanceDrawer,
+      #infoModal,
+      #toastBanner,
       .no-print {
         display: none !important;
       }
@@ -81,16 +82,16 @@
         max-width: 100% !important;
         padding-left: 0 !important;
         padding-right: 0 !important;
-        padding-top: 6px !important;
-        padding-bottom: 6px !important;
+        padding-top: 4px !important;
+        padding-bottom: 4px !important;
       }
       #weeksContainer {
         display: flex !important;
         flex-direction: column !important;
-        gap: 7px !important;
+        gap: 6px !important;
       }
       #weeksContainer > div {
-        padding: 7px 9px !important;
+        padding: 6px 8px !important;
         border-radius: 10px !important;
       }
       #weeksContainer > div > div:first-child {
@@ -99,12 +100,13 @@
       #weeksContainer table {
         table-layout: fixed !important;
         width: 100% !important;
+        border-collapse: collapse !important;
       }
       #weeksContainer th {
         padding-top: 3px !important;
         padding-bottom: 3px !important;
         min-width: 0 !important;
-        font-size: 10.5px !important;
+        font-size: 10px !important;
         line-height: 1.15 !important;
       }
       #weeksContainer td {
@@ -113,20 +115,20 @@
       #weeksContainer td:first-child,
       #weeksContainer th:first-child {
         position: static !important;
-        width: 72px !important;
-        padding: 3px 5px !important;
+        width: 66px !important;
+        padding: 3px 4px !important;
         min-width: 0 !important;
-        font-size: 11px !important;
+        font-size: 10.5px !important;
       }
       #weeksContainer th:nth-last-child(2),
       #weeksContainer td:nth-last-child(2) {
-        width: 46px !important;
-        font-size: 11px !important;
+        width: 42px !important;
+        font-size: 10.5px !important;
       }
       #weeksContainer th:last-child,
       #weeksContainer td:last-child {
-        width: 62px !important;
-        font-size: 11px !important;
+        width: 56px !important;
+        font-size: 10.5px !important;
       }
       .today-col-highlight {
         box-shadow: none !important;
@@ -135,6 +137,8 @@
       .today-label {
         display: none !important;
       }
+
+      /* Mode impression : BILAN SEUL */
       body.printing-balance-only header.app-header,
       body.printing-balance-only #weeksContainer,
       body.printing-balance-only main > section:not(#printSummarySection) {
@@ -145,20 +149,25 @@
         padding-bottom: 0 !important;
       }
       body.printing-balance-only #printSummarySection,
+      body.printing-balance-only section#printSummarySection,
       body.printing-balance-only section#printSummarySection.hidden {
         display: block !important;
+        visibility: visible !important;
         margin-top: 0 !important;
         padding: 16px !important;
         border: 1px solid #dfd5c0 !important;
         border-radius: 12px !important;
+        background-color: #fffdf9 !important;
       }
       body.printing-balance-only #printBilanTitle {
-        font-size: 16px !important;
-        margin-bottom: 10px !important;
+        font-size: 17px !important;
+        margin-bottom: 12px !important;
       }
       body.printing-balance-only #printSummarySection table {
         font-size: 13px !important;
       }
+
+      /* Mode impression : UNE SEULE SEMAINE */
       .week-fullscreen-vertical {
         position: static !important;
         inset: auto !important;
@@ -167,6 +176,12 @@
         margin: 0 0 10px 0 !important;
         background-color: transparent !important;
         z-index: auto !important;
+      }
+      body.printing-single-week #printSummarySection {
+        display: none !important;
+      }
+      body.printing-single-week #weeksContainer {
+        display: block !important;
       }
       body.printing-single-week #weeksContainer > div:not(.print-target-week) {
         display: none !important;
@@ -180,20 +195,16 @@
       body.printing-single-week #weeksContainer > div.week-fullscreen-vertical > div:not(.print-target-week) {
         display: none !important;
       }
-      body.printing-single-week #printSummarySection {
-        display: none !important;
-      }
       body.printing-single-week .print-target-week {
         padding: 14px 16px !important;
         max-width: 100% !important;
         margin: 0 !important;
       }
-      body.printing-single-week .print-target-week textarea.planning-cell {
-        min-height: 68px !important;
-        height: auto !important;
-        font-size: 12.5px !important;
-        line-height: 1.35 !important;
-        padding: 6px 5px !important;
+      body.printing-single-week .print-target-week .print-cell-mirror {
+        min-height: 58px !important;
+        font-size: 11.5px !important;
+        line-height: 1.3 !important;
+        padding: 5px 4px !important;
       }
       .week-fullscreen-vertical .sm\:hidden {
         display: none !important;
@@ -206,21 +217,29 @@
         break-inside: avoid;
         page-break-inside: avoid;
       }
+
+      /* Eviter toute double case / double colonne à l'impression */
       textarea.planning-cell {
-        min-height: 44px !important;
-        height: auto !important;
-        min-width: 0 !important;
+        display: none !important;
+      }
+      .print-cell-mirror {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
         width: 100% !important;
-        font-size: 10.5px !important;
-        line-height: 1.25 !important;
-        padding: 4px 3px !important;
+        box-sizing: border-box !important;
+        border-radius: 6px !important;
         border-width: 1px !important;
         white-space: pre-wrap !important;
         overflow-wrap: break-word !important;
         word-break: break-word !important;
-        overflow: visible !important;
-        box-sizing: border-box !important;
+        hyphens: none !important;
+        font-size: 10px !important;
+        line-height: 1.2 !important;
+        padding: 3px 2px !important;
       }
+
       input.hours-edit-input,
       input.month-hours-input {
         border: none !important;
@@ -228,7 +247,7 @@
         box-shadow: none !important;
         width: 100% !important;
         min-width: 0 !important;
-        font-size: 11px !important;
+        font-size: 10.5px !important;
         padding: 2px 1px !important;
       }
       #printSummarySection {
@@ -618,6 +637,9 @@
     let activeYear = systemYear;
     let activeMonth = systemMonth;
     let focusedWeekIndex = null;
+
+    let currentPrintMode = 'all';
+    let currentPrintWeekIdx = null;
 
     let appState = {
       filter: 'ALL',
@@ -1766,74 +1788,99 @@
         });
       });
 
-      function printSingleWeek(weekIdx) {
-        const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
-        const wkCfg = weeksConfig[weekIdx];
+      function applyPrintClassesToDom() {
+        document.body.classList.remove('printing-single-week', 'printing-balance-only');
         document.querySelectorAll('.print-target-week').forEach((el) => el.classList.remove('print-target-week'));
 
-        let targetEl = null;
-        if (focusedWeekIndex !== null && focusedWeekIndex === weekIdx) {
-          const fwWrapper = document.querySelector('#weeksContainer .week-fullscreen-vertical');
-          if (fwWrapper) fwWrapper.classList.add('print-target-week');
-          targetEl = document.querySelector('#weeksContainer .week-fullscreen-vertical > div');
-        } else {
-          const topCards = document.querySelectorAll('#weeksContainer > div');
-          targetEl = topCards[weekIdx] || null;
-        }
-
-        if (!targetEl) {
+        if (currentPrintMode === 'balance') {
+          renderSummaryTable();
           applyMonthLabels();
-          window.print();
-          return;
+          document.body.classList.add('printing-balance-only');
+          document.title = `Bilan Heures ${MONTH_NAMES[activeMonth]} ${activeYear} — Débarras Express 09`;
+        } else if (currentPrintMode === 'single-week' && typeof currentPrintWeekIdx === 'number') {
+          const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
+          const wkCfg = weeksConfig[currentPrintWeekIdx];
+          let targetEl = null;
+          if (focusedWeekIndex !== null && focusedWeekIndex === currentPrintWeekIdx) {
+            const fwWrapper = document.querySelector('#weeksContainer .week-fullscreen-vertical');
+            if (fwWrapper) fwWrapper.classList.add('print-target-week');
+            targetEl = document.querySelector('#weeksContainer .week-fullscreen-vertical > div');
+          } else {
+            const topCards = document.querySelectorAll('#weeksContainer > div');
+            targetEl = topCards[currentPrintWeekIdx] || null;
+          }
+          if (targetEl) {
+            targetEl.classList.add('print-target-week');
+            document.body.classList.add('printing-single-week');
+          }
+          if (wkCfg) {
+            document.title = `Semaine ${wkCfg.weekNumber} — ${MONTH_NAMES[activeMonth]} ${activeYear} — Débarras Express 09`;
+          }
+        } else {
+          applyMonthLabels();
         }
+      }
 
-        targetEl.classList.add('print-target-week');
-        document.body.classList.add('printing-single-week');
-        if (wkCfg) {
-          document.title = `Semaine ${wkCfg.weekNumber} — ${MONTH_NAMES[activeMonth]} ${activeYear} — Débarras Express 09`;
-        }
+      function printSingleWeek(weekIdx) {
+        currentPrintMode = 'single-week';
+        currentPrintWeekIdx = weekIdx;
+        applyPrintClassesToDom();
+        cleanupPrintTextMirrors();
+        preparePrintTextMirrors();
         window.print();
       }
 
       function preparePrintTextMirrors() {
         document.querySelectorAll('.print-cell-mirror').forEach((n) => n.remove());
-        document.querySelectorAll('textarea.planning-cell').forEach((ta) => {
+        const selector = (currentPrintMode === 'single-week' && document.querySelector('.print-target-week'))
+          ? '.print-target-week textarea.planning-cell'
+          : '#weeksContainer textarea.planning-cell';
+        document.querySelectorAll(selector).forEach((ta) => {
           const td = ta.closest('td');
           if (!td || td.querySelector('.print-cell-mirror')) return;
-          const val = ta.value || '';
+          const val = (ta.value || '').trim();
           const lineCount = Math.max(1, val.split('\n').length);
-          const minH = lineCount > 1 ? Math.max(54, lineCount * 15 + 10) : 42;
+          const minH = lineCount > 1 ? Math.max(48, lineCount * 13 + 8) : 34;
+          const cleanClasses = ta.className
+            .replace(/planning-cell/g, '')
+            .replace(/min-h-\[[^\]]+\]/g, '')
+            .replace(/!w-\S+/g, '')
+            .replace(/!min-w-\[[^\]]+\]/g, '')
+            .replace(/py-\S+/g, '')
+            .replace(/px-\S+/g, '');
           const mirror = document.createElement('div');
-          mirror.className = `print-cell-mirror hidden print:flex items-center justify-center text-center rounded-lg border ${ta.className.replace('planning-cell', '').replace(/min-h-\[[^\]]+\]/g, '').replace(/!w-\S+/g, '').replace(/!min-w-\[[^\]]+\]/g, '')}`;
-          mirror.style.cssText = `white-space: pre-wrap; overflow-wrap: break-word; word-break: normal; hyphens: none; min-height: ${minH}px; height: auto; width: 100%; font-size: 10.5px; line-height: 1.25; padding: 4px 3px; box-sizing: border-box;`;
+          mirror.className = `print-cell-mirror ${cleanClasses}`;
+          mirror.style.minHeight = `${minH}px`;
           mirror.textContent = val || '·';
-          ta.classList.add('print:hidden');
           td.appendChild(mirror);
         });
       }
 
       function cleanupPrintTextMirrors() {
         document.querySelectorAll('.print-cell-mirror').forEach((n) => n.remove());
-        document.querySelectorAll('textarea.planning-cell').forEach((ta) => {
-          ta.classList.remove('print:hidden');
-        });
       }
 
       window.addEventListener('beforeprint', () => {
+        applyPrintClassesToDom();
         cleanupPrintTextMirrors();
         preparePrintTextMirrors();
       });
 
       window.addEventListener('afterprint', () => {
         cleanupPrintTextMirrors();
+        currentPrintMode = 'all';
+        currentPrintWeekIdx = null;
         document.body.classList.remove('printing-single-week', 'printing-balance-only');
         document.querySelectorAll('.print-target-week').forEach((el) => el.classList.remove('print-target-week'));
         applyMonthLabels();
       });
 
       document.getElementById('printBtn').addEventListener('click', () => {
-        document.body.classList.remove('printing-single-week', 'printing-balance-only');
-        applyMonthLabels();
+        currentPrintMode = 'all';
+        currentPrintWeekIdx = null;
+        applyPrintClassesToDom();
+        cleanupPrintTextMirrors();
+        preparePrintTextMirrors();
         window.print();
       });
 
@@ -1911,7 +1958,11 @@
       }
 
       function triggerPdfExport() {
-        applyMonthLabels();
+        currentPrintMode = 'all';
+        currentPrintWeekIdx = null;
+        applyPrintClassesToDom();
+        cleanupPrintTextMirrors();
+        preparePrintTextMirrors();
         showToast('Ouverture de l’aperçu PDF : choisissez « Enregistrer en PDF » ou « Imprimer ».');
         setTimeout(() => {
           window.print();
@@ -2116,11 +2167,9 @@
       if (drawerPrintBtn) {
         drawerPrintBtn.addEventListener('click', () => {
           setMonthlyDrawerOpen(false);
-          document.body.classList.remove('printing-single-week');
-          document.body.classList.add('printing-balance-only');
-          renderSummaryTable();
-          applyMonthLabels();
-          document.title = `Bilan Heures ${MONTH_NAMES[activeMonth]} ${activeYear} — Débarras Express 09`;
+          currentPrintMode = 'balance';
+          currentPrintWeekIdx = null;
+          applyPrintClassesToDom();
           window.print();
         });
       }

@@ -2490,8 +2490,10 @@
       const printOtKpiOvertime = document.getElementById('printOtKpiOvertime');
       if (printOtKpiOvertime) printOtKpiOvertime.textContent = formatHours(shownOvertime);
 
-      const printOtThrInfo = document.getElementById('printOvertimeThresholdInfo');
-      if (printOtThrInfo) printOtThrInfo.textContent = `Seuil : ${formatHours(appState.overtimeThreshold)} / mois`;
+      const printOtThrInfo = document.getElementById('printOtKpiThresholdInfo') || document.getElementById('printOvertimeThresholdInfo');
+      if (printOtThrInfo) {
+        printOtThrInfo.textContent = `Seuil : ${formatHours(appState.overtimeThreshold)} / mois`;
+      }
 
       const printOtTbody = document.getElementById('printOvertimeTableBody');
       if (printOtTbody) {
@@ -2564,6 +2566,7 @@
       renderOvertimeTable();
 
       document.body.classList.remove('printing-single-week', 'printing-balance-only', 'printing-overtime-only', 'single-emp-week');
+      document.body.removeAttribute('data-print-mode');
       document.querySelectorAll('.print-target-week').forEach((el) => el.classList.remove('print-target-week'));
       setDynamicPrintStyle('');
 
@@ -2572,9 +2575,17 @@
 
       if (currentPrintMode === 'overtime') {
         document.body.classList.add('printing-overtime-only');
+        document.body.setAttribute('data-print-mode', 'overtime');
         const selectedOtEmp = document.getElementById('overtimeEmployeeSelect')?.value || 'ALL';
         const otSuffix = selectedOtEmp !== 'ALL' ? ` — ${selectedOtEmp}` : '';
         document.title = `Heures Supplémentaires${otSuffix} ${MONTH_NAMES[activeMonth]} ${activeYear} — Débarras Express 09`;
+
+        const otSec = document.getElementById('printOvertimeSection');
+        if (otSec) {
+          otSec.classList.remove('hidden');
+          otSec.style.display = 'flex';
+        }
+
         setDynamicPrintStyle(`
           header.app-header,
           #weeksContainer,
@@ -2598,6 +2609,7 @@
         `);
       } else if (currentPrintMode === 'balance') {
         document.body.classList.add('printing-balance-only');
+        document.body.setAttribute('data-print-mode', 'balance');
         const selectedEmp = document.getElementById('bilanEmployeeSelect')?.value || 'ALL';
         const balSuffix = selectedEmp !== 'ALL' ? ` — ${selectedEmp}` : '';
         document.title = `Bilan Heures${balSuffix} ${MONTH_NAMES[activeMonth]} ${activeYear} — Débarras Express 09`;
@@ -2703,7 +2715,12 @@
       applyPrintClassesToDom();
       cleanupPrintTextMirrors();
       preparePrintTextMirrors();
-      window.print();
+
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          window.print();
+        }, 60);
+      });
     }
 
     function printSingleWeek(weekIdx) {
@@ -3011,6 +3028,12 @@
           currentPrintWeekIdx = null;
           isPrintSessionActive = false;
           document.body.classList.remove('printing-single-week', 'printing-balance-only', 'printing-overtime-only', 'single-emp-week');
+          document.body.removeAttribute('data-print-mode');
+          const otSec = document.getElementById('printOvertimeSection');
+          if (otSec) {
+            otSec.classList.add('hidden');
+            otSec.style.display = '';
+          }
           document.querySelectorAll('.print-target-week').forEach((el) => el.classList.remove('print-target-week'));
           setDynamicPrintStyle('');
           applyMonthLabels();

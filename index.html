@@ -142,7 +142,6 @@
       }
     }
 
-    /* Cases de saisie libre agrandies et élargies pour éviter toute coupure de mot */
     textarea.planning-cell {
       resize: none;
       overflow: hidden;
@@ -189,7 +188,6 @@
       background-color: #eef6eb !important;
     }
 
-
     .week-fullscreen-vertical {
       position: fixed;
       inset: 60px 0 0 0;
@@ -225,7 +223,6 @@
 </head>
 <body class="min-h-screen flex flex-col bg-[#f6f1e7] text-[#232921]">
 
-  <!-- En-tête principal avec logo Débarras Express 09 -->
   <header class="app-header sticky top-0 z-30 bg-[#2d4727] text-[#fffdf9] shadow-md border-b border-[#46663e] no-print">
     <div class="max-w-4xl mx-auto px-4 py-2.5 flex items-center justify-between gap-3">
       <div class="flex items-center gap-3 min-w-0">
@@ -262,42 +259,61 @@
     </div>
   </header>
 
-  <!-- Menu / Tiroir cliquable du bilan mensuel des heures effectuées -->
-  <div id="monthlyBalanceDrawer" class="hidden fixed inset-0 z-50 bg-[#1a2418]/60 backdrop-blur-xs flex justify-end no-print" role="dialog" aria-modal="true" aria-labelledby="drawerBilanTitle">
-    <div id="monthlyBalancePanel" class="bg-[#fffdf9] w-full max-w-md h-full shadow-2xl border-l border-[#dfd5c0] flex flex-col justify-between p-4 sm:p-5 overflow-y-auto animate-fade-in">
+  <!-- Menu / Fenêtre centrée du bilan mensuel des heures effectuées -->
+  <div id="monthlyBalanceDrawer" class="hidden fixed inset-0 z-50 bg-[#1a2418]/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 no-print" role="dialog" aria-modal="true" aria-labelledby="drawerBilanTitle">
+    <div id="monthlyBalancePanel" class="bg-[#fffdf9] w-full max-w-2xl max-h-[92vh] rounded-2xl shadow-2xl border border-[#dfd5c0] flex flex-col justify-between p-4 sm:p-6 overflow-y-auto animate-fade-in">
       <div class="space-y-4">
         <div class="flex items-start justify-between gap-2 pb-3 border-b border-[#e7decb]">
-          <div>
+          <div class="text-center flex-1">
             <span class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#e4eee0] text-[#2d4727] mb-1">Menu Bilan</span>
-            <h2 id="drawerBilanTitle" class="text-lg font-extrabold text-[#232921]">Bilan Mensuel</h2>
-            <p id="drawerBilanSubtitle" class="text-xs text-[#5b6358]">Heures effectuées (modifiables)</p>
+            <h2 id="drawerBilanTitle" class="text-lg sm:text-xl font-extrabold text-[#232921]">Bilan Mensuel</h2>
+            <p id="drawerBilanSubtitle" class="text-xs sm:text-sm text-[#5b6358]">Heures effectuées (modifiables)</p>
           </div>
-          <button id="closeMonthlyBalanceBtn" type="button" class="px-2.5 py-1.5 rounded-xl bg-[#efe8d8] hover:bg-[#e3d7be] text-[#232921] font-bold text-sm cursor-pointer">✕</button>
+          <button id="closeMonthlyBalanceBtn" type="button" class="px-3 py-1.5 rounded-xl bg-[#efe8d8] hover:bg-[#e3d7be] text-[#232921] font-bold text-sm cursor-pointer">✕</button>
         </div>
 
-        <div class="flex items-center justify-between gap-2">
+        <div class="flex items-center justify-between gap-2 flex-wrap">
           <button
             id="copySummaryBtn"
             type="button"
-            class="px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold bg-[#efe8d8] hover:bg-[#e3d7be] text-[#232921] border border-[#d6c9ae] transition cursor-pointer"
+            class="px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-semibold bg-[#efe8d8] hover:bg-[#e3d7be] text-[#232921] border border-[#d6c9ae] transition cursor-pointer"
             title="Copier le bilan mensuel sous forme de texte"
           >
             Copier bilan
           </button>
+
+          <label for="bilanEmployeeSelect" class="sr-only">Choisir un salarié</label>
+          <select
+            id="bilanEmployeeSelect"
+            class="px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold bg-[#fffdf9] hover:bg-[#fcfaf5] text-[#232921] border border-[#cfc2a8] focus:ring-2 focus:ring-[#2d4727] outline-none cursor-pointer text-center"
+            aria-label="Sélectionner un salarié pour voir ses heures"
+          >
+            <option value="ALL">Tous les salariés</option>
+            <option value="Pierre">Pierre</option>
+            <option value="Damien">Damien</option>
+            <option value="David">David</option>
+          </select>
+
           <span id="daysInMonthBadge" class="px-3 py-1 rounded-full text-xs sm:text-sm font-semibold bg-[#e4eee0] text-[#2d4727]">
             30 jours
           </span>
         </div>
 
+        <div id="selectedEmployeeSpotlight" class="hidden rounded-xl border border-[#b9cfb2] bg-[#eef6eb] px-4 py-3 text-center space-y-1">
+          <div id="spotlightTitle" class="text-xs font-bold uppercase tracking-wide text-[#2d4727]">Détail salarié</div>
+          <div id="spotlightHours" class="text-2xl font-extrabold text-[#232921]">0 h</div>
+          <div id="spotlightMeta" class="text-xs font-medium text-[#4c5449]">0 j travaillés · 0 repos · 0 congés</div>
+        </div>
+
         <div class="overflow-x-auto rounded-xl border border-[#dfd5c0]">
-          <table class="w-full text-left border-collapse">
+          <table class="w-full text-center border-collapse">
             <thead>
-              <tr class="bg-[#f3ece0] border-b border-[#dfd5c0] text-[11px] font-semibold text-[#4c5449] uppercase tracking-wide">
-                <th class="py-2.5 px-2">Salarié</th>
-                <th class="py-2.5 px-1 text-center">Jours</th>
-                <th class="py-2.5 px-1 text-center">Repos</th>
-                <th class="py-2.5 px-1 text-center">Congés</th>
-                <th class="py-2.5 px-2 text-right whitespace-nowrap">Total Heures</th>
+              <tr class="bg-[#f3ece0] border-b border-[#dfd5c0] text-[11px] sm:text-xs font-semibold text-[#4c5449] uppercase tracking-wide">
+                <th class="py-2.5 px-2.5 text-center">Salarié</th>
+                <th class="py-2.5 px-1.5 text-center">Jours</th>
+                <th class="py-2.5 px-1.5 text-center">Repos</th>
+                <th class="py-2.5 px-1.5 text-center">Congés</th>
+                <th class="py-2.5 px-2.5 text-center whitespace-nowrap">Total Heures</th>
               </tr>
             </thead>
             <tbody id="summaryTableBody" class="divide-y divide-[#e7decb] text-sm">
@@ -305,12 +321,12 @@
           </table>
         </div>
 
-        <p class="text-xs text-[#5b6358] leading-relaxed bg-[#fcfaf5] p-3 rounded-xl border border-[#e7decb]">
+        <p class="text-xs text-[#5b6358] text-center leading-relaxed bg-[#fcfaf5] p-3 rounded-xl border border-[#e7decb]">
           Astuce : cliquez directement sur une valeur dans <strong class="text-[#232921]">Total Heures</strong> pour ajuster manuellement les heures d'un salarié sur le mois. Les totaux <strong class="text-[#2d4727]">Jours / Heures</strong> restent affichés à côté de chaque semaine.
         </p>
       </div>
 
-      <div class="pt-4 border-t border-[#e7decb] flex items-center justify-between gap-2">
+      <div class="pt-4 mt-4 border-t border-[#e7decb] flex items-center justify-between gap-2">
         <button id="drawerPrintBtn" type="button" class="px-3.5 py-2 rounded-xl bg-[#e6efe3] hover:bg-[#d6e4d1] text-[#2d4727] text-xs sm:text-sm font-bold border border-[#b9cfb2] transition cursor-pointer">
           Imprimer / PDF
         </button>
@@ -330,7 +346,6 @@
   <!-- Contenu principal -->
   <main class="flex-1 w-full max-w-4xl mx-auto px-3 sm:px-5 py-4 space-y-5">
 
-    <!-- Barre de navigation des mois -->
     <section class="bg-[#fffdf9] rounded-2xl p-3.5 sm:p-4 shadow-sm border border-[#dfd5c0] no-print" aria-label="Navigation par mois">
       <div class="flex items-center justify-between gap-2">
         <button
@@ -368,7 +383,6 @@
       </div>
     </section>
 
-    <!-- Barre d'outils : filtre salarié, base horaire modifiable, impression, réinitialisation -->
     <section class="bg-[#fffdf9] rounded-2xl p-4 shadow-sm border border-[#dfd5c0] space-y-3.5 no-print">
       <div class="flex flex-wrap items-center justify-between gap-2.5">
         <div class="flex items-center gap-1.5 flex-wrap" role="group" aria-label="Filtrer par salarié">
@@ -1343,10 +1357,17 @@
       const tbody = document.getElementById('summaryTableBody');
       tbody.innerHTML = '';
 
+      const selectEl = document.getElementById('bilanEmployeeSelect');
+      const selectedEmp = selectEl ? selectEl.value : 'ALL';
+
       let sumWorked = 0;
       let sumRest = 0;
       let sumPto = 0;
       let sumHours = 0;
+
+      const listToShow = (selectedEmp && selectedEmp !== 'ALL')
+        ? EMPLOYEES.filter((e) => e === selectedEmp)
+        : EMPLOYEES;
 
       EMPLOYEES.forEach((employee) => {
         const stats = computeEmployeeStats(employee);
@@ -1354,38 +1375,60 @@
         sumRest += stats.restDays;
         sumPto += stats.ptoDays;
         sumHours += stats.totalHours;
+      });
 
-        const isHighlighted = appState.filter === employee;
+      const spotlight = document.getElementById('selectedEmployeeSpotlight');
+      if (spotlight) {
+        if (selectedEmp && selectedEmp !== 'ALL') {
+          const st = computeEmployeeStats(selectedEmp);
+          document.getElementById('spotlightTitle').textContent = `Heures mensuelles — ${selectedEmp}`;
+          document.getElementById('spotlightHours').textContent = formatHours(st.totalHours);
+          document.getElementById('spotlightMeta').textContent = `${st.workedDays} j travaillés · ${st.restDays} repos · ${st.ptoDays} congés`;
+          spotlight.classList.remove('hidden');
+        } else {
+          spotlight.classList.add('hidden');
+        }
+      }
+
+      listToShow.forEach((employee) => {
+        const stats = computeEmployeeStats(employee);
+
+        const isHighlighted = selectedEmp === employee || appState.filter === employee;
         const tr = document.createElement('tr');
         tr.className = isHighlighted ? 'bg-[#eef5eb] font-medium' : 'bg-[#fffdf9]';
 
         tr.innerHTML = `
-          <td class="py-3 px-2.5 font-bold text-[#232921] text-sm">${employee}</td>
+          <td class="py-3 px-2.5 font-bold text-[#232921] text-sm text-center">${employee}</td>
           <td class="py-3 px-1.5 text-center font-semibold text-[#2d4727] text-sm whitespace-nowrap">${stats.workedDays} j</td>
           <td class="py-3 px-1.5 text-center text-[#4c5449] text-sm whitespace-nowrap">${stats.restDays}</td>
           <td class="py-3 px-1.5 text-center text-[#9a4e28] text-sm whitespace-nowrap">${stats.ptoDays}</td>
-          <td class="py-2 px-2 text-right whitespace-nowrap">
+          <td class="py-2 px-2.5 text-center whitespace-nowrap">
             <input
               type="text"
               inputmode="decimal"
               data-month-employee="${employee}"
               value="${formatHours(stats.totalHours)}"
               title="Cliquez pour modifier manuellement le total mensuel"
-              class="month-hours-input text-right font-extrabold text-sm w-20 sm:w-24 px-1.5 py-1 rounded-lg bg-transparent focus:bg-white focus:ring-2 focus:ring-[#2d4727] outline-none ${stats.isManual ? 'text-[#9a4e28] underline decoration-dotted' : 'text-[#232921]'}"
+              class="month-hours-input text-center font-extrabold text-sm w-20 sm:w-24 px-1.5 py-1 rounded-lg bg-transparent focus:bg-white focus:ring-2 focus:ring-[#2d4727] outline-none ${stats.isManual ? 'text-[#9a4e28] underline decoration-dotted' : 'text-[#232921]'}"
             />
           </td>
         `;
         tbody.appendChild(tr);
       });
 
+      const shownWorked = listToShow.reduce((acc, e) => acc + computeEmployeeStats(e).workedDays, 0);
+      const shownRest = listToShow.reduce((acc, e) => acc + computeEmployeeStats(e).restDays, 0);
+      const shownPto = listToShow.reduce((acc, e) => acc + computeEmployeeStats(e).ptoDays, 0);
+      const shownHours = listToShow.reduce((acc, e) => acc + computeEmployeeStats(e).totalHours, 0);
+
       const totalRow = document.createElement('tr');
       totalRow.className = 'bg-[#2d4727] text-[#fffdf9] font-bold text-sm';
       totalRow.innerHTML = `
-        <td class="py-3 px-2.5">Total équipe</td>
-        <td class="py-3 px-1.5 text-center text-[#d7ead1] whitespace-nowrap">${sumWorked} j</td>
-        <td class="py-3 px-1.5 text-center text-[#ece4d3] whitespace-nowrap">${sumRest}</td>
-        <td class="py-3 px-1.5 text-center text-[#f7d0b8] whitespace-nowrap">${sumPto}</td>
-        <td id="teamTotalHoursCell" class="py-3 px-2.5 text-right text-[#d7ead1] whitespace-nowrap">${formatHours(sumHours)}</td>
+        <td class="py-3 px-2.5 text-center">${selectedEmp && selectedEmp !== 'ALL' ? `Total ${selectedEmp}` : 'Total équipe'}</td>
+        <td class="py-3 px-1.5 text-center text-[#d7ead1] whitespace-nowrap">${shownWorked} j</td>
+        <td class="py-3 px-1.5 text-center text-[#ece4d3] whitespace-nowrap">${shownRest}</td>
+        <td class="py-3 px-1.5 text-center text-[#f7d0b8] whitespace-nowrap">${shownPto}</td>
+        <td id="teamTotalHoursCell" class="py-3 px-2.5 text-center text-[#d7ead1] whitespace-nowrap">${formatHours(shownHours)}</td>
       `;
       tbody.appendChild(totalRow);
 
@@ -1847,8 +1890,22 @@
         }
       }
 
+      const bilanEmpSelect = document.getElementById('bilanEmployeeSelect');
+      if (bilanEmpSelect) {
+        bilanEmpSelect.addEventListener('change', () => {
+          renderSummaryTable();
+        });
+      }
+
       if (openDrawerBtn) {
-        openDrawerBtn.addEventListener('click', () => setMonthlyDrawerOpen(true));
+        openDrawerBtn.addEventListener('click', () => {
+          if (bilanEmpSelect && appState.filter && appState.filter !== 'ALL') {
+            bilanEmpSelect.value = appState.filter;
+          } else if (bilanEmpSelect) {
+            bilanEmpSelect.value = 'ALL';
+          }
+          setMonthlyDrawerOpen(true);
+        });
       }
       if (closeDrawerBtn) {
         closeDrawerBtn.addEventListener('click', () => setMonthlyDrawerOpen(false));

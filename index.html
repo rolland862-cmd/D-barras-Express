@@ -91,6 +91,8 @@
         padding-bottom: 0 !important;
         margin: 0 !important;
       }
+
+      /* En-tête Débarras Express 09 verrouillé */
       header.app-header {
         position: static !important;
         background-color: var(--brand-green) !important;
@@ -99,24 +101,37 @@
         box-shadow: none !important;
         border-radius: 10px !important;
         margin-bottom: 7px !important;
+        height: auto !important;
+        max-height: 62px !important;
+        overflow: hidden !important;
       }
       header.app-header > div {
         display: flex !important;
+        flex-direction: row !important;
         align-items: center !important;
         justify-content: space-between !important;
-        padding: 6px 10px !important;
+        padding: 7px 12px !important;
+        height: auto !important;
       }
-      header.app-header #brandLogoImg,
-      header.app-header img {
-        width: 34px !important;
-        height: 34px !important;
-        min-width: 34px !important;
-        max-width: 34px !important;
-        min-height: 34px !important;
-        max-height: 34px !important;
+      header.app-header > div > div:first-child {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 10px !important;
+        min-width: 0 !important;
+      }
+      header.app-header img,
+      header.app-header #brandLogoImg {
+        display: block !important;
+        width: 36px !important;
+        height: 36px !important;
+        min-width: 36px !important;
+        max-width: 36px !important;
+        min-height: 36px !important;
+        max-height: 36px !important;
         border-radius: 9999px !important;
         object-fit: cover !important;
-        flex-shrink: 0 !important;
+        flex: 0 0 36px !important;
       }
       header.app-header #accessModeBadgeBtn,
       header.app-header #firebaseSyncBadge,
@@ -124,6 +139,7 @@
       header.app-header #openMonthlyBalanceMenuBtn {
         display: none !important;
       }
+
       #startupAccessModal,
       #openMonthlyBalanceMenuBtn,
       #openOvertimeMenuBtn,
@@ -135,7 +151,9 @@
       .print-vertical-week-block,
       #weeksContainer .print-vertical-week-block {
         display: none !important;
+        visibility: hidden !important;
       }
+
       main {
         max-width: 100% !important;
         width: 100% !important;
@@ -143,7 +161,7 @@
         margin: 0 !important;
       }
 
-      /* Tableau horizontal calibré pour ne jamais déborder à droite */
+      /* Tableau horizontal calibré pour ne jamais dépasser à droite */
       #weeksContainer table {
         table-layout: fixed !important;
         width: 100% !important;
@@ -158,7 +176,7 @@
       #weeksContainer th {
         padding: 3px 1px !important;
         font-size: 8px !important;
-        line-height: 1.1 !important;
+        line-height: 1.12 !important;
       }
       #weeksContainer td {
         padding: 2px 1.5px !important;
@@ -166,7 +184,7 @@
       #weeksContainer td:first-child,
       #weeksContainer th:first-child {
         position: static !important;
-        width: 58px !important;
+        width: 60px !important;
         padding: 2.5px 3px !important;
         font-size: 8px !important;
         text-align: left !important;
@@ -252,13 +270,17 @@
       body.printing-balance-only #printBilanLogo,
       body[data-print-mode="balance"] #printBilanLogo {
         display: block !important;
-        width: 46px !important;
-        height: 46px !important;
+        width: 42px !important;
+        height: 42px !important;
+        min-width: 42px !important;
+        max-width: 42px !important;
+        min-height: 42px !important;
+        max-height: 42px !important;
         border-radius: 9999px !important;
         object-fit: cover !important;
         background-color: #f6f1e7 !important;
         border: 2px solid #e5d8be !important;
-        flex-shrink: 0 !important;
+        flex: 0 0 42px !important;
       }
       body.printing-balance-only #printBilanTitle,
       body[data-print-mode="balance"] #printBilanTitle {
@@ -403,13 +425,17 @@
       body.printing-overtime-only #printOvertimeLogo,
       body[data-print-mode="overtime"] #printOvertimeLogo {
         display: block !important;
-        width: 46px !important;
-        height: 46px !important;
+        width: 42px !important;
+        height: 42px !important;
+        min-width: 42px !important;
+        max-width: 42px !important;
+        min-height: 42px !important;
+        max-height: 42px !important;
         border-radius: 9999px !important;
         object-fit: cover !important;
         background-color: #f6f1e7 !important;
         border: 2px solid #e5d8be !important;
-        flex-shrink: 0 !important;
+        flex: 0 0 42px !important;
       }
       body.printing-overtime-only #printOvertimeTitle,
       body[data-print-mode="overtime"] #printOvertimeTitle {
@@ -565,13 +591,17 @@
       }
       body[data-print-mode="all"] .print-repeat-brand-banner img {
         display: block !important;
-        width: 32px !important;
-        height: 32px !important;
+        width: 34px !important;
+        height: 34px !important;
+        min-width: 34px !important;
+        max-width: 34px !important;
+        min-height: 34px !important;
+        max-height: 34px !important;
         border-radius: 9999px !important;
         object-fit: cover !important;
         background-color: #f6f1e7 !important;
         border: 1.5px solid #e5d8be !important;
-        flex-shrink: 0 !important;
+        flex: 0 0 34px !important;
       }
 
       body.printing-single-week .print-target-week,
@@ -3225,26 +3255,50 @@
         width: 100% !important;
         max-width: 100% !important;
       }
+      header.app-header {
+        position: static !important;
+        background-color: #2d4727 !important;
+        color: #fffdf9 !important;
+        display: block !important;
+        height: auto !important;
+        max-height: 62px !important;
+        overflow: hidden !important;
+        margin-bottom: 7px !important;
+      }
       header.app-header > div {
         display: flex !important;
+        flex-direction: row !important;
         align-items: center !important;
         justify-content: space-between !important;
-        padding: 6px 10px !important;
+        padding: 7px 12px !important;
+        height: auto !important;
       }
-      header.app-header #brandLogoImg,
-      header.app-header img {
-        width: 34px !important;
-        height: 34px !important;
-        min-width: 34px !important;
-        max-width: 34px !important;
-        min-height: 34px !important;
-        max-height: 34px !important;
+      header.app-header > div > div:first-child {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 10px !important;
+        min-width: 0 !important;
+      }
+      header.app-header img,
+      header.app-header #brandLogoImg {
+        display: block !important;
+        width: 36px !important;
+        height: 36px !important;
+        min-width: 36px !important;
+        max-width: 36px !important;
+        min-height: 36px !important;
+        max-height: 36px !important;
         border-radius: 9999px !important;
         object-fit: cover !important;
-        flex-shrink: 0 !important;
+        flex: 0 0 36px !important;
       }
-      #printSummarySection, #printOvertimeSection, .print-vertical-week-block, #weeksContainer .print-vertical-week-block {
+      #printSummarySection,
+      #printOvertimeSection,
+      .print-vertical-week-block,
+      #weeksContainer .print-vertical-week-block {
         display: none !important;
+        visibility: hidden !important;
       }
       #weeksContainer {
         display: block !important;
@@ -3278,7 +3332,7 @@
       #weeksContainer td:first-child,
       #weeksContainer th:first-child {
         position: static !important;
-        width: 58px !important;
+        width: 60px !important;
         padding: 2.5px 3px !important;
         font-size: 8px !important;
         text-align: left !important;

@@ -848,17 +848,19 @@
   <!-- MENU D'OUVERTURE : LIRE OU MODIFIER -->
   <div id="startupAccessModal" class="fixed inset-0 z-[70] bg-[#1a2418]/75 backdrop-blur-xs flex items-center justify-center p-4 no-print" role="dialog" aria-modal="true" aria-labelledby="startupMenuTitle">
     <div id="startupAccessCard" class="bg-[#fffdf9] w-full max-w-md rounded-2xl shadow-2xl border-2 border-[#dfd5c0] p-5 sm:p-6 space-y-5 animate-fade-in">
-      <div class="flex items-center gap-3.5 pb-3.5 border-b border-[#e7decb]">
-        <img
-          src="./icons/logo-debarras-09.png"
-          alt="Logo Débarras Express 09"
-          class="w-12 h-12 rounded-full object-cover bg-[#f6f1e7] border-2 border-[#2d4727] shrink-0"
-          onerror="if (!this.dataset.fb1) { this.dataset.fb1 = '1'; this.src = './ic%C3%B4nes/logo-debarras-09.png'; } else if (!this.dataset.fb2) { this.dataset.fb2 = '1'; this.src = './icônes/logo-debarras-09.png'; } else { this.style.display = 'none'; }"
-        />
-        <div>
-          <span class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#e4eee0] text-[#2d4727] mb-0.5">Débarras Express 09</span>
-          <h2 id="startupMenuTitle" class="text-lg sm:text-xl font-extrabold text-[#232921]">Choisir un mode d’accès</h2>
-          <p class="text-xs text-[#5b6358]">Consultation libre ou modification protégée</p>
+      <div class="flex items-center justify-between gap-3 pb-3.5 border-b border-[#e7decb]">
+        <div class="flex items-center gap-3 min-w-0">
+          <img
+            src="./icons/logo-debarras-09.png"
+            alt="Logo Débarras Express 09"
+            class="w-12 h-12 rounded-full object-cover bg-[#f6f1e7] border-2 border-[#2d4727] shrink-0"
+            onerror="if (!this.dataset.fb1) { this.dataset.fb1 = '1'; this.src = './ic%C3%B4nes/logo-debarras-09.png'; } else if (!this.dataset.fb2) { this.dataset.fb2 = '1'; this.src = './icônes/logo-debarras-09.png'; } else { this.style.display = 'none'; }"
+          />
+          <div class="min-w-0">
+            <span class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#e4eee0] text-[#2d4727] mb-0.5">Débarras Express 09</span>
+            <h2 id="startupMenuTitle" class="text-lg sm:text-xl font-extrabold text-[#232921] truncate">Choisir un mode d’accès</h2>
+            <p id="startupFirebaseStatus" class="text-[11px] text-[#5b6358] truncate">Firebase : vérification…</p>
+          </div>
         </div>
       </div>
 
@@ -949,7 +951,7 @@
           onerror="if (!this.dataset.fb1) { this.dataset.fb1 = '1'; this.src = './ic%C3%B4nes/logo-debarras-09.png'; } else if (!this.dataset.fb2) { this.dataset.fb2 = '1'; this.src = './icônes/logo-debarras-09.png'; } else { this.style.display = 'none'; }"
         />
         <div class="min-w-0">
-          <div class="flex items-center gap-2 flex-wrap">
+          <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
             <h1 id="mainHeaderTitle" class="text-sm sm:text-xl font-bold tracking-tight truncate">
               Planning Mensuel
             </h1>
@@ -962,7 +964,7 @@
               <span id="accessModeIcon">🔒</span>
               <span id="accessModeText">Mode Lire</span>
             </button>
-            <span id="firebaseSyncBadge" class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-[#3e6136] text-[#e6f3e2] border border-[#5c8453]">
+            <span id="firebaseSyncBadge" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-[#3e6136] text-[#e6f3e2] border border-[#5c8453]">
               <span id="firebaseSyncDot" class="w-1.5 h-1.5 rounded-full bg-[#9ce68a]"></span>
               <span id="firebaseSyncText">Synchro Firebase</span>
             </span>
@@ -1557,10 +1559,10 @@
         body.classList.remove('read-only-mode');
         if (badgeBtn) {
           badgeBtn.className = 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-[#3e6136] text-[#e6f3e2] border border-[#6ea063] cursor-pointer transition';
-          badgeBtn.title = 'Mode Modifier actif — cliquer pour repasser en mode Lire ou ouvrir le menu';
+          badgeBtn.title = 'Mode Modifier actif — cliquer pour ouvrir le menu d’accès';
         }
         if (badgeIcon) badgeIcon.textContent = '✏️';
-        if (badgeText) badgeText.textContent = 'Mode Modifier';
+        if (badgeText) badgeText.textContent = 'Modifier';
         if (hintEl) {
           hintEl.innerHTML = 'Touchez une case pour écrire librement (<strong class="text-[#232921]">8</strong>, <strong class="text-[#232921]">8,5 h</strong>, <strong class="text-[#232921]">8h-16h</strong>, <strong class="text-[#232921]">R</strong>, <strong class="text-[#9a4e28]">CP</strong>), et modifiez les <strong class="text-[#232921]">heures/jour</strong>, <strong class="text-[#232921]">Jours</strong> ou <strong class="text-[#2d4727]">Heures</strong> séparément pour chaque salarié.';
         }
@@ -1571,9 +1573,9 @@
           badgeBtn.title = 'Mode Lire actif — cliquer pour saisir le mot de passe Modifier';
         }
         if (badgeIcon) badgeIcon.textContent = '🔒';
-        if (badgeText) badgeText.textContent = 'Mode Lire';
+        if (badgeText) badgeText.textContent = 'Lire';
         if (hintEl) {
-          hintEl.innerHTML = 'Mode <strong class="text-[#7a3918]">Lire</strong> actif : consultation seule sans modification. Cliquez sur <strong class="text-[#7a3918]">Mode Lire</strong> en haut pour saisir le mot de passe et débloquer la modification.';
+          hintEl.innerHTML = 'Mode <strong class="text-[#7a3918]">Lire</strong> actif : consultation seule sans modification. Cliquez sur <strong class="text-[#7a3918]">Lire</strong> en haut pour saisir le mot de passe et débloquer la modification.';
         }
       }
 
@@ -1637,24 +1639,28 @@
       const badge = document.getElementById('firebaseSyncBadge');
       const dot = document.getElementById('firebaseSyncDot');
       const text = document.getElementById('firebaseSyncText');
-      if (!badge || !dot || !text) return;
+      const modalStatus = document.getElementById('startupFirebaseStatus');
 
       if (status === 'connected') {
-        badge.className = 'hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-[#3e6136] text-[#e6f3e2] border border-[#5c8453]';
-        dot.className = 'w-1.5 h-1.5 rounded-full bg-[#9ce68a]';
-        text.textContent = 'Synchro Firebase';
+        if (badge) badge.className = 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-[#3e6136] text-[#e6f3e2] border border-[#5c8453]';
+        if (dot) dot.className = 'w-1.5 h-1.5 rounded-full bg-[#9ce68a]';
+        if (text) text.textContent = 'Firebase OK';
+        if (modalStatus) modalStatus.textContent = 'Firebase : connecté et synchronisé';
       } else if (status === 'saving') {
-        badge.className = 'hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-[#4f6d34] text-[#fffdf9] border border-[#799d56]';
-        dot.className = 'w-1.5 h-1.5 rounded-full bg-[#ffe082]';
-        text.textContent = 'Enregistrement…';
+        if (badge) badge.className = 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-[#4f6d34] text-[#fffdf9] border border-[#799d56]';
+        if (dot) dot.className = 'w-1.5 h-1.5 rounded-full bg-[#ffe082]';
+        if (text) text.textContent = 'Envoi…';
+        if (modalStatus) modalStatus.textContent = 'Firebase : enregistrement en cours…';
       } else if (status === 'rules') {
-        badge.className = 'hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-[#7a3918] text-[#fffdf9] border border-[#b5633b]';
-        dot.className = 'w-1.5 h-1.5 rounded-full bg-[#ffb48a]';
-        text.textContent = 'Local (Règles RTDB)';
+        if (badge) badge.className = 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-[#7a3918] text-[#fffdf9] border border-[#b5633b]';
+        if (dot) dot.className = 'w-1.5 h-1.5 rounded-full bg-[#ffb48a]';
+        if (text) text.textContent = 'Local (Règles)';
+        if (modalStatus) modalStatus.textContent = 'Firebase : accès refusé (vérifier les règles RTDB)';
       } else {
-        badge.className = 'hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-[#5a4e3c] text-[#f6f1e7] border border-[#7d6f58]';
-        dot.className = 'w-1.5 h-1.5 rounded-full bg-[#e5d8be]';
-        text.textContent = 'Hors ligne';
+        if (badge) badge.className = 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-[#5a4e3c] text-[#f6f1e7] border border-[#7d6f58]';
+        if (dot) dot.className = 'w-1.5 h-1.5 rounded-full bg-[#e5d8be]';
+        if (text) text.textContent = 'Hors ligne';
+        if (modalStatus) modalStatus.textContent = 'Firebase : hors ligne (données locales)';
       }
     }
 
@@ -3580,7 +3586,6 @@
     function bindEvents() {
       const weeksContainer = document.getElementById('weeksContainer');
 
-      // Événements du menu d'ouverture Lire / Modifier
       document.getElementById('chooseReadModeBtn')?.addEventListener('click', () => {
         canEdit = false;
         closeStartupMenu();

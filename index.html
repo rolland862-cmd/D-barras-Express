@@ -70,6 +70,71 @@
       pointer-events: none;
     }
 
+    /* Vue d'ensemble tableau par semaine (écran uniquement, sans toucher à l'impression) */
+    .week-overview-table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border: 1px solid var(--border-warm);
+      border-radius: 14px;
+      background-color: var(--surface-card);
+    }
+    table.week-overview-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      min-width: 540px;
+    }
+    table.week-overview-table th {
+      background-color: #f3ece0;
+      color: var(--ink-main);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 8px 6px;
+      border-bottom: 1px solid var(--border-warm);
+      border-right: 1px solid #ece3d1;
+      text-align: center;
+      white-space: nowrap;
+    }
+    table.week-overview-table th:last-child {
+      border-right: none;
+    }
+    table.week-overview-table th.sal-col-head,
+    table.week-overview-table td.sal-col-cell {
+      position: sticky;
+      left: 0;
+      z-index: 2;
+      background-color: #faf6ee;
+      border-right: 1.5px solid var(--border-warm);
+      min-width: 102px;
+      text-align: left;
+      padding: 8px 10px;
+    }
+    table.week-overview-table th.sal-col-head {
+      background-color: #efe8d8;
+      z-index: 3;
+      text-align: left;
+    }
+    table.week-overview-table td {
+      padding: 6px;
+      border-bottom: 1px solid #ece3d1;
+      border-right: 1px solid #f1eadb;
+      vertical-align: middle;
+      text-align: center;
+    }
+    table.week-overview-table tr:last-child td {
+      border-bottom: none;
+    }
+    table.week-overview-table td:last-child {
+      border-right: none;
+    }
+    table.week-overview-table textarea.planning-cell {
+      min-height: 40px;
+      min-width: 64px;
+      padding: 6px 4px;
+      font-size: 13px;
+      border-radius: 9px;
+    }
+
     @media print {
       @page {
         size: A4 portrait;
@@ -2425,6 +2490,8 @@
         ? EMPLOYEES
         : EMPLOYEES.filter((name) => name === appState.filter);
 
+      const todayKey = formatDateKey(new Date());
+
       weeksConfig.forEach((weekCfg, index) => {
         const weekDays = buildWeekDays(weekCfg);
 
@@ -2583,14 +2650,12 @@
         `;
         card.appendChild(weekPrintNote);
 
-        /* Bloc vertical jour par jour (visible directement, sans tableau horizontal doublon) */
+        /* Bloc vertical jour par jour (conservé pour l'impression/PDF et la vue semaine agrandie) */
         const isSingleEmployee = visibleEmployees.length === 1;
         const verticalBox = document.createElement('div');
         verticalBox.className = isFocusedWeek
           ? (isSingleEmployee ? 'print-vertical-week-block space-y-1.5 mt-1 flex-1' : 'print-vertical-week-block space-y-2.5 mt-1 flex-1')
           : 'print-vertical-week-block space-y-1.5 mt-1';
-
-        const todayKey = formatDateKey(new Date());
 
         weekDays.forEach((d) => {
           const isToday = d.dateKey === todayKey;
@@ -2750,6 +2815,89 @@
         });
 
         verticalBox.appendChild(totalsBox);
+
+        if (!isFocusedWeek) {
+          const tableWrap = document.createElement('div');
+          tableWrap.className = 'week-overview-table-wrap no-print mb-2.5';
+
+          const tbl = document.createElement('table');
+          tbl.className = 'week-overview-table';
+
+          const thead = document.createElement('thead');
+          const headRow = document.createElement('tr');
+
+          const salTh = document.createElement('th');
+          salTh.className = 'sal-col-head';
+          salTh.textContent = 'Salarié';
+          headRow.appendChild(salTh);
+
+          weekDays.forEach((d) => {
+            const th = document.createElement('th');
+            if (d.dateKey === todayKey) th.classList.add('today-col-highlight');
+            const dayNumLabel = d.isOtherMonth
+              ? `${d.dayOfMonth}/${String(d.dateObj.getMonth() + 1).padStart(2, '0')}`
+              : `${d.dayOfMonth}`;
+            th.innerHTML = `
+              <div class="leading-tight">${d.dayLabel}</div>
+              <div class="text-[11px] font-bold text-[#4c5449] leading-tight">${dayNumLabel}</div>
+            `;
+            headRow.appendChild(th);
+          });
+
+          thead.appendChild(headRow);
+          tbl.appendChild(thead);
+
+          const tbody = document.createElement('tbody');
+          visibleEmployees.forEach((employee) => {
+            const tr = document.createElement('tr');
+
+            const salTd = document.createElement('td');
+            salTd.className = 'sal-col-cell';
+            salTd.innerHTML = `
+              <div class="text-sm font-extrabold text-[#232921] leading-tight">${employee}</div>
+              <div class="text-[11px] font-semibold text-[#5b6358] leading-tight mt-0.5">Base ${formatHours(getEmployeeBaseHours(employee))}</div>
+            `;
+            tr.appendChild(salTd);
+
+            weekDays.forEach((d) => {
+              const td = document.createElement('td');
+              if (d.dateKey === todayKey) td.classList.add('today-col-highlight');
+
+              const code = getCellCode(employee, d.dateObj);
+              const visual = getCellAppearance(code);
+              const defaultCode = getDefaultCellCode(d.dateObj);
+              const customVal = getRawOverrideForDate(employee, d.dateObj);
+
+              const inp = document.createElement('textarea');
+              inp.rows = 1;
+              inp.readOnly = !canEdit;
+              inp.className = `planning-cell rounded-lg border transition outline-none focus:ring-2 focus:ring-[#2d4727] ${visual.classes}`;
+              inp.value = customVal !== undefined ? customVal : (defaultCode === 'R' ? 'R' : '');
+              inp.placeholder = '·';
+              inp.spellcheck = false;
+              inp.setAttribute(
+                'aria-label',
+                `${employee}, ${d.dayLabel} ${d.dayOfMonth} ${MONTH_NAMES[d.dateObj.getMonth()].toLowerCase()} ${d.dateObj.getFullYear()}`
+              );
+              inp.dataset.employee = employee;
+              inp.dataset.dateKey = d.dateKey;
+              inp.dataset.weekIndex = index;
+
+              td.appendChild(inp);
+              tr.appendChild(td);
+              requestAnimationFrame(() => autoFitCell(inp));
+            });
+
+            tbody.appendChild(tr);
+          });
+
+          tbl.appendChild(tbody);
+          tableWrap.appendChild(tbl);
+          card.appendChild(tableWrap);
+
+          verticalBox.classList.add('hidden', 'print:block');
+        }
+
         card.appendChild(verticalBox);
 
         if (outerWrapper) {
@@ -3573,6 +3721,19 @@
           ? `planning-cell !w-28 !min-w-[108px] !min-h-[38px] text-sm py-1.5 px-2.5 rounded-lg border transition outline-none focus:ring-2 focus:ring-[#2d4727] shrink-0 ${visual.classes}`
           : `planning-cell rounded-lg border transition outline-none focus:ring-2 focus:ring-[#2d4727] ${visual.classes}`;
         autoFitCell(inp);
+
+        weeksContainer
+          .querySelectorAll(`textarea.planning-cell[data-employee="${employee}"][data-date-key="${dateKey}"]`)
+          .forEach((peer) => {
+            if (peer !== inp) {
+              peer.value = inp.value;
+              const peerSingleRow = peer.classList.contains('shrink-0');
+              peer.className = peerSingleRow
+                ? `planning-cell !w-28 !min-w-[108px] !min-h-[38px] text-sm py-1.5 px-2.5 rounded-lg border transition outline-none focus:ring-2 focus:ring-[#2d4727] shrink-0 ${visual.classes}`
+                : `planning-cell rounded-lg border transition outline-none focus:ring-2 focus:ring-[#2d4727] ${visual.classes}`;
+              autoFitCell(peer);
+            }
+          });
 
         if (!isNaN(weekIndex)) {
           refreshWeekTotalsOnly(weekIndex);

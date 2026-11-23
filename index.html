@@ -82,7 +82,7 @@
       width: 100%;
       border-collapse: separate;
       border-spacing: 0;
-      min-width: 540px;
+      min-width: 670px;
     }
     table.week-overview-table th {
       background-color: #f3ece0;
@@ -105,14 +105,25 @@
       z-index: 2;
       background-color: #faf6ee;
       border-right: 1.5px solid var(--border-warm);
-      min-width: 102px;
+      min-width: 100px;
       text-align: left;
-      padding: 8px 10px;
+      padding: 8px 9px;
     }
     table.week-overview-table th.sal-col-head {
       background-color: #efe8d8;
       z-index: 3;
       text-align: left;
+    }
+    table.week-overview-table th.tot-col-head,
+    table.week-overview-table td.tot-col-cell {
+      background-color: #f6f1e7;
+      border-left: 1px solid #e3d8c2;
+      vertical-align: middle;
+      text-align: center;
+    }
+    table.week-overview-table th.tot-col-head {
+      background-color: #ebe3d2;
+      color: #2d4727;
     }
     table.week-overview-table td {
       padding: 6px;
@@ -129,10 +140,26 @@
     }
     table.week-overview-table textarea.planning-cell {
       min-height: 40px;
-      min-width: 64px;
+      min-width: 62px;
       padding: 6px 4px;
       font-size: 13px;
       border-radius: 9px;
+    }
+    table.week-overview-table input.days-edit-input {
+      width: 58px !important;
+      min-width: 54px !important;
+      font-size: 12.5px;
+      padding: 5px 3px;
+      border: 1px solid #dfd5c0;
+      background-color: #fffdf9;
+    }
+    table.week-overview-table input.hours-edit-input {
+      width: 68px !important;
+      min-width: 62px !important;
+      font-size: 12.5px;
+      padding: 5px 3px;
+      border: 1px solid #dfd5c0;
+      background-color: #fffdf9;
     }
 
     @media print {
@@ -1586,7 +1613,7 @@
       document.querySelectorAll('textarea.planning-cell').forEach((ta) => {
         ta.readOnly = !canEdit;
       });
-      document.querySelectorAll('input[data-emp-base], #overtimeThresholdInput').forEach((inp) => {
+      document.querySelectorAll('input[data-emp-base], #overtimeThresholdInput, input.days-edit-input, input.hours-edit-input').forEach((inp) => {
         inp.disabled = !canEdit;
       });
       ['#resetBtn', '#importBtn', '#applyGlobalBaseToAllBtn', '#resetManualMonthOverridesBtn', '#resetManualOvertimeBtn'].forEach((sel) => {
@@ -2468,7 +2495,10 @@
         if (!emp || document.activeElement === dyInp) return;
         const st = computeWeekEmployeeStats(emp, weekDays, weekIndex);
         dyInp.value = formatDays(st.workedDays);
-        dyInp.className = `days-edit-input text-sm !w-16 border border-[#dfd5c0] bg-[#fcfaf5] ${st.isManualDays ? 'text-[#9a4e28] underline decoration-dotted' : 'text-[#232921]'}`;
+        const isTableInp = Boolean(dyInp.closest('table.week-overview-table'));
+        dyInp.className = isTableInp
+          ? `days-edit-input ${st.isManualDays ? 'text-[#9a4e28] underline decoration-dotted' : 'text-[#232921]'}`
+          : `days-edit-input text-sm !w-16 border border-[#dfd5c0] bg-[#fcfaf5] ${st.isManualDays ? 'text-[#9a4e28] underline decoration-dotted' : 'text-[#232921]'}`;
       });
 
       document.querySelectorAll(`input.hours-edit-input[data-week-index="${weekIndex}"]`).forEach((hrInp) => {
@@ -2476,7 +2506,10 @@
         if (!emp || document.activeElement === hrInp) return;
         const st = computeWeekEmployeeStats(emp, weekDays, weekIndex);
         hrInp.value = formatHours(st.hours);
-        hrInp.className = `hours-edit-input text-sm !w-20 border border-[#dfd5c0] bg-[#fcfaf5] ${st.isManual ? 'text-[#9a4e28] underline decoration-dotted' : 'text-[#2d4727]'}`;
+        const isTableInp = Boolean(hrInp.closest('table.week-overview-table'));
+        hrInp.className = isTableInp
+          ? `hours-edit-input ${st.isManual ? 'text-[#9a4e28] underline decoration-dotted' : 'text-[#2d4727]'}`
+          : `hours-edit-input text-sm !w-20 border border-[#dfd5c0] bg-[#fcfaf5] ${st.isManual ? 'text-[#9a4e28] underline decoration-dotted' : 'text-[#2d4727]'}`;
       });
     }
 
@@ -2844,6 +2877,16 @@
             headRow.appendChild(th);
           });
 
+          const daysTh = document.createElement('th');
+          daysTh.className = 'tot-col-head';
+          daysTh.textContent = 'Jours';
+          headRow.appendChild(daysTh);
+
+          const hoursTh = document.createElement('th');
+          hoursTh.className = 'tot-col-head';
+          hoursTh.textContent = 'Heures';
+          headRow.appendChild(hoursTh);
+
           thead.appendChild(headRow);
           tbl.appendChild(thead);
 
@@ -2887,6 +2930,36 @@
               tr.appendChild(td);
               requestAnimationFrame(() => autoFitCell(inp));
             });
+
+            const weekStats = computeWeekEmployeeStats(employee, weekDays, index);
+
+            const daysTd = document.createElement('td');
+            daysTd.className = 'tot-col-cell';
+            const tblDyInp = document.createElement('input');
+            tblDyInp.type = 'text';
+            tblDyInp.inputMode = 'decimal';
+            tblDyInp.disabled = !canEdit;
+            tblDyInp.className = `days-edit-input ${weekStats.isManualDays ? 'text-[#9a4e28] underline decoration-dotted' : 'text-[#232921]'}`;
+            tblDyInp.value = formatDays(weekStats.workedDays);
+            tblDyInp.title = 'Cliquez pour modifier indépendamment le nombre de jours de la semaine';
+            tblDyInp.dataset.employee = employee;
+            tblDyInp.dataset.weekIndex = index;
+            daysTd.appendChild(tblDyInp);
+            tr.appendChild(daysTd);
+
+            const hoursTd = document.createElement('td');
+            hoursTd.className = 'tot-col-cell';
+            const tblHrInp = document.createElement('input');
+            tblHrInp.type = 'text';
+            tblHrInp.inputMode = 'decimal';
+            tblHrInp.disabled = !canEdit;
+            tblHrInp.className = `hours-edit-input ${weekStats.isManual ? 'text-[#9a4e28] underline decoration-dotted' : 'text-[#2d4727]'}`;
+            tblHrInp.value = formatHours(weekStats.hours);
+            tblHrInp.title = 'Cliquez pour modifier indépendamment le total d’heures de la semaine';
+            tblHrInp.dataset.employee = employee;
+            tblHrInp.dataset.weekIndex = index;
+            hoursTd.appendChild(tblHrInp);
+            tr.appendChild(hoursTd);
 
             tbody.appendChild(tr);
           });
@@ -3778,8 +3851,7 @@
           const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
           const weekDays = buildWeekDays(weeksConfig[weekIndex]);
           const stats = computeWeekEmployeeStats(employee, weekDays, weekIndex);
-          el.value = formatDays(stats.workedDays);
-          el.className = `days-edit-input text-sm !w-16 border border-[#dfd5c0] bg-[#fcfaf5] ${stats.isManualDays ? 'text-[#9a4e28] underline decoration-dotted' : 'text-[#232921]'}`;
+          refreshWeekTotalsOnly(weekIndex);
 
           renderSummaryTable();
           saveState();
@@ -3804,8 +3876,7 @@
           const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
           const weekDays = buildWeekDays(weeksConfig[weekIndex]);
           const stats = computeWeekEmployeeStats(employee, weekDays, weekIndex);
-          el.value = formatHours(stats.hours);
-          el.className = `hours-edit-input text-sm !w-20 border border-[#dfd5c0] bg-[#fcfaf5] ${stats.isManual ? 'text-[#9a4e28] underline decoration-dotted' : 'text-[#2d4727]'}`;
+          refreshWeekTotalsOnly(weekIndex);
 
           renderSummaryTable();
           renderOvertimeTable();

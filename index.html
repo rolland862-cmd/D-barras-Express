@@ -183,6 +183,12 @@
         margin: 0 !important;
       }
 
+      .week-overview-table-wrap,
+      table.week-overview-table {
+        display: none !important;
+        visibility: hidden !important;
+      }
+
       img {
         width: 32px !important;
         height: 32px !important;
@@ -3295,6 +3301,11 @@
         width: 100% !important;
         max-width: 100% !important;
       }
+      .week-overview-table-wrap,
+      table.week-overview-table {
+        display: none !important;
+        visibility: hidden !important;
+      }
       img {
         width: 32px !important;
         height: 32px !important;
@@ -3848,11 +3859,7 @@
             appState.weekDayOverrides[employee][weekIndex] = Math.max(0, parseFloat(raw));
           }
 
-          const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
-          const weekDays = buildWeekDays(weeksConfig[weekIndex]);
-          const stats = computeWeekEmployeeStats(employee, weekDays, weekIndex);
           refreshWeekTotalsOnly(weekIndex);
-
           renderSummaryTable();
           saveState();
           return;
@@ -3873,11 +3880,7 @@
             appState.weekHourOverrides[employee][weekIndex] = Math.max(0, parseFloat(raw));
           }
 
-          const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
-          const weekDays = buildWeekDays(weeksConfig[weekIndex]);
-          const stats = computeWeekEmployeeStats(employee, weekDays, weekIndex);
           refreshWeekTotalsOnly(weekIndex);
-
           renderSummaryTable();
           renderOvertimeTable();
           saveState();

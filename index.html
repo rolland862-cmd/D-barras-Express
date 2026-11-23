@@ -451,19 +451,17 @@
 
       /* Format unifié fiche semaine (utilisé pour Semaine seule ET Vue d'ensemble) */
       .week-fullscreen-vertical {
-        position: static !important;
-        inset: auto !important;
-        top: auto !important;
-        left: auto !important;
-        right: auto !important;
-        bottom: auto !important;
-        height: auto !important;
-        min-height: 0 !important;
-        overflow: visible !important;
-        padding: 0 !important;
+        position: fixed;
+        inset: 60px 0 0 0;
+        z-index: 25;
+        overflow-y: auto;
+        overscroll-behavior-y: contain;
+        background-color: var(--bg-cream);
+        padding: 12px 14px calc(24px + env(safe-area-inset-bottom, 0px));
         margin: 0 !important;
-        background-color: transparent !important;
-        z-index: auto !important;
+        border-radius: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
       }
       body.printing-single-week #printSummarySection,
       body.printing-single-week #printOvertimeSection,
@@ -542,7 +540,6 @@
         display: none !important;
       }
 
-      /* Bloc vertical jour par jour visible à l'écran et à l'impression / PDF */
       body.printing-single-week .print-target-week .print-vertical-week-block,
       body[data-print-mode="all"] #weeksContainer .print-vertical-week-block {
         display: block !important;
@@ -748,6 +745,7 @@
       inset: 60px 0 0 0;
       z-index: 25;
       overflow-y: auto;
+      overscroll-behavior-y: contain;
       background-color: var(--bg-cream);
       padding: 12px 14px calc(24px + env(safe-area-inset-bottom, 0px));
       margin: 0 !important;
@@ -1470,6 +1468,25 @@
 
     const holidaysCache = new Map();
 
+    function captureScrollPositions() {
+      const fw = document.querySelector('#weeksContainer .week-fullscreen-vertical');
+      return {
+        windowY: window.scrollY || window.pageYOffset || 0,
+        fwTop: fw ? fw.scrollTop : null
+      };
+    }
+
+    function restoreScrollPositions(pos) {
+      if (!pos) return;
+      requestAnimationFrame(() => {
+        const fw = document.querySelector('#weeksContainer .week-fullscreen-vertical');
+        if (fw && typeof pos.fwTop === 'number') {
+          fw.scrollTop = pos.fwTop;
+        }
+        window.scrollTo({ top: pos.windowY, left: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+      });
+    }
+
     function applyAccessModeUI() {
       const body = document.body;
       const badgeBtn = document.getElementById('accessModeBadgeBtn');
@@ -1537,10 +1554,11 @@
       const entered = pwdInp ? pwdInp.value : '';
 
       if (entered === EDIT_MODE_PASSWORD) {
+        const scrollPos = captureScrollPositions();
         canEdit = true;
         if (errEl) errEl.classList.add('hidden');
         closeStartupMenu();
-        renderAll();
+        renderAll({ preserveScroll: true, scrollPos });
         applyAccessModeUI();
         showToast('Mode Modifier activé.');
       } else {
@@ -1657,7 +1675,7 @@
       } catch (_) {}
 
       if (!hasActiveFocusOrEdit()) {
-        renderAll();
+        renderAll({ preserveScroll: true });
       } else {
         renderSummaryTable();
         renderOvertimeTable();
@@ -2346,11 +2364,15 @@
       activeYear = newYear;
       activeMonth = newMonth;
       loadStateForMonth(activeYear, activeMonth);
-      renderAll();
+      renderAll({ preserveScroll: false });
       connectFirebaseForMonth(activeYear, activeMonth);
+      window.scrollTo({ top: 0, behavior: 'auto' });
     }
 
-    function renderAll() {
+    function renderAll(options = {}) {
+      const { preserveScroll = true, scrollPos = null } = options;
+      const savedPos = preserveScroll ? (scrollPos || captureScrollPositions()) : null;
+
       applyMonthLabels();
       syncEmployeeBaseInputs();
 
@@ -2364,6 +2386,33 @@
       renderSummaryTable();
       renderOvertimeTable();
       applyAccessModeUI();
+
+      if (preserveScroll && savedPos) {
+        restoreScrollPositions(savedPos);
+      }
+    }
+
+    function refreshWeekTotalsOnly(weekIndex) {
+      const weeksConfig = buildWeeksConfig(activeYear, activeMonth);
+      const weekCfg = weeksConfig[weekIndex];
+      if (!weekCfg) return;
+      const weekDays = buildWeekDays(weekCfg);
+
+      document.querySelectorAll(`input.days-edit-input[data-week-index="${weekIndex}"]`).forEach((dyInp) => {
+        const emp = dyInp.dataset.employee;
+        if (!emp || document.activeElement === dyInp) return;
+        const st = computeWeekEmployeeStats(emp, weekDays, weekIndex);
+        dyInp.value = formatDays(st.workedDays);
+        dyInp.className = `days-edit-input text-sm !w-16 border border-[#dfd5c0] bg-[#fcfaf5] ${st.isManualDays ? 'text-[#9a4e28] underline decoration-dotted' : 'text-[#232921]'}`;
+      });
+
+      document.querySelectorAll(`input.hours-edit-input[data-week-index="${weekIndex}"]`).forEach((hrInp) => {
+        const emp = hrInp.dataset.employee;
+        if (!emp || document.activeElement === hrInp) return;
+        const st = computeWeekEmployeeStats(emp, weekDays, weekIndex);
+        hrInp.value = formatHours(st.hours);
+        hrInp.className = `hours-edit-input text-sm !w-20 border border-[#dfd5c0] bg-[#fcfaf5] ${st.isManual ? 'text-[#9a4e28] underline decoration-dotted' : 'text-[#2d4727]'}`;
+      });
     }
 
     function renderWeeks() {
@@ -3427,9 +3476,10 @@
       const weeksContainer = document.getElementById('weeksContainer');
 
       document.getElementById('chooseReadModeBtn')?.addEventListener('click', () => {
+        const scrollPos = captureScrollPositions();
         canEdit = false;
         closeStartupMenu();
-        renderAll();
+        renderAll({ preserveScroll: true, scrollPos });
         applyAccessModeUI();
         showToast('Mode Lire activé (consultation seule).');
       });
@@ -3485,6 +3535,7 @@
         switchToMonth(systemYear, systemMonth);
       });
 
+      /* Mise à jour fluide sans détruire la liste pendant la saisie ou la copie */
       weeksContainer.addEventListener('input', (e) => {
         if (!canEdit) return;
         const inp = e.target;
@@ -3523,8 +3574,9 @@
           : `planning-cell rounded-lg border transition outline-none focus:ring-2 focus:ring-[#2d4727] ${visual.classes}`;
         autoFitCell(inp);
 
-        renderWeeks();
-        applyAccessModeUI();
+        if (!isNaN(weekIndex)) {
+          refreshWeekTotalsOnly(weekIndex);
+        }
         renderSummaryTable();
         renderOvertimeTable();
         saveState();
@@ -3708,10 +3760,11 @@
           const emp = e.target.getAttribute('data-emp-base');
           const val = parseFloat(String(e.target.value).replace(',', '.'));
           if (emp && !isNaN(val) && val >= 0 && val <= 24) {
+            const scrollPos = captureScrollPositions();
             appState.employeeBaseHours[emp] = val;
             appState.baseHours = val;
             saveState();
-            renderAll();
+            renderAll({ preserveScroll: true, scrollPos });
           }
         });
       });
@@ -3720,11 +3773,12 @@
       if (applyGlobalBtn) {
         applyGlobalBtn.addEventListener('click', () => {
           if (!canEdit) return;
+          const scrollPos = captureScrollPositions();
           const firstVal = getEmployeeBaseHours('Pierre');
           appState.baseHours = firstVal;
           appState.employeeBaseHours = createDefaultEmployeeBases(firstVal);
           saveState();
-          renderAll();
+          renderAll({ preserveScroll: true, scrollPos });
           showToast(`Base alignée sur ${formatHours(firstVal)} / jour pour les 3 salariés.`);
         });
       }
@@ -3755,9 +3809,10 @@
 
       document.querySelectorAll('.filter-btn').forEach((btn) => {
         btn.addEventListener('click', () => {
+          const scrollPos = captureScrollPositions();
           appState.filter = btn.getAttribute('data-filter');
           if (canEdit) saveState();
-          renderAll();
+          renderAll({ preserveScroll: true, scrollPos });
         });
       });
 
@@ -3799,6 +3854,7 @@
 
       document.getElementById('resetBtn').addEventListener('click', () => {
         if (!canEdit) return;
+        const scrollPos = captureScrollPositions();
         const monthLabel = MONTH_NAMES[activeMonth];
         openModal(
           `Réinitialiser ${monthLabel} ${activeYear} ?`,
@@ -3819,7 +3875,7 @@
           appState.employeeBaseHours = createDefaultEmployeeBases(DEFAULT_BASE_HOURS);
           appState.overtimeThreshold = DEFAULT_OVERTIME_THRESHOLD;
           saveState();
-          renderAll();
+          renderAll({ preserveScroll: true, scrollPos });
           closeModal();
           confirmBtn.textContent = originalText;
           confirmBtn.removeEventListener('click', onConfirm);
@@ -3955,7 +4011,7 @@
               filter: typeof st.filter === 'string' ? st.filter : appState.filter
             };
             saveState();
-            renderAll();
+            renderAll({ preserveScroll: true });
             showToast(`Sauvegarde restaurée (${MONTH_NAMES[activeMonth]} ${activeYear}).`);
           } catch (err) {
             showToast('Impossible de lire le fichier JSON.');
@@ -4051,6 +4107,7 @@
       });
 
       window.addEventListener('popstate', (e) => {
+        const scrollPos = captureScrollPositions();
         const st = e.state;
         if (st && typeof st.year === 'number' && typeof st.month === 'number') {
           if (st.year !== activeYear || st.month !== activeMonth) {
@@ -4058,13 +4115,14 @@
             activeMonth = st.month;
             loadStateForMonth(activeYear, activeMonth);
             focusedWeekIndex = typeof st.week === 'number' ? st.week : null;
-            renderAll();
+            renderAll({ preserveScroll: false });
             connectFirebaseForMonth(activeYear, activeMonth);
             return;
           }
           focusedWeekIndex = typeof st.week === 'number' ? st.week : null;
           renderWeeks();
           applyAccessModeUI();
+          restoreScrollPositions(scrollPos);
           return;
         }
         const match = window.location.hash.match(/^#semaine-(\d+)$/);
@@ -4078,6 +4136,7 @@
         }
         renderWeeks();
         applyAccessModeUI();
+        restoreScrollPositions(scrollPos);
       });
 
       const drawer = document.getElementById('monthlyBalanceDrawer');
@@ -4207,7 +4266,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       loadStateForMonth(activeYear, activeMonth);
       bindEvents();
-      renderAll();
+      renderAll({ preserveScroll: false });
       connectFirebaseForMonth(activeYear, activeMonth);
       openStartupMenu(false);
     });

@@ -99,6 +99,24 @@
         border-radius: 10px !important;
         margin-bottom: 7px !important;
       }
+      header.app-header > div {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 6px 10px !important;
+      }
+      header.app-header #brandLogoImg,
+      header.app-header img {
+        width: 34px !important;
+        height: 34px !important;
+        min-width: 34px !important;
+        max-width: 34px !important;
+        min-height: 34px !important;
+        max-height: 34px !important;
+        border-radius: 9999px !important;
+        object-fit: cover !important;
+        flex-shrink: 0 !important;
+      }
       header.app-header #accessModeBadgeBtn,
       header.app-header #firebaseSyncBadge,
       header.app-header #openOvertimeMenuBtn,
@@ -131,30 +149,32 @@
         padding-top: 4px !important;
         padding-bottom: 4px !important;
         min-width: 0 !important;
-        font-size: 9.5px !important;
+        font-size: 9px !important;
         line-height: 1.15 !important;
       }
       #weeksContainer td {
-        padding: 3px !important;
+        padding: 2.5px !important;
         min-width: 0 !important;
       }
       #weeksContainer td:first-child,
       #weeksContainer th:first-child {
         position: static !important;
-        width: 74px !important;
-        padding: 4px 5px !important;
+        width: 64px !important;
+        padding: 3px 4px !important;
         min-width: 0 !important;
-        font-size: 10px !important;
+        font-size: 9px !important;
       }
       #weeksContainer th:nth-last-child(2),
       #weeksContainer td:nth-last-child(2) {
-        width: 44px !important;
-        font-size: 10px !important;
+        width: 48px !important;
+        padding: 2px !important;
+        font-size: 9px !important;
       }
       #weeksContainer th:last-child,
       #weeksContainer td:last-child {
-        width: 52px !important;
-        font-size: 10px !important;
+        width: 58px !important;
+        padding: 2px !important;
+        font-size: 9px !important;
       }
       .today-col-highlight {
         box-shadow: none !important;
@@ -594,12 +614,12 @@
       body[data-print-mode="all"] #weeksContainer thead th {
         padding-top: 4px !important;
         padding-bottom: 4px !important;
-        font-size: 9.5px !important;
+        font-size: 9px !important;
       }
       body.printing-single-week .print-target-week tbody td,
       body[data-print-mode="all"] #weeksContainer tbody td {
-        padding: 3px !important;
-        font-size: 9.5px !important;
+        padding: 2.5px !important;
+        font-size: 9px !important;
       }
       body.printing-single-week .print-target-week .print-cell-mirror,
       body[data-print-mode="all"] #weeksContainer .print-cell-mirror {
@@ -608,9 +628,9 @@
         opacity: 1 !important;
         min-height: 22px !important;
         height: auto !important;
-        font-size: 9px !important;
-        line-height: 1.15 !important;
-        padding: 2px 3px !important;
+        font-size: 8px !important;
+        line-height: 1.1 !important;
+        padding: 2px !important;
         border-radius: 6px !important;
       }
 
@@ -702,9 +722,9 @@
         overflow-wrap: break-word !important;
         word-break: break-word !important;
         hyphens: none !important;
-        font-size: 9px !important;
-        line-height: 1.15 !important;
-        padding: 2px 3px !important;
+        font-size: 8px !important;
+        line-height: 1.1 !important;
+        padding: 2px !important;
       }
 
       input.hours-edit-input,
@@ -715,8 +735,8 @@
         box-shadow: none !important;
         width: auto !important;
         min-width: 0 !important;
-        font-size: 10px !important;
-        padding: 2px 3px !important;
+        font-size: 9px !important;
+        padding: 2px !important;
         height: auto !important;
       }
       #printSummarySection,
@@ -3212,6 +3232,24 @@
         visibility: visible !important;
         opacity: 1 !important;
       }
+      header.app-header > div {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 6px 10px !important;
+      }
+      header.app-header #brandLogoImg,
+      header.app-header img {
+        width: 34px !important;
+        height: 34px !important;
+        min-width: 34px !important;
+        max-width: 34px !important;
+        min-height: 34px !important;
+        max-height: 34px !important;
+        border-radius: 9999px !important;
+        object-fit: cover !important;
+        flex-shrink: 0 !important;
+      }
       #printSummarySection, #printOvertimeSection { display: none !important; }
       #weeksContainer {
         display: block !important;
@@ -3238,20 +3276,27 @@
       #weeksContainer td:first-child,
       #weeksContainer th:first-child {
         position: static !important;
-        width: 74px !important;
-        padding: 4px 5px !important;
+        width: 64px !important;
+        padding: 3px 4px !important;
         min-width: 0 !important;
-        font-size: 10px !important;
+        font-size: 9px !important;
       }
       #weeksContainer th:nth-last-child(2),
       #weeksContainer td:nth-last-child(2) {
-        width: 44px !important;
-        font-size: 10px !important;
+        width: 48px !important;
+        padding: 2px !important;
+        font-size: 9px !important;
       }
       #weeksContainer th:last-child,
       #weeksContainer td:last-child {
-        width: 52px !important;
-        font-size: 10px !important;
+        width: 58px !important;
+        padding: 2px !important;
+        font-size: 9px !important;
+      }
+      #weeksContainer .print-cell-mirror {
+        font-size: 8px !important;
+        line-height: 1.1 !important;
+        padding: 2px !important;
       }
       #weeksContainer .print-week-decor {
         display: grid !important;

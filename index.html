@@ -74,7 +74,7 @@
     @media print {
       @page {
         size: A4 portrait;
-        margin: 5mm;
+        margin: 6mm;
       }
       * {
         -webkit-print-color-adjust: exact !important;
@@ -141,7 +141,7 @@
       #weeksContainer td:first-child,
       #weeksContainer th:first-child {
         position: static !important;
-        width: 72px !important;
+        width: 74px !important;
         padding: 4px 5px !important;
         min-width: 0 !important;
         font-size: 10px !important;
@@ -512,7 +512,7 @@
         display: none !important;
       }
 
-      /* Chaque carte semaine en vue d'ensemble = 1 page complète identique au grand format */
+      /* Chaque carte semaine en vue d'ensemble = 1 page compacte */
       body[data-print-mode="all"] #weeksContainer > div {
         margin: 0 auto 0 auto !important;
         break-after: page !important;
@@ -576,49 +576,10 @@
         display: none !important;
       }
 
-      /* Vue verticale jour par jour visible en impression (Semaine seule & Vue d'ensemble) */
+      /* Masquer le bloc vertical jour par jour en impression pour éviter les doublons de hauteur */
       body.printing-single-week .print-target-week .print-vertical-week-block,
       body[data-print-mode="all"] #weeksContainer .print-vertical-week-block {
-        display: flex !important;
-        flex-direction: column !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        height: auto !important;
-        overflow: visible !important;
-        margin-top: 5px !important;
-        gap: 3px !important;
-      }
-      body.printing-single-week .print-target-week .print-vertical-week-block > div:not(:last-child),
-      body[data-print-mode="all"] #weeksContainer .print-vertical-week-block > div:not(:last-child) {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: space-between !important;
-        padding: 4px 8px !important;
-        border-radius: 7px !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        break-inside: avoid !important;
-        page-break-inside: avoid !important;
-      }
-      body.printing-single-week .print-target-week .print-vertical-week-block > div:not(:last-child) span,
-      body[data-print-mode="all"] #weeksContainer .print-vertical-week-block > div:not(:last-child) span {
-        font-size: 10px !important;
-        line-height: 1.15 !important;
-      }
-      body.printing-single-week .print-target-week .print-vertical-week-block > div:last-child,
-      body[data-print-mode="all"] #weeksContainer .print-vertical-week-block > div:last-child {
-        display: block !important;
-        margin-top: 4px !important;
-        padding: 6px 8px !important;
-        border-radius: 8px !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        break-inside: avoid !important;
-        page-break-inside: avoid !important;
-      }
-      body.printing-single-week .print-target-week .print-vertical-week-block > div:last-child > div:not(:first-child),
-      body[data-print-mode="all"] #weeksContainer .print-vertical-week-block > div:last-child > div:not(:first-child) {
-        padding: 3px 8px !important;
+        display: none !important;
       }
 
       body.printing-single-week .print-target-week .overflow-x-auto,
@@ -652,14 +613,6 @@
         padding: 2px 3px !important;
         border-radius: 6px !important;
       }
-      body.printing-single-week .print-target-week .print-vertical-week-block .print-cell-mirror,
-      body[data-print-mode="all"] #weeksContainer .print-vertical-week-block .print-cell-mirror {
-        width: 82px !important;
-        min-width: 82px !important;
-        min-height: 22px !important;
-        height: auto !important;
-        flex-shrink: 0 !important;
-      }
 
       /* Encadrés Légende & Récapitulatif semaine visibles dans les deux modes */
       body.printing-single-week .print-target-week .print-week-decor,
@@ -667,7 +620,7 @@
         display: grid !important;
         grid-template-columns: 1.15fr 0.85fr !important;
         gap: 6px !important;
-        margin-top: 5px !important;
+        margin-top: 6px !important;
       }
       body.printing-single-week .print-target-week .print-decor-panel,
       body[data-print-mode="all"] #weeksContainer .print-decor-panel {
@@ -721,8 +674,8 @@
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
-        margin-top: 4px !important;
-        padding-top: 3px !important;
+        margin-top: 5px !important;
+        padding-top: 4px !important;
         border-top: 1px solid #dfd5c0 !important;
         font-size: 8.5px !important;
         color: #5b6358 !important;
@@ -2497,7 +2450,6 @@
           ? 'bg-[#fffdf9] rounded-2xl p-3.5 sm:p-5 shadow-md border-2 border-[#2d4727] min-h-full flex flex-col max-w-4xl mx-auto'
           : 'bg-[#fffdf9] rounded-2xl p-3.5 sm:p-4 shadow-sm border border-[#dfd5c0] print-break-avoid';
 
-        /* En-tête Débarras Express 09 répété sur les pages 2, 3, 4... lors de l'impression vue d'ensemble */
         if (!isFocusedWeek && index > 0) {
           const repeatBanner = document.createElement('div');
           repeatBanner.className = 'hidden print-repeat-brand-banner';
@@ -2767,7 +2719,7 @@
         `;
         card.appendChild(weekPrintNote);
 
-        /* Bloc vertical jour par jour (affiché sur mobile en mode focus ET à l'impression en mode semaine seule ou vue d'ensemble) */
+        /* Bloc vertical jour par jour (mobile uniquement) */
         const isSingleEmployee = visibleEmployees.length === 1;
         const mobileVerticalBox = document.createElement('div');
         mobileVerticalBox.className = isFocusedWeek
@@ -3252,7 +3204,7 @@
     }
 
     const SHARED_WEEK_SHEET_PRINT_CSS = `
-      @page { size: A4 portrait; margin: 5mm; }
+      @page { size: A4 portrait; margin: 6mm; }
       html, body, main {
         height: auto !important;
         min-height: 0 !important;
@@ -3267,6 +3219,9 @@
         opacity: 1 !important;
         height: auto !important;
         overflow: visible !important;
+      }
+      #weeksContainer .print-vertical-week-block {
+        display: none !important;
       }
       #weeksContainer .overflow-x-auto {
         display: block !important;
@@ -3283,7 +3238,7 @@
       #weeksContainer td:first-child,
       #weeksContainer th:first-child {
         position: static !important;
-        width: 72px !important;
+        width: 74px !important;
         padding: 4px 5px !important;
         min-width: 0 !important;
         font-size: 10px !important;
@@ -3298,65 +3253,18 @@
         width: 52px !important;
         font-size: 10px !important;
       }
-      #weeksContainer .print-vertical-week-block {
-        display: flex !important;
-        flex-direction: column !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        height: auto !important;
-        overflow: visible !important;
-        margin-top: 5px !important;
-        gap: 3px !important;
-      }
-      #weeksContainer .print-vertical-week-block > div:not(:last-child) {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: space-between !important;
-        padding: 4px 8px !important;
-        border-radius: 7px !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-      }
-      #weeksContainer .print-vertical-week-block > div:not(:last-child) span {
-        font-size: 10px !important;
-        line-height: 1.15 !important;
-      }
-      #weeksContainer .print-vertical-week-block > div:last-child {
-        display: block !important;
-        margin-top: 4px !important;
-        padding: 6px 8px !important;
-        border-radius: 8px !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-      }
-      #weeksContainer .print-vertical-week-block > div:last-child > div:not(:first-child) {
-        padding: 3px 8px !important;
-      }
-      #weeksContainer .print-vertical-week-block .print-cell-mirror {
-        display: flex !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        width: 82px !important;
-        min-width: 82px !important;
-        min-height: 22px !important;
-        height: auto !important;
-        font-size: 9px !important;
-        line-height: 1.15 !important;
-        padding: 2px 3px !important;
-        border-radius: 6px !important;
-      }
       #weeksContainer .print-week-decor {
         display: grid !important;
         grid-template-columns: 1.15fr 0.85fr !important;
         gap: 6px !important;
-        margin-top: 5px !important;
+        margin-top: 6px !important;
       }
       #weeksContainer .print-week-note {
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
-        margin-top: 4px !important;
-        padding-top: 3px !important;
+        margin-top: 5px !important;
+        padding-top: 4px !important;
         border-top: 1px solid #dfd5c0 !important;
         font-size: 8.5px !important;
         color: #5b6358 !important;
